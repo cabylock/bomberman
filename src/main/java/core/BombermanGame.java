@@ -1,10 +1,6 @@
 package core;
 
-
-import core.entities.Bomber;
-import core.entities.Entity;
-import core.entities.Grass;
-import core.entities.Wall;
+import core.entities.*;
 import core.graphics.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -19,9 +15,13 @@ import java.util.List;
 
 public class BombermanGame extends Application {
 
-    public static final int WIDTH = 20;
-    public static final int HEIGHT = 15;
+    public static  int WIDTH = 30;
+    public static  int HEIGHT = 20;
+
     
+    private static int INITAIL_POSITION_X = 1;
+    private static int INITAIL_POSITION_Y = 1;
+
     private GraphicsContext gc;
     private Canvas canvas;
     private List<Entity> entities = new ArrayList<>();
@@ -33,6 +33,8 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        createMap();
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
         gc = canvas.getGraphicsContext2D();
@@ -57,24 +59,71 @@ public class BombermanGame extends Application {
         };
         timer.start();
 
-        createMap();
+        
 
-        Entity bomberman = new Bomber(1, 1, Sprite.player_right.getFxImage());
+        Entity bomberman = new Bomber(INITAIL_POSITION_X, INITAIL_POSITION_Y, Sprite.player_right.getFxImage());
         entities.add(bomberman);
     }
 
     public void createMap() {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
-                Entity object;
-                if (j == 0 || j == HEIGHT - 1 || i == 0 || i == WIDTH - 1) {
-                    object = new Wall(i, j, Sprite.wall.getFxImage());
-                } else {
-                    object = new Grass(i, j, Sprite.grass.getFxImage());
+
+        Map currentMap = new Map("/levels/Level1.txt");
+        WIDTH = currentMap.getWidth();
+        HEIGHT = currentMap.getHeight();
+        System.out.println(WIDTH + " " + HEIGHT);
+        for(int i = 0; i < currentMap.getHeight(); i++) {
+            for(int j = 0; j < currentMap.getWidth(); j++) {
+                char c = currentMap.getMap()[i][j];
+                if (c == '#') {
+                    Entity wall = new Wall(j, i, Sprite.wall.getFxImage());
+                    stillObjects.add(wall);
                 }
-                stillObjects.add(object);
+                else if (c == '*') {
+                    Entity brick = new Brick(j, i, Sprite.brick.getFxImage());
+                    stillObjects.add(brick);
+                }
+                else if (c == 'x') {
+                    Entity portal = new Portal(j, i, Sprite.portal.getFxImage());
+                    stillObjects.add(portal);
+                }
+                else if (c == 'p') {
+                    INITAIL_POSITION_X = j;
+                    INITAIL_POSITION_Y = i;
+                }
+                else if (c=='1')
+                {
+                    Entity balloon = new Balloom(j, i, Sprite.balloom_left1.getFxImage());
+                    entities.add(balloon);
+                }
+                else if (c=='2')
+                {
+                    Entity balloon = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
+                    entities.add(balloon);
+                }
+                else if  (c== 'b')
+                {
+                    Entity BombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
+                    stillObjects.add(BombItem);
+                }
+                else if (c == 'f')
+                {
+                    Entity FlameItem = new FlameItem(j, i, Sprite.powerup_flames.getFxImage());
+                    stillObjects.add(FlameItem);
+                }
+                else if (c == 's')
+                {
+                    Entity SpeedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
+                    stillObjects.add(SpeedItem);
+                }
+                else 
+                {
+                    Entity grass = new Grass(j, i, Sprite.grass.getFxImage());
+                    stillObjects.add(grass);
+                }
             }
         }
+
+        
     }
 
     public void update() {
