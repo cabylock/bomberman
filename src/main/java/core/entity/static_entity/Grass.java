@@ -1,9 +1,8 @@
-package core.entities;
-
+package core.entity.static_entity;
 
 import javafx.scene.image.Image;
 
-public class Grass extends Entity {
+public class Grass extends StaticEntity {
    public Grass(int x, int y,Image img) {
       super(x, y,img);
    }

@@ -1,4 +1,4 @@
-package core.entities;
+package core.entity;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -14,10 +14,19 @@ public abstract class Entity {
          this.x = xUnit * Sprite.SCALED_SIZE;
          this.y = yUnit * Sprite.SCALED_SIZE;
          this.image = img;
+         
       }
       
       public void render(GraphicsContext gc) {
          gc.drawImage(image, x, y);
+      }
+
+      public int getX() {
+         return x;
+      }
+
+      public int getY() {
+         return y;
       }
 
       public abstract void update();

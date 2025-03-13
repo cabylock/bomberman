@@ -1,7 +1,16 @@
 package core;
 
-import core.entities.*;
-import core.graphics.Sprite;
+import core.entity.*;
+import core.entity.dynamic_entity.*;
+import core.entity.item_entity.BombItem;
+import core.entity.item_entity.FlameItem;
+import core.entity.item_entity.Portal;
+import core.entity.item_entity.SpeedItem;
+import core.entity.map_handle.Map;
+import core.entity.static_entity.*;
+import core.graphics.*;
+
+import javafx.scene.input.KeyCode;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -10,6 +19,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,24 +30,28 @@ public class BombermanGame extends Application {
     public static  int HEIGHT = 20;
 
     
-    private static int INITAIL_POSITION_X = 1;
-    private static int INITAIL_POSITION_Y = 1;
 
     private GraphicsContext gc;
     private Canvas canvas;
-    private List<Entity> entities = new ArrayList<>();
-    private List<Entity> stillObjects = new ArrayList<>();
+    private static List<Entity> entities = new ArrayList<>();
+    public static List<Entity> stillObjects = new ArrayList<>();
+    public static int level = 1;
+    public static final Set<KeyCode> input = new HashSet<>();
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
 
+
+
     @Override
     public void start(Stage stage) {
 
-        createMap();
+        Map map = new Map(entities, stillObjects);
+        map.loadMap(level);
+
         // Tao Canvas
-        canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
+        canvas = new Canvas(Sprite.SCALED_SIZE * map.getWidth(), Sprite.SCALED_SIZE * map.getHeight());
         gc = canvas.getGraphicsContext2D();
 
         // Tao root container
@@ -45,6 +60,15 @@ public class BombermanGame extends Application {
 
         // Tao scene
         Scene scene = new Scene(root);
+
+
+        scene.setOnKeyPressed(e -> {
+            input.add(e.getCode());
+        });
+
+        scene.setOnKeyReleased(e -> {
+            input.remove(e.getCode());
+        });
 
         // Them scene vao stage
         stage.setScene(scene);
@@ -61,70 +85,11 @@ public class BombermanGame extends Application {
 
         
 
-        Entity bomberman = new Bomber(INITAIL_POSITION_X, INITAIL_POSITION_Y, Sprite.player_right.getFxImage());
-        entities.add(bomberman);
+
     }
 
-    public void createMap() {
+  
 
-        Map currentMap = new Map("/levels/Level1.txt");
-        WIDTH = currentMap.getWidth();
-        HEIGHT = currentMap.getHeight();
-        System.out.println(WIDTH + " " + HEIGHT);
-        for(int i = 0; i < currentMap.getHeight(); i++) {
-            for(int j = 0; j < currentMap.getWidth(); j++) {
-                char c = currentMap.getMap()[i][j];
-                if (c == '#') {
-                    Entity wall = new Wall(j, i, Sprite.wall.getFxImage());
-                    stillObjects.add(wall);
-                }
-                else if (c == '*') {
-                    Entity brick = new Brick(j, i, Sprite.brick.getFxImage());
-                    stillObjects.add(brick);
-                }
-                else if (c == 'x') {
-                    Entity portal = new Portal(j, i, Sprite.portal.getFxImage());
-                    stillObjects.add(portal);
-                }
-                else if (c == 'p') {
-                    INITAIL_POSITION_X = j;
-                    INITAIL_POSITION_Y = i;
-                }
-                else if (c=='1')
-                {
-                    Entity balloon = new Balloom(j, i, Sprite.balloom_left1.getFxImage());
-                    entities.add(balloon);
-                }
-                else if (c=='2')
-                {
-                    Entity balloon = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
-                    entities.add(balloon);
-                }
-                else if  (c== 'b')
-                {
-                    Entity BombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
-                    stillObjects.add(BombItem);
-                }
-                else if (c == 'f')
-                {
-                    Entity FlameItem = new FlameItem(j, i, Sprite.powerup_flames.getFxImage());
-                    stillObjects.add(FlameItem);
-                }
-                else if (c == 's')
-                {
-                    Entity SpeedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
-                    stillObjects.add(SpeedItem);
-                }
-                else 
-                {
-                    Entity grass = new Grass(j, i, Sprite.grass.getFxImage());
-                    stillObjects.add(grass);
-                }
-            }
-        }
-
-        
-    }
 
     public void update() {
         entities.forEach(Entity::update);
