@@ -1,13 +1,7 @@
 package core;
 
 import core.entity.*;
-import core.entity.dynamic_entity.*;
-import core.entity.item_entity.BombItem;
-import core.entity.item_entity.FlameItem;
-import core.entity.item_entity.Portal;
-import core.entity.item_entity.SpeedItem;
-import core.entity.map_handle.Map;
-import core.entity.static_entity.*;
+import core.entity.map_handle.MapEntity;
 import core.graphics.*;
 
 import javafx.scene.input.KeyCode;
@@ -21,20 +15,15 @@ import javafx.stage.Stage;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class BombermanGame extends Application {
 
-    public static  int WIDTH = 30;
-    public static  int HEIGHT = 20;
-
-    
+    public static int WIDTH = 30;
+    public static int HEIGHT = 20;
 
     private GraphicsContext gc;
     private Canvas canvas;
-    private static List<Entity> entities = new ArrayList<>();
-    public static List<Entity> stillObjects = new ArrayList<>();
     public static int level = 1;
     public static final Set<KeyCode> input = new HashSet<>();
 
@@ -42,16 +31,13 @@ public class BombermanGame extends Application {
         Application.launch(BombermanGame.class);
     }
 
-
-
     @Override
     public void start(Stage stage) {
 
-        Map map = new Map(entities, stillObjects);
-        map.loadMap(level);
+        MapEntity.loadMap(level);
 
         // Tao Canvas
-        canvas = new Canvas(Sprite.SCALED_SIZE * map.getWidth(), Sprite.SCALED_SIZE * map.getHeight());
+        canvas = new Canvas(Sprite.SCALED_SIZE * MapEntity.getWidth(), Sprite.SCALED_SIZE * MapEntity.getHeight());
         gc = canvas.getGraphicsContext2D();
 
         // Tao root container
@@ -60,7 +46,6 @@ public class BombermanGame extends Application {
 
         // Tao scene
         Scene scene = new Scene(root);
-
 
         scene.setOnKeyPressed(e -> {
             input.add(e.getCode());
@@ -77,27 +62,25 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                render();
                 update();
+                render();
             }
         };
         timer.start();
 
-        
-
-
     }
 
-  
-
-
     public void update() {
-        entities.forEach(Entity::update);
+        MapEntity.update();
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        stillObjects.forEach(g -> g.render(gc));
-        entities.forEach(g -> g.render(gc));
+        MapEntity.getBackgroundEntities().forEach(entity -> entity.render(gc));
+        for (Entity entity : MapEntity.getDynamicEntities()) {
+            entity.render(gc);
+
+        }
+        MapEntity.getItemEntities().forEach(entity -> entity.render(gc));
     }
 }

@@ -1,3 +1,5 @@
-/target/
-/.idea/
-/out/
+target
+.idea
+out
+.vscode
+test
