@@ -19,7 +19,7 @@ public class Flame extends StaticEntity {
    // Animation constants
    
    protected int length; // Length of the flame
-   protected int timeAlive = 60; // 60 frames = 1 second
+   protected int timeAlive = 100; // 60 frames = 1 second
 
 
   

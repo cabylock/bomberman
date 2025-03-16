@@ -15,13 +15,13 @@ public class MapGenerator {
     * @param height Map height (must be odd)
     * @param width  Map width (must be odd)
     */
-   public static void generateMap(int level, int height, int width) {
+   public static void generateMap(int level, int height, int width,String name) {
       // Ensure dimensions are odd
       height = height % 2 == 0 ? height + 1 : height;
       width = width % 2 == 0 ? width + 1 : width;
 
       // Calculate densities based on level
-      double enemyDensity = Math.min(0.2 + (level * 0.02), 0.5);
+      double enemyDensity = Math.min(0.4 + (level * 0.5), 2.0);
       double brickDensity = Math.min(0.3 + (level * 0.01), 0.6);
       double itemDensity = Math.max(0.7 - (level * 0.02), 0.3);
 
@@ -55,7 +55,7 @@ public class MapGenerator {
       map[1][1] = 'p';
 
       // Safe zone around player (no bricks or enemies)
-      int safeRadius = 2;
+      int safeRadius = 4;
 
       // Add bricks
       for (int y = 1; y < height - 1; y++) {
@@ -119,7 +119,7 @@ public class MapGenerator {
       }
 
       // Save the map to file
-      saveMap(level, height, width, map);
+      saveMap(level, height, width, map,name);
    }
 
    private static int countCharacter(char[][] map, char target) {
@@ -133,8 +133,8 @@ public class MapGenerator {
       return count;
    }
 
-   private static void saveMap(int level, int height, int width, char[][] map) {
-      String filePath = "src/main/resources/levels/Level" + level + ".txt";
+   private static void saveMap(int level, int height, int width, char[][] map,String name) {
+      String filePath = "src/main/resources/custom_levels/" + name;
 
       try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
          // Write header with level, rows, columns

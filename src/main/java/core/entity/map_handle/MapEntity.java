@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import core.entity.Entity;
 import core.entity.background_entity.*;
@@ -20,9 +21,13 @@ import core.entity.item_entity.*;
 import core.graphics.Sprite;
 
 public class MapEntity {
+   public static final int DEFAULT = 0;
+   public static final int CUSTOM = 1;
    private static int width;
    private static int height;
    private static int level;
+   private static String name;
+   private static int mapType;
    private static char[][] mapData;
    private static List<DynamicEntity> dynamicEntities = new CopyOnWriteArrayList<DynamicEntity>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
@@ -45,8 +50,20 @@ public class MapEntity {
       return mapData;
    }
 
-   public static void readMap(int level) {
-      String filePath = "/levels/Level" + level + ".txt";
+   public static void readMap(int level, int type) {
+      String filePath="";
+      if (type == DEFAULT) {
+         
+          filePath = "/default_levels/Level" + level + ".txt";
+      }
+      else if (type == CUSTOM) {
+          filePath = "/custom_levels/Level" + level + ".txt";
+      }
+      readMap(filePath);
+   }
+
+   public static void readMap(String filePath)
+   {
       try {
          // Try to load the resource
          InputStream is = MapEntity.class.getResourceAsStream(filePath);
@@ -85,8 +102,9 @@ public class MapEntity {
       }
    }
 
-   public static void loadMap(int level) {
-      readMap(level);
+   public static void loadMap(String name,int mapType) {
+      String filePath = mapType == DEFAULT ? "/default_levels/" + name : "/custom_levels/" + name ;
+      readMap(filePath);
 
       for (int i = 0; i < height; i++) {
          for (int j = 0; j < width; j++) {
@@ -135,7 +153,14 @@ public class MapEntity {
          }
 
       }
+      MapEntity.mapType = mapType;
    }
+
+   public static void loadMap(int level) {
+      loadMap("Level" + level+".txt", DEFAULT);
+
+   }
+
 
    public static void nextLevel() {
       level++;
@@ -152,9 +177,15 @@ public class MapEntity {
    }
 
    public static void reset() {
+      clear();
+      loadMap(name,mapType);
+   }
+   
+   public static void clear() {
       dynamicEntities.clear();
       backgroundEntities.clear();
-      loadMap(level);
+      itemEntities.clear();
+      
    }
 
    public static void addDynamicEntity(DynamicEntity entity) {

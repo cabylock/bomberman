@@ -29,10 +29,10 @@ public class Util {
     * 
     * @param level Level number
     */
-   public static void generateRandomMap(int level) {
+   public static void generateRandomMap(int level,String name) {
       int width = 31; // Standard width
       int height = 13; // Standard height
-      MapGenerator.generateMap(level, height, width);
+      MapGenerator.generateMap(level, height, width,name);
    }
 
    /**
@@ -42,8 +42,8 @@ public class Util {
     * @param height Map height
     * @param width  Map width
     */
-   public static void generateCustomMap(int level, int height, int width) {
-      MapGenerator.generateMap(level, height, width);
+   public static void generateCustomMap(int level, int height, int width,String name) {
+      MapGenerator.generateMap(level, height, width,name);
    }
 
 }

@@ -9,10 +9,10 @@ import javafx.scene.image.Image;
 
 public class Bomb extends StaticEntity {
 
-    protected int timeAlive = 500; // 120 frames = 2 seconds
+    protected int timeAlive = 300; // 120 frames = 2 seconds
     private final int DEFAULT_IMAGE = 0;
-    private int length = 2;
-    private Flame[][] flameSegments = new Flame[5][length + 1];
+    private int flameSize = 1;
+    private Flame[][] flameSegments = new Flame[5][flameSize + 1];
 
     // Directional constants
     protected final int[] DX = { 0, -1, 1, 0, 0 };
@@ -50,9 +50,9 @@ public class Bomb extends StaticEntity {
        
         this.remove();
         for (int i = 0; i < 5; i++) {
-            for (int j = 1; j <= length; j++) {
+            for (int j = 1; j <= flameSize; j++) {
 
-                int flameType = i == 0 ? 0 : j == length ? i + 2 : (i + 1) / 2;
+                int flameType = i == 0 ? 0 : j == flameSize ? i + 2 : (i + 1) / 2;
 
                 flameSegments[i][j] = new Flame(getXTile() + DX[i] * j, getYTile() + DY[i] * j, Sprite.explosion_horizontal.getFxImage(), flameType);
                 if (flameSegments[i][j].flamecollision()) {
