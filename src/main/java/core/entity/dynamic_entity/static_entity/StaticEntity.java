@@ -15,5 +15,6 @@ public class StaticEntity extends DynamicEntity {
     @Override
     protected void updateAnimation() {
     }
+    
    
 }

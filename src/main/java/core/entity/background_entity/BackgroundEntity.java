@@ -13,4 +13,8 @@ public class BackgroundEntity extends Entity {
    public void update() {
    }
 
+   @Override
+   public void remove() {
+   }
+
 }

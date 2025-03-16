@@ -11,10 +11,7 @@ import javafx.scene.input.KeyCode;
 public class Bomber extends MobileEntity {
 
    protected int speed = 2;
-   protected final int RIGHT_MOVING = 0;
-   protected final int LEFT_MOVING = 1;
-   protected final int UP_MOVING = 2;
-   protected final int DOWN_MOVING = 3;
+  
 
 
    public Bomber(int x, int y, Image image) {
@@ -40,13 +37,13 @@ public class Bomber extends MobileEntity {
 
       
       if (BombermanGame.input.contains(KeyCode.UP)) {
-         move(UP_MOVING, 0, -speed);
+         move(UP_MOVING,speed);
       } else if (BombermanGame.input.contains(KeyCode.DOWN)) {
-         move(DOWN_MOVING, 0, speed);
+         move(DOWN_MOVING, speed);
       } else if (BombermanGame.input.contains(KeyCode.LEFT)) {
-         move(LEFT_MOVING, -speed, 0);
+         move(LEFT_MOVING, speed);
       } else if (BombermanGame.input.contains(KeyCode.RIGHT)) {
-         move(RIGHT_MOVING, speed, 0);
+         move(RIGHT_MOVING, speed);
       } else if (BombermanGame.input.contains(KeyCode.SPACE)) {
          placeBomb();
       } else {

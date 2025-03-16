@@ -13,11 +13,11 @@ public class Oneal extends EnemyEntity {
       public void update() {
       }
 
+      
+
       @Override
       protected void updateAnimation() {
       }
 
-      @Override
-      public void remove() {
-      }
+   
 }

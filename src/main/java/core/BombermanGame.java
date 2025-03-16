@@ -3,7 +3,7 @@ package core;
 import core.entity.*;
 import core.entity.map_handle.MapEntity;
 import core.graphics.*;
-
+import core.util.Util;
 import javafx.scene.input.KeyCode;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Map;
+
 
 public class BombermanGame extends Application {
 
@@ -34,7 +34,8 @@ public class BombermanGame extends Application {
     @Override
     public void start(Stage stage) {
 
-        MapEntity.loadMap(level);
+        Util.generateRandomMap(2);
+        MapEntity.loadMap(2);
 
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * MapEntity.getWidth(), Sprite.SCALED_SIZE * MapEntity.getHeight());
@@ -77,10 +78,10 @@ public class BombermanGame extends Application {
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         MapEntity.getBackgroundEntities().forEach(entity -> entity.render(gc));
+        MapEntity.getItemEntities().forEach(entity -> entity.render(gc));
         for (Entity entity : MapEntity.getDynamicEntities()) {
             entity.render(gc);
 
         }
-        MapEntity.getItemEntities().forEach(entity -> entity.render(gc));
     }
 }

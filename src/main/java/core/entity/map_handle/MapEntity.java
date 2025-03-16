@@ -1,10 +1,13 @@
 package core.entity.map_handle;
 import core.entity.dynamic_entity.*;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
+import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Balloom;
+import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Oneal;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
+import core.entity.dynamic_entity.static_entity.StaticEntity;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -94,21 +97,21 @@ public class MapEntity {
                BackgroundEntity wall = new Wall(j, i, Sprite.wall.getFxImage());
                backgroundEntities.add(wall);
             } else if (c == '*') {
-               DynamicEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
                dynamicEntities.add(brick);
             } else if (c == 'x') {
                ItemEntity portal = new Portal(j, i, Sprite.portal.getFxImage());
                itemEntities.add(portal);
-               DynamicEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
                dynamicEntities.add(brick);
             } else if (c == 'p') {
-               DynamicEntity player = new Bomber(j, i, Sprite.player_right.getFxImage());
+               MobileEntity player = new Bomber(j, i, Sprite.player_right.getFxImage());
                dynamicEntities.add(player);
             } else if (c == '1') {
-               DynamicEntity balloon = new Balloom(j, i, Sprite.balloom_left1.getFxImage());
+               EnemyEntity balloon = new Balloom(j, i, Sprite.balloom_left1.getFxImage());
                dynamicEntities.add(balloon);
             } else if (c == '2') {
-               DynamicEntity oneal = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
+               EnemyEntity oneal = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
                dynamicEntities.add(oneal);
             } else if (c == 'b') {
                ItemEntity BombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
@@ -123,7 +126,7 @@ public class MapEntity {
             } else if (c == 's') {
                ItemEntity SpeedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
                itemEntities.add(SpeedItem);
-               DynamicEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
                dynamicEntities.add(brick);
             } else {
                // Entity grass = new Grass(j, i, Sprite.grass.getFxImage());
@@ -160,7 +163,6 @@ public class MapEntity {
    }
 
    public static void removeDynamicEntity(Entity entity) {
-
       dynamicEntities.remove(entity);
    }
 
@@ -169,10 +171,29 @@ public class MapEntity {
       return dynamicEntities;
    }
 
-   public static List<BackgroundEntity> getBackgroundEntities() {
-      return backgroundEntities;
+   public static void addItem(ItemEntity item) {
+      itemEntities.add(item);
    }
+
+   public static void removeItem(ItemEntity item) {
+      itemEntities.remove(item);
+   }
+   
    public static List<ItemEntity> getItemEntities() {
       return itemEntities;
    }
+
+   public static void addBackgroundEntity(BackgroundEntity entity) {
+      backgroundEntities.add(entity);
+   }
+
+   public static List<BackgroundEntity> getBackgroundEntities() {
+      return backgroundEntities;
+   }
+   
+   public static void removeBackgroundEntity(BackgroundEntity entity) {
+      backgroundEntities.remove(entity);
+   }
+
+
 }

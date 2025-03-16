@@ -1,9 +1,7 @@
 package core.entity.dynamic_entity.static_entity;
 
 
-import java.util.Map;
 
-import core.entity.dynamic_entity.DynamicEntity;
 import core.entity.map_handle.MapEntity;
 import core.graphics.Sprite;
 import javafx.scene.image.Image;
@@ -11,50 +9,67 @@ import javafx.scene.image.Image;
 
 public class Bomb extends StaticEntity {
 
-    protected int timeToExplode = 500; // 120 frames = 2 seconds
-    protected int timeAfterExplode = 200; // 20 frames = 1/3 second
-    protected boolean exploded = false;
+    protected int timeAlive = 500; // 120 frames = 2 seconds
     private final int DEFAULT_IMAGE = 0;
-    private final int EXPLODED_IMAGE = 1;
-    private Flame flame;
+    private int length = 2;
+    private Flame[][] flameSegments = new Flame[5][length + 1];
+
+    // Directional constants
+    protected final int[] DX = { 0, -1, 1, 0, 0 };
+    protected final int[] DY = { 0, 0, 0, -1, 1 };
 
     public Bomb(int x, int y, Image image) {
         super(x, y, image);
 
-        images = new Image[2][3];
+        images = new Image[1][3];
 
         images[DEFAULT_IMAGE][0] = Sprite.bomb.getFxImage();
         images[DEFAULT_IMAGE][1] = Sprite.bomb_1.getFxImage();
         images[DEFAULT_IMAGE][2] = Sprite.bomb_2.getFxImage();
-        images[EXPLODED_IMAGE][0] = Sprite.bomb_exploded.getFxImage();
-        images[EXPLODED_IMAGE][1] = Sprite.bomb_exploded1.getFxImage();
-        images[EXPLODED_IMAGE][2] = Sprite.bomb_exploded2.getFxImage();
+
 
     }
 
+
     @Override
     public void update() {
-        timeToExplode--;
-        if (timeToExplode == 0) {
-            exploded = true;
+        timeAlive--;
+        if (timeAlive == 0) {
+            explode();
+            
             
             
         }
-        if (exploded) {
-            timeAfterExplode--;
-            if (timeAfterExplode == 0) {
-                remove();
-                
-            }
-        }
+        
         updateAnimation();
        
     }
 
+    public void explode() {
+    
+       
+        this.remove();
+        for (int i = 0; i < 5; i++) {
+            for (int j = 1; j <= length; j++) {
+
+                int flameType = i == 0 ? 0 : j == length ? i + 2 : (i + 1) / 2;
+
+                flameSegments[i][j] = new Flame(getXTile() + DX[i] * j, getYTile() + DY[i] * j, Sprite.explosion_horizontal.getFxImage(), flameType);
+                if (flameSegments[i][j].flamecollision()) {
+                    break;
+                }
+                System.out.println(
+                        "FlameSegment created at: " + (x + DX[i] * j) + " " + (y + DY[i] * j) + " " + flameType);
+                MapEntity.addDynamicEntity(flameSegments[i][j]);
+            }
+        }
+        
+       
+    }
  
     @Override
     public void updateAnimation() {
-        if (exploded) {
+        
             if (animationDelay == 0) {
                 animationStep++;
                 if (animationStep == 3) {
@@ -64,8 +79,8 @@ public class Bomb extends StaticEntity {
             } else {
                 animationDelay--;
             }
-        }
-        image = images[exploded ? EXPLODED_IMAGE : DEFAULT_IMAGE][animationStep];
+        
+        image = images[ DEFAULT_IMAGE][animationStep];
         
     }
 

@@ -10,7 +10,7 @@ public abstract class DynamicEntity extends Entity {
    protected int animationStep = 0;
    protected int animationDelay = 0;
 
-   protected final int ALIGN_TOLERANCE = 16; // Example tolerance value
+ 
 
    // Image arrays for animation
    protected Image[][] images;
@@ -29,7 +29,8 @@ public abstract class DynamicEntity extends Entity {
 
    protected abstract void updateAnimation();
 
-   protected void remove() {
+   @Override
+   public void remove() {
       MapEntity.removeDynamicEntity(this);
    }
 

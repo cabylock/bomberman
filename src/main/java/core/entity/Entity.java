@@ -38,8 +38,10 @@ public abstract class Entity {
       return Util.toGrid(y);
    }
 
+   
 
 
    public abstract void update();
+   public abstract void remove();
 
 }
