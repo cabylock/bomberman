@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+      fx:controller="core.system.controller.MapSelectionController">
+    <top>
+        <VBox alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20" />
+            </padding>
+            <Text text="Available Maps">
+                <font>
+                    <Font name="Arial" size="32" />
+                </font>
+            </Text>
+        </VBox>
+    </top>
+    
+    <center>
+        <VBox spacing="15" alignment="CENTER">
+            <Text text="Default Maps">
+                <font>
+                    <Font name="Arial" size="18" />
+                </font>
+            </Text>
+            <ListView fx:id="defaultMapList" prefHeight="200" onKeyPressed="#handleKeyPress" />
+            
+            <Text text="Custom Maps">
+                <font>
+                    <Font name="Arial" size="18" />
+                </font>
+            </Text>
+            <ListView fx:id="customMapList" prefHeight="200" onKeyPressed="#handleKeyPress" />
+        </VBox>
+    </center>
+    
+    <bottom>
+        <HBox alignment="CENTER" spacing="20">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20" />
+            </padding>
+            <Button text="Play Selected Map" prefWidth="200" prefHeight="40" 
+                    onAction="#playSelectedMap" />
+            <Button text="Back to Menu" prefWidth="200" prefHeight="40" 
+                    onAction="#backToMenu" />
+            <Button text="Delete Selected Map" prefWidth="200" prefHeight="40" 
+                    onAction="#deleteSelectedMap" />
+        </HBox>
+    </bottom>
+</BorderPane>

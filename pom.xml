@@ -42,6 +42,21 @@
     </dependencies>
 
     <build>
+        <!-- Add this resources configuration -->
+        <resources>
+            <!-- Standard resources directory -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <!-- Include FXML files from Java directory -->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>core/system/fxml/**/*.fxml</include>
+                </includes>
+            </resource>
+        </resources>
+        
         <plugins>
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -53,7 +68,4 @@
             </plugin>
         </plugins>
     </build>
-
-
-
 </project>
