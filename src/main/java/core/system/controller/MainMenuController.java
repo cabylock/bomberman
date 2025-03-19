@@ -35,31 +35,29 @@ public class MainMenuController {
    }
 
    @FXML
-private void showRandomMapDialog() {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("core/system/fxml/RandomMapDialog.fxml"));
-        Parent root = loader.load();
+   private void showRandomMap() {
+      try {
+         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/RandomMap.fxml"));
+         Parent root = loader.load();
 
-        RandomMapController controller = loader.getController();
-        controller.setStage(stage);
-        
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Generate Random Map");
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(stage);
-        dialogStage.setScene(new Scene(root));
-        
-        // Set the dialog stage in the controller
-        controller.setDialogStage(dialogStage);
-        
-        // Initialize after everything is set up
-        controller.initialize();
-        
-        dialogStage.showAndWait();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
+         RandomMapController controller = loader.getController();
+         controller.setStage(stage);
+
+         Stage dialogStage = new Stage();
+         dialogStage.setTitle("Create Random Map");
+         dialogStage.initModality(Modality.WINDOW_MODAL);
+         dialogStage.initOwner(stage);
+
+         controller.setDialogStage(dialogStage);
+
+         Scene scene = new Scene(root);
+         dialogStage.setScene(scene);
+         dialogStage.showAndWait();
+
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
 
    @FXML
    private void exitGame() {

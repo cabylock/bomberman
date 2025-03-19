@@ -31,11 +31,11 @@ public class BombermanGame {
     private AnimationTimer gameLoop;
     private Stage stage;
 
-    private MenuBoard menuBoard; // Reference to menu board
+
 
     //for random map
     public BombermanGame(int level, String mapName) {
-        Util.generateRandomMap(level,mapName);
+        Util.generateRandomMap(level, mapName);
 
         try {
             Thread.sleep(1000);
@@ -43,8 +43,21 @@ public class BombermanGame {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
+
     }
+    public BombermanGame(int level, int width, int height, String mapName) {
+        Util.generateCustomMap(level, height, width, mapName);
+
+        try {
+            Thread.sleep(1000);
+            MapEntity.loadMap(mapName, CUSTOM);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     //for default or custom map
     public BombermanGame(String mapName ,int mapType) {
       
@@ -122,12 +135,8 @@ public class BombermanGame {
         input.clear();
 
         // Create new menu and show it
-        if (menuBoard != null) {
-            menuBoard.createMenuScene();
-        } else {
-            menuBoard = new MenuBoard(stage);
-            menuBoard.createMenuScene();
-        }
+        Main main = new Main();
+        main.start(stage);
     }
 
  
