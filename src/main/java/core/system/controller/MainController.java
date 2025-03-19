@@ -18,8 +18,8 @@ public class MainController {
     public void createMenuScene() {
         try {
             // Load the FXML file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/Main.fxml"));
-            System.out.println("location: " + getClass().getResource("/core/system/fxml/Main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/MainMenu.fxml"));
+            // System.out.println("location: " + getClass().getResource("/core/system/fxml/Main.fxml"));
             Parent root = loader.load();
 
             // Get the controller

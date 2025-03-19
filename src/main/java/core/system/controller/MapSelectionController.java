@@ -98,12 +98,12 @@ public class MapSelectionController {
     }
 
     @FXML
-    private void backToMenu() {
+    private void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/Main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/Mode.fxml"));
             Parent root = loader.load();
 
-            MainMenuController controller = loader.getController();
+            ModeController controller = loader.getController();
             controller.setStage(stage);
 
             Scene scene = new Scene(root, 800, 600);

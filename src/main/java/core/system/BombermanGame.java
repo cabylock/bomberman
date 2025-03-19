@@ -29,14 +29,13 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 
+
 public class BombermanGame {
 
-    public static final int DEFAULT = 0;
-    public static final int CUSTOM = 1;
-    public static int WIDTH = 30;
-    public static int HEIGHT = 20;
 
-    public static String filePath;
+
+
+
     private GraphicsContext gc;
     private Canvas canvas;
     public static final Set<KeyCode> input = new HashSet<>();
@@ -49,24 +48,26 @@ public class BombermanGame {
     private Text enemiesText;
     private Text scoreText;
 
-    // for random map
+    // for custom map
     public BombermanGame(int level, String mapName) {
-        Util.generateRandomMap(level, mapName);
+        Util.generateRandomMap(level, mapName,Setting.PLAYER_NUM);
 
         try {
             Thread.sleep(1000);
-            MapEntity.loadMap(mapName, CUSTOM);
+          
+            MapEntity.loadMap(mapName, Setting.CUSTOM_MAP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
+    // for more custom map
     public BombermanGame(int level, int width, int height, String mapName) {
-        Util.generateCustomMap(level, height, width, mapName);
+        Util.generateCustomMap(level, height, width, mapName, Setting.PLAYER_NUM);
 
         try {
             Thread.sleep(1000);
-            MapEntity.loadMap(mapName, CUSTOM);
+          
+            MapEntity.loadMap(mapName, Setting.CUSTOM_MAP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -74,11 +75,13 @@ public class BombermanGame {
 
     // for default or custom map
     public BombermanGame(String mapName, int mapType) {
-        if (mapType == DEFAULT) {
+        if (mapType == Setting.DEFAULT_MAP) {
             int level = mapName.charAt(mapName.length() - 5) - '0';
+          
             MapEntity.loadMap(level);
-        } else if (mapType == CUSTOM) {
-            MapEntity.loadMap(mapName, CUSTOM);
+        } else if (mapType == Setting.CUSTOM_MAP) {
+          
+            MapEntity.loadMap(mapName, Setting.CUSTOM_MAP);
         }
     }
 

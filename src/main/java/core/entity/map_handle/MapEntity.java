@@ -5,7 +5,6 @@ import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Balloom;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Oneal;
-import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 
@@ -13,16 +12,16 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 import core.entity.Entity;
 import core.entity.background_entity.*;
 import core.entity.item_entity.*;
 import core.graphics.Sprite;
+import core.system.Setting;
 
 public class MapEntity {
-   public static final int DEFAULT = 0;
-   public static final int CUSTOM = 1;
+
    private static int width;
    private static int height;
    private static int level;
@@ -50,13 +49,16 @@ public class MapEntity {
       return mapData;
    }
 
+   
+
+
    public static void readMap(int level, int type) {
       String filePath="";
-      if (type == DEFAULT) {
+      if (type == Setting.DEFAULT_MAP) {
          
-          filePath = "/default_levels/Level" + level + ".txt";
+          filePath = "/Setting.DEFAULT_MAP_levels/Level" + level + ".txt";
       }
-      else if (type == CUSTOM) {
+      else if (type == Setting.CUSTOM_MAP) {
           filePath = "/custom_levels/Level" + level + ".txt";
       }
       readMap(filePath);
@@ -103,7 +105,7 @@ public class MapEntity {
    }
 
    public static void loadMap(String name,int mapType) {
-      String filePath = mapType == DEFAULT ? "/default_levels/" + name : "/custom_levels/" + name ;
+      String filePath = mapType == Setting.DEFAULT_MAP ? "/Setting.DEFAULT_MAP_levels/" + name : "/custom_levels/" + name ;
       readMap(filePath);
 
       for (int i = 0; i < height; i++) {
@@ -123,9 +125,14 @@ public class MapEntity {
                StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
                dynamicEntities.add(brick);
             } else if (c == 'p') {
-               MobileEntity player = new Bomber(j, i, Sprite.player_right.getFxImage());
+               MobileEntity player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER1);
                dynamicEntities.add(player);
-            } else if (c == '1') {
+            }
+            else if(c== 'q'&& Setting.PLAYER_NUM==2){
+               MobileEntity player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER2);
+               dynamicEntities.add(player);
+            }
+            else if (c == '1') {
                EnemyEntity balloon = new Balloom(j, i, Sprite.balloom_left1.getFxImage());
                dynamicEntities.add(balloon);
             } else if (c == '2') {
@@ -147,8 +154,7 @@ public class MapEntity {
                StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
                dynamicEntities.add(brick);
             } else {
-               // Entity grass = new Grass(j, i, Sprite.grass.getFxImage());
-               // backgroundEntity.add(grass);
+               // Grass is already added at the beginning of the loop for every cell
             }
          }
 
@@ -157,7 +163,7 @@ public class MapEntity {
    }
 
    public static void loadMap(int level) {
-      loadMap("Level" + level+".txt", DEFAULT);
+      loadMap("Level" + level+".txt", Setting.DEFAULT_MAP);
 
    }
 

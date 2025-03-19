@@ -6,23 +6,22 @@ import core.entity.dynamic_entity.DynamicEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
-import core.entity.dynamic_entity.static_entity.Flame;
 import core.entity.item_entity.ItemEntity;
 import core.entity.map_handle.MapEntity;
 import core.graphics.Sprite;
+import core.system.Setting;
 import javafx.scene.image.Image;
 
 public class MobileEntity extends DynamicEntity {
    protected boolean moving = false;
-   protected int direction = 0;// 0: up, 1: right, 2: down, 3: left
    protected boolean bombpass = false;
    protected boolean flamepass = false;
    protected boolean isAlive = true;
+
+   protected int direction = Setting.DOWN_MOVING;
+
    protected final int ALIGN_TOLERANCE = 16; // Example tolerance value
-   protected final int RIGHT_MOVING = 0;
-   protected final int LEFT_MOVING = 1;
-   protected final int UP_MOVING = 2;
-   protected final int DOWN_MOVING = 3;
+   
    
 
    public MobileEntity(int x, int y, Image image) {
@@ -36,27 +35,23 @@ public class MobileEntity extends DynamicEntity {
    protected boolean move(int direction, int delta) {
       // System.out.println("x: " + x + " y: " + y + " xTile: " + this.getXTile() + " yTile: " + this.getYTile());
       moving = true;
-      this.direction = direction;
       int deltaX = 0;
       int deltaY = 0;
-      switch (direction) {
-         case RIGHT_MOVING:
-             deltaX = delta;
-             deltaY = 0;
+
+      switch(direction)
+      {
+         case Setting.RIGHT_MOVING:
+            deltaX = delta;
             break;
-         case LEFT_MOVING:
-            deltaX = -delta;
-            deltaY = 0;
+         case Setting.LEFT_MOVING:
+            deltaX = delta;
             break;
-         case UP_MOVING:
-            deltaX = 0;
-            deltaY = -delta;
-            break;
-         case DOWN_MOVING:
-            deltaX = 0;
+         case Setting.DOWN_MOVING:
             deltaY = delta;
             break;
-
+         case Setting.UP_MOVING:
+            deltaY = delta;
+            break;
          default:
             break;
       }
