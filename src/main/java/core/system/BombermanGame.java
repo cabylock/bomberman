@@ -1,7 +1,9 @@
 package core.system;
 
 import core.entity.*;
+import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.map_handle.MapEntity;
+import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
 import core.graphics.*;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
@@ -12,6 +14,16 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -31,9 +43,13 @@ public class BombermanGame {
     private AnimationTimer gameLoop;
     private Stage stage;
 
+    // UI elements for status bar
+    private Text healthText;
+    private Text bombsText;
+    private Text enemiesText;
+    private Text scoreText;
 
-
-    //for random map
+    // for random map
     public BombermanGame(int level, String mapName) {
         Util.generateRandomMap(level, mapName);
 
@@ -43,8 +59,8 @@ public class BombermanGame {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
+
     public BombermanGame(int level, int width, int height, String mapName) {
         Util.generateCustomMap(level, height, width, mapName);
 
@@ -54,25 +70,17 @@ public class BombermanGame {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
-
-    //for default or custom map
-    public BombermanGame(String mapName ,int mapType) {
-      
-        if(mapType== DEFAULT)
-        {
+    // for default or custom map
+    public BombermanGame(String mapName, int mapType) {
+        if (mapType == DEFAULT) {
             int level = mapName.charAt(mapName.length() - 5) - '0';
             MapEntity.loadMap(level);
-        }
-        else if(mapType== CUSTOM)
-        {
+        } else if (mapType == CUSTOM) {
             MapEntity.loadMap(mapName, CUSTOM);
         }
     }
-
-   
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -81,14 +89,16 @@ public class BombermanGame {
     public void createGameScene(Stage stage) {
         this.stage = stage;
 
-   
         // Create Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * MapEntity.getWidth(), Sprite.SCALED_SIZE * MapEntity.getHeight());
         gc = canvas.getGraphicsContext2D();
 
-        // Create root container
-        Group root = new Group();
-        root.getChildren().add(canvas);
+        // Create status bar
+        HBox statusBar = createStatusBar();
+
+        // Create root container with VBox to stack game canvas and status bar
+        VBox root = new VBox(5);
+        root.getChildren().addAll(statusBar, canvas);
 
         // Create scene
         Scene scene = new Scene(root);
@@ -116,9 +126,82 @@ public class BombermanGame {
             public void handle(long l) {
                 update();
                 render();
+                updateStatusBar();
             }
         };
         gameLoop.start();
+    }
+
+    /**
+     * Create a status bar with game information
+     */
+    private HBox createStatusBar() {
+        HBox statusBar = new HBox(20);
+        statusBar.setPadding(new Insets(10));
+        statusBar.setAlignment(Pos.CENTER_LEFT);
+        statusBar.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
+        // Create text elements for game stats
+        healthText = new Text("❤ Health: 3");
+        healthText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        healthText.setFill(Color.WHITE);
+
+        bombsText = new Text("💣 Bombs: 1");
+        bombsText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        bombsText.setFill(Color.WHITE);
+
+        enemiesText = new Text("👾 Enemies: 0");
+        enemiesText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        enemiesText.setFill(Color.WHITE);
+
+        scoreText = new Text("🏆 Score: 0");
+        scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        scoreText.setFill(Color.WHITE);
+
+        // Add text elements to status bar
+        statusBar.getChildren().addAll(healthText, bombsText, enemiesText, scoreText);
+
+        return statusBar;
+    }
+
+    /**
+     * Update the status bar with current game information
+     */
+    private void updateStatusBar() {
+        // Get player entity to access health and bombs
+        Entity playerEntity = null;
+        for (Entity entity : MapEntity.getDynamicEntities()) {
+            if (entity instanceof Bomber) {
+                playerEntity = entity;
+                break;
+            }
+        }
+
+        if (playerEntity instanceof Bomber) {
+            Bomber player = (Bomber) playerEntity;
+            // Update health display
+            // int health = player.getLives(); // Assuming Player class has getLives() method
+            int health = 1;
+            healthText.setText("❤ Health: " + health);
+
+            // Update bombs display
+            // int bombs = player.getBombCount(); // Assuming Player class has getBombCount() method
+            int bombs = 1;
+            bombsText.setText("💣 Bombs: " + bombs);
+        }
+
+        // Count enemies
+        int enemyCount = 0;
+        for (Entity entity : MapEntity.getDynamicEntities()) {
+            if (entity instanceof EnemyEntity) { // Assuming Enemy class exists
+                enemyCount++;
+            }
+        }
+        enemiesText.setText("👾 Enemies: " + enemyCount);
+
+        // Update score (if applicable)
+        int score = 0; // You might want to track score in Player class or elsewhere
+        scoreText.setText("🏆 Score: " + score);
     }
 
     /**
@@ -128,7 +211,7 @@ public class BombermanGame {
         // Stop the game loop
         if (gameLoop != null) {
             gameLoop.stop();
-            gameLoop = null; 
+            gameLoop = null;
         }
         MapEntity.clear();
         // Reset the game state if needed
@@ -139,7 +222,6 @@ public class BombermanGame {
         main.start(stage);
     }
 
- 
     public void update() {
         MapEntity.update();
     }
