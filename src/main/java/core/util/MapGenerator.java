@@ -52,8 +52,8 @@ public class MapGenerator {
       }
 
       // Create grid pattern walls
-      for (int y = 2; y < height - 1; y += 2) {
-         for (int x = 2; x < width - 1; x += 2) {
+      for (int y = 2; y < height - 1; y += Util.randomRange(2, 4)) {
+         for (int x = 2; x < width - 1; x += Util.randomRange(2, 4)) {
             map[y][x] = '#';
          }
       }
@@ -151,27 +151,12 @@ public class MapGenerator {
    private static List<int[]> generatePlayerSpawnPoints(int height, int width, int playerCount) {
       List<int[]> spawnPoints = new ArrayList<>();
 
-      // Define possible spawn corners
-      int[][] corners = {
-            { 1, 1 }, // Top-left
-            { 1, width - 2 }, // Top-right
-            { height - 2, 1 }, // Bottom-left
-            { height - 2, width - 2 } // Bottom-right
-      };
-
-      // Shuffle corners to randomize spawn positions
-      for (int i = 0; i < corners.length; i++) {
-         int j = random.nextInt(corners.length);
-         int[] temp = corners[i];
-         corners[i] = corners[j];
-         corners[j] = temp;
+      //randomly generate spawn points for players
+      for (int i = 0; i < playerCount; i++) {
+         int x = random.nextInt(width - 2) + 1;
+         int y = random.nextInt(height - 2) + 1;
+         spawnPoints.add(new int[] { y, x });
       }
-
-      // Add random spawn points based on player count
-      for (int i = 0; i < playerCount && i < corners.length; i++) {
-         spawnPoints.add(corners[i]);
-      }
-
       return spawnPoints;
    }
 

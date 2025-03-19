@@ -33,7 +33,7 @@ public class EnemyEntity extends MobileEntity {
                 constDirection = Util.randomRange(200, 500);
             } else {
                 constDirection--;
-                if ( !move(direction, speed)) {
+                if (!move(direction, speed)) {
                     direction = Util.randomDirection();
                 }
             }
@@ -43,9 +43,7 @@ public class EnemyEntity extends MobileEntity {
     }
 
 
-    @Override
-    protected void updateAnimation() {
-    }
+   
 
    
    

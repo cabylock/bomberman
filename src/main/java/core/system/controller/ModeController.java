@@ -26,10 +26,10 @@ public class ModeController {
         // Update the player mode text based on Setting.PLAYER_NUM
         if (Setting.PLAYER_NUM == 2) {
             playerModeText.setText("2 Player Mode");
-            playerCountText.setText("2 Players");
+           
         } else {
             playerModeText.setText("1 Player Mode");
-            playerCountText.setText("1 Player");
+         
         }
     }
 

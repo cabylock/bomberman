@@ -11,15 +11,14 @@
       alignment="CENTER"
       spacing="30"
       prefWidth="800"
-      prefHeight="600"
-      style="-fx-background-color: #222222;">
+      prefHeight="600">
 
     <padding>
         <Insets top="40" right="40" bottom="40" left="40"/>
     </padding>
 
     <Text text="Game Mode"
-          fill="WHITE"
+          fill="BLACK"
           style="-fx-font-size: 48px; -fx-font-weight: bold;">
     </Text>
     
@@ -34,28 +33,23 @@
                onAction="#showAvailableMaps"
                prefWidth="300"
                prefHeight="60"
-               style="-fx-font-size: 18px; -fx-background-color: #4a90e2; -fx-text-fill: white;"/>
+         />
+               
                
         <Button text="Create Random Map" 
                onAction="#createRandomMap"
                prefWidth="300"
                prefHeight="60"
-               style="-fx-font-size: 18px; -fx-background-color: #50c878; -fx-text-fill: white;"/>
+         />
+               
                
         <Button text="Back" 
                onAction="#goBack"
                prefWidth="300"
                prefHeight="60"
-               style="-fx-font-size: 18px; -fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+         />
+               
     </VBox>
     
-    <HBox alignment="CENTER" spacing="10">
-        <Text text="Selected Mode:" 
-              fill="WHITE"
-              style="-fx-font-size: 16px;"/>
-        <Text fx:id="playerCountText" 
-              text="1 Player"
-              fill="WHITE"
-              style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-    </HBox>
+    
 </VBox>

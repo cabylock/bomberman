@@ -5,11 +5,13 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.map_handle.MapEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
 import core.graphics.*;
+import core.system.controller.ModeController;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.scene.Group;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -27,7 +29,7 @@ import javafx.geometry.Pos;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Map;
+
 
 
 public class BombermanGame {
@@ -112,6 +114,9 @@ public class BombermanGame {
             // Check for ESC key to return to menu
             if (e.getCode() == KeyCode.ESCAPE) {
                 returnToMenu();
+            }
+            if (e.getCode() == KeyCode.R && e.isControlDown()) {
+                restartGame();
             }
         });
 
@@ -220,9 +225,35 @@ public class BombermanGame {
         // Reset the game state if needed
         input.clear();
 
-        // Create new menu and show it
-        Main main = new Main();
-        main.start(stage);
+        try {
+            // Load the MapSelection screen instead of Main
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/Mode.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and set the stage
+            ModeController controller = loader.getController();
+            controller.setStage(stage);
+
+            // Set the scene
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            // Fallback to main menu if loading map selection fails
+            Main main = new Main();
+            main.start(stage);
+        }
+
+    }
+
+    
+    private void restartGame()
+    {
+       
+        
+        MapEntity.reset();
     }
 
     public void update() {

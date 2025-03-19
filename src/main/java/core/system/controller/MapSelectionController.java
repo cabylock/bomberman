@@ -36,7 +36,7 @@ public class MapSelectionController {
             File[] mapFiles = defaultMapsDir.listFiles((dir, name) -> name.endsWith(".txt"));
             if (mapFiles != null) {
                 for (File mapFile : mapFiles) {
-                    defaultMapList.getItems().add(mapFile.getName());
+                    defaultMapList.getItems().add(mapFile.getName().replace(".txt", ""));
                 }
             }
         }
@@ -47,7 +47,7 @@ public class MapSelectionController {
             File[] mapFiles = customMapsDir.listFiles((dir, name) -> name.endsWith(".txt"));
             if (mapFiles != null) {
                 for (File mapFile : mapFiles) {
-                    customMapList.getItems().add(mapFile.getName());
+                    customMapList.getItems().add(mapFile.getName().replace(".txt", ""));
                 }
             }
         }
@@ -136,7 +136,7 @@ public class MapSelectionController {
     }
 
     private void startGameWithMap(String mapName, int mapType) {
-        BombermanGame game = new BombermanGame(mapName, mapType);
+        BombermanGame game = new BombermanGame(mapName+".txt", mapType);
         game.createGameScene(stage);
     }
 

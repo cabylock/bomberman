@@ -58,8 +58,7 @@ public class Bomb extends StaticEntity {
                 if (flameSegments[i][j].flamecollision()) {
                     break;
                 }
-                System.out.println(
-                        "FlameSegment created at: " + (x + DX[i] * j) + " " + (y + DY[i] * j) + " " + flameType);
+                
                 MapEntity.addDynamicEntity(flameSegments[i][j]);
             }
         }

@@ -11,15 +11,14 @@
       alignment="CENTER"
       spacing="30"
       prefWidth="800"
-      prefHeight="600"
-      style="-fx-background-color: #222222;">
+      prefHeight="600">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
     <Text text="Select Game Mode"
-          fill="WHITE"
+          fill="BLACK"
           style="-fx-font-size: 40px; -fx-font-weight: bold;">
     </Text>
 
@@ -29,7 +28,7 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             <Label text="1 Player" 
-                  style="-fx-font-size: 24px; -fx-text-fill: white;"/>
+                  style="-fx-font-size: 24px; -fx-text-fill: black;"/>
             <Button text="Select" 
                    onAction="#selectSinglePlayerMode"
                    prefWidth="150"
@@ -42,7 +41,7 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             <Label text="2 Players" 
-                  style="-fx-font-size: 24px; -fx-text-fill: white;"/>
+                  style="-fx-font-size: 24px; -fx-text-fill: black;"/>
             <Button text="Select" 
                    onAction="#selectMultiPlayerMode"
                    prefWidth="150"

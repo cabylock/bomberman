@@ -44,13 +44,13 @@ public class MobileEntity extends DynamicEntity {
             deltaX = delta;
             break;
          case Setting.LEFT_MOVING:
-            deltaX = delta;
+            deltaX = -delta;
             break;
          case Setting.DOWN_MOVING:
             deltaY = delta;
             break;
          case Setting.UP_MOVING:
-            deltaY = delta;
+            deltaY = -delta;
             break;
          default:
             break;
@@ -154,6 +154,17 @@ public class MobileEntity extends DynamicEntity {
 
    @Override
    protected void updateAnimation() {
+      if (moving) {
+         animationDelay++;
+         if (animationDelay >= 10) {
+            animationStep = (animationStep + 1) % 3;
+            animationDelay = 0;
+         }
+         image = images[direction][animationStep];
+      } else {
+         animationStep = 0;
+         image = images[direction][0];
+      }
    }
 
  

@@ -19,7 +19,7 @@ public class Balloom extends EnemyEntity {
         images[Setting.UP_MOVING][0] = Sprite.balloom_left1.getFxImage();
         images[Setting.UP_MOVING][1] = Sprite.balloom_left2.getFxImage();
         images[Setting.UP_MOVING][2] = Sprite.balloom_left3.getFxImage();
-        
+
         images[Setting.DOWN_MOVING][0] = Sprite.balloom_right1.getFxImage();
         images[Setting.DOWN_MOVING][1] = Sprite.balloom_right2.getFxImage();
         images[Setting.DOWN_MOVING][2] = Sprite.balloom_right3.getFxImage();
@@ -44,19 +44,7 @@ public class Balloom extends EnemyEntity {
 
     }
 
-    @Override
-    protected void updateAnimation() {
-        if (moving) {
-            animationDelay++;
-            if (animationDelay >= 10) {
-                animationStep = (animationStep + 1) % 3;
-                animationDelay = 0;
-            }
-            image = images[direction][animationStep];
-        } else {
-            animationStep = 0;
-            image = images[direction][0];
-        }
-    }
+    
+    
 
 }

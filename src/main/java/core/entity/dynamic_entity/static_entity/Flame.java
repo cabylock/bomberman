@@ -84,10 +84,10 @@ public class Flame extends StaticEntity {
 
          this.flameType = flameType;
          this.image = images[flameType][0];
-         
 
       }
 
+      //true if the flame collides with a wall
       protected boolean flamecollision() {
          for (DynamicEntity entity : MapEntity.getDynamicEntities()) {
             if (entity instanceof Flame) {
@@ -96,20 +96,21 @@ public class Flame extends StaticEntity {
             if (entity instanceof Bomb) {
                if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
                   ((Bomb) entity).explode();
-                  return true;
+                  return false; 
                }
             }
             if (entity instanceof Brick) {
                if (entity.getX() == x && entity.getY() == y) {
                   entity.remove();
-                  return true;
+                  return false; 
                }
             }
             if(entity instanceof MobileEntity)
             {
                if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
                   entity.remove();
-                  return true;
+                  return false; 
+                  
                }
             }
 
@@ -118,7 +119,7 @@ public class Flame extends StaticEntity {
             if (entity instanceof Wall) {
                if (entity.getX() == x && entity.getY() == y) {
                   remove();
-                  return true;
+                  return true; 
                }
             }
          }
@@ -127,7 +128,7 @@ public class Flame extends StaticEntity {
             if(entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile())
             {
                entity.remove();
-               return true;
+                  return false;
             }
          }
 

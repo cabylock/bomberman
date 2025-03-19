@@ -40,7 +40,7 @@ public class Bomber extends MobileEntity {
       
       if (typePlayer == 1) {
          if (BombermanGame.input.contains(Setting.BOMBER_MOVE_UP_1)) {
-            move(Setting.UP_MOVING, -speed);
+            move(Setting.UP_MOVING, speed);
             direction = Setting.UP_MOVING;
             moving = true;
          } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_DOWN_1)) {
@@ -48,7 +48,7 @@ public class Bomber extends MobileEntity {
             direction = Setting.DOWN_MOVING;
             moving = true;
          } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_LEFT_1)) {
-            move(Setting.LEFT_MOVING, -speed);
+            move(Setting.LEFT_MOVING, speed);
             direction = Setting.LEFT_MOVING;
             moving = true;
          } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_RIGHT_1)) {
@@ -66,7 +66,7 @@ public class Bomber extends MobileEntity {
       
       else if (typePlayer == 2) {
          if (BombermanGame.input.contains(Setting.BOMBER_MOVE_UP_2)) {
-            move(Setting.UP_MOVING, -speed);
+            move(Setting.UP_MOVING, speed);
             direction = Setting.UP_MOVING;
             moving = true;
          } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_DOWN_2)) {
@@ -74,7 +74,7 @@ public class Bomber extends MobileEntity {
             direction = Setting.DOWN_MOVING;
             moving = true;
          } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_LEFT_2)) {
-            move(Setting.LEFT_MOVING, -speed);
+            move(Setting.LEFT_MOVING, speed);
             direction = Setting.LEFT_MOVING;
             moving = true;
          } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_RIGHT_2)) {
@@ -108,18 +108,5 @@ public class Bomber extends MobileEntity {
       MapEntity.addDynamicEntity(bomb);
    }
 
-   @Override
-   protected void updateAnimation() {
-      if (moving) {
-         animationDelay++;
-         if (animationDelay >= 10) {
-            animationStep = (animationStep + 1) % 3;
-            animationDelay = 0;
-         }
-         image = images[direction][animationStep];
-      } else {
-         animationStep = 0;
-         image = images[direction][0];
-      }
-   }
+  
 }

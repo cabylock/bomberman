@@ -56,7 +56,7 @@ public class MapEntity {
       String filePath="";
       if (type == Setting.DEFAULT_MAP) {
          
-          filePath = "/Setting.DEFAULT_MAP_levels/Level" + level + ".txt";
+          filePath = "/default_levels/Level" + level + ".txt";
       }
       else if (type == Setting.CUSTOM_MAP) {
           filePath = "/custom_levels/Level" + level + ".txt";
@@ -105,7 +105,7 @@ public class MapEntity {
    }
 
    public static void loadMap(String name,int mapType) {
-      String filePath = mapType == Setting.DEFAULT_MAP ? "/Setting.DEFAULT_MAP_levels/" + name : "/custom_levels/" + name ;
+      String filePath = mapType == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name ;
       readMap(filePath);
 
       for (int i = 0; i < height; i++) {
