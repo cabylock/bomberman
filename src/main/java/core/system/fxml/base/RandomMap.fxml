@@ -7,7 +7,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="core.system.controller.RandomMapController"
+      fx:controller="core.system.controller.base.RandomMapController"
       spacing="10"
       alignment="CENTER"
       prefWidth="400"

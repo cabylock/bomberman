@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-      fx:controller="core.system.controller.MapSelectionController">
+      fx:controller="core.system.controller.base.MapSelectionController">
     <top>
         <VBox alignment="CENTER">
             <padding>

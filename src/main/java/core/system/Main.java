@@ -1,7 +1,6 @@
 package core.system;
 
-import core.system.controller.MainController;
-
+import core.system.controller.base.MainController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

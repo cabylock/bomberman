@@ -5,7 +5,8 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
 import core.graphics.*;
 import core.map_handle.MapEntity;
-import core.system.controller.ModeController;
+import core.system.controller.base.ModeController;
+import core.system.controller.ingame.PauseMenuController;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
 import javafx.animation.AnimationTimer;
@@ -22,6 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
@@ -35,7 +37,6 @@ import java.util.HashSet;
 
 public class BombermanGame {
 
-
     private int frameCounter = 0;
     private long lastFpsUpdateTime = 0;
     private int fps = 0;
@@ -43,7 +44,7 @@ public class BombermanGame {
     private GraphicsContext gc;
     private Canvas canvas;
     public static final Set<KeyCode> input = new HashSet<>();
-    private AnimationTimer gameLoop;
+    // private AnimationTimer gameLoop;
     private Stage stage;
 
     // UI elements for status bar
@@ -52,6 +53,11 @@ public class BombermanGame {
     private Text enemiesText;
     private Text scoreText;
     private Text fpsText;
+
+    // Add these fields to your BombermanGame class
+    private Timeline gameLoop;
+    private StackPane gameRoot;
+    private boolean isPaused = false;
 
     // for custom map
     public BombermanGame(int level, String mapName) {
@@ -92,10 +98,11 @@ public class BombermanGame {
     }
 
     public static void main(String[] args) {
-      
+
         Application.launch(args);
     }
 
+    // Then update your createGameScene method:
     public void createGameScene(Stage stage) {
         this.stage = stage;
 
@@ -106,19 +113,25 @@ public class BombermanGame {
         // Create status bar
         HBox statusBar = createStatusBar();
 
-        // Create root container with VBox to stack game canvas and status bar
-        VBox root = new VBox(5);
-        root.getChildren().addAll(statusBar, canvas);
+        // Create game content container
+        VBox gameContent = new VBox(5);
+        gameContent.getChildren().addAll(statusBar, canvas);
+
+        // Create a StackPane for overlays
+        gameRoot = new StackPane();
+        gameRoot.getChildren().add(gameContent);
 
         // Create scene
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(gameRoot);
 
         scene.setOnKeyPressed(e -> {
             input.add(e.getCode());
 
-            // Check for ESC key to return to menu
+            // Check for ESC key to show pause menu
             if (e.getCode() == KeyCode.ESCAPE) {
-                returnToMenu();
+                if (!isPaused) {
+                    showPauseMenu();
+                }
             }
             if (e.getCode() == KeyCode.R && e.isControlDown()) {
                 restartGame();
@@ -133,8 +146,8 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.show();
 
-        // Replace your AnimationTimer with Timeline
-        Timeline gameLoop = new Timeline(
+        // Create the game loop
+        gameLoop = new Timeline(
                 new KeyFrame(Duration.seconds(1.0 / Setting.FPS_MAX), e -> {
                     update();
                     render();
@@ -143,7 +156,7 @@ public class BombermanGame {
         gameLoop.setCycleCount(Timeline.INDEFINITE);
         gameLoop.play();
 
-        // Update the FPS counter separately with an AnimationTimer just for tracking
+        // FPS counter
         AnimationTimer fpsCounter = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -241,10 +254,66 @@ public class BombermanGame {
         scoreText.setText("🏆 Score: " + score);
     }
 
+    // Add these new methods to BombermanGame class:
+
     /**
-     * Return to main menu
+     * Show the pause menu overlay
      */
-    private void returnToMenu() {
+    private void showPauseMenu() {
+        // Pause the game
+        isPaused = true;
+        gameLoop.pause();
+
+        try {
+            // Load the pause menu FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/ingame/PauseMenu.fxml"));
+            VBox pauseMenu = loader.load();
+
+            // Get controller and set the game reference
+            PauseMenuController controller = loader.getController();
+            controller.setGame(this);
+
+            // Create overlay container
+            StackPane overlay = new StackPane();
+            overlay.getChildren().add(pauseMenu);
+            controller.setOverlay(overlay);
+
+            // Add to game root
+            gameRoot.getChildren().add(overlay);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error loading pause menu: " + e.getMessage());
+            // If pause menu fails, just unpause
+            resumeGame();
+        }
+    }
+
+    /**
+     * Resume the game from pause
+     */
+    public void resumeGame() {
+        isPaused = false;
+        gameLoop.play();
+    }
+
+    // Update your restartGame method to support the pause menu
+    public void restartGame() {
+        // Resume game if paused
+        isPaused = false;
+
+        // Stop and restart the game loop
+        if (gameLoop != null) {
+            gameLoop.stop();
+            gameLoop.play();
+        }
+
+        // Reset the game
+        MapEntity.reset();
+    }
+
+    // Make returnToMenu method public so the controller can access it
+    public void returnToMenu() {
         // Stop the game loop
         if (gameLoop != null) {
             gameLoop.stop();
@@ -256,7 +325,7 @@ public class BombermanGame {
 
         try {
             // Load the MapSelection screen instead of Main
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/Mode.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
             Parent root = loader.load();
 
             // Get the controller and set the stage
@@ -275,11 +344,6 @@ public class BombermanGame {
             main.start(stage);
         }
 
-    }
-
-    private void restartGame() {
-
-        MapEntity.reset();
     }
 
     public void update() {

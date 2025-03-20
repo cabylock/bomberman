@@ -1,4 +1,4 @@
-package core.system.controller;
+package core.system.controller.base;
 
 import core.system.Setting;
 import javafx.fxml.FXML;
@@ -36,12 +36,11 @@ public class MainMenuController {
    // This method is now private since it's only called internally
    private void showMode() {
       try {
-         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/Mode.fxml"));
+         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
          Parent root = loader.load();
 
          ModeController controller = loader.getController();
          controller.setStage(stage);
-     
 
          Scene scene = new Scene(root, 800, 600);
          stage.setScene(scene);

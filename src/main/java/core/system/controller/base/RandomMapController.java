@@ -1,4 +1,4 @@
-package core.system.controller;
+package core.system.controller.base;
 
 import core.system.BombermanGame;
 import javafx.fxml.FXML;

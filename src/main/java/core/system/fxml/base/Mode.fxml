@@ -7,7 +7,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="core.system.controller.ModeController"
+      fx:controller="core.system.controller.base.ModeController"
       alignment="CENTER"
       spacing="30"
       prefWidth="800"

@@ -1,4 +1,4 @@
-package core.system.controller;
+package core.system.controller.base;
 
 import java.io.File;
 import java.util.Optional;
@@ -100,7 +100,7 @@ public class MapSelectionController {
     @FXML
     private void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/Mode.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
             Parent root = loader.load();
 
             ModeController controller = loader.getController();
@@ -136,7 +136,7 @@ public class MapSelectionController {
     }
 
     private void startGameWithMap(String mapName, int mapType) {
-        BombermanGame game = new BombermanGame(mapName+".txt", mapType);
+        BombermanGame game = new BombermanGame(mapName + ".txt", mapType);
         game.createGameScene(stage);
     }
 
