@@ -103,7 +103,7 @@ public class Bomber extends MobileEntity {
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
-      System.out.println("Placing bomb at: " + bombX + " " + bombY);
+      // System.out.println("Placing bomb at: " + bombX + " " + bombY);
       Bomb bomb = new Bomb(bombX , bombY , Sprite.bomb.getFxImage());
       MapEntity.addDynamicEntity(bomb);
    }

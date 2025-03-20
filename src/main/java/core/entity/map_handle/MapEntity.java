@@ -104,7 +104,8 @@ public class MapEntity {
       }
    }
 
-   public static void loadMap(String name,int mapType) {
+   public static void loadMap(String name, int mapType) {
+      MapEntity.name = name;
       String filePath = mapType == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name ;
       readMap(filePath);
 
@@ -163,12 +164,14 @@ public class MapEntity {
    }
 
    public static void loadMap(int level) {
+      clear();
       loadMap("Level" + level+".txt", Setting.DEFAULT_MAP);
 
    }
 
 
    public static void nextLevel() {
+      clear();
       level++;
       loadMap(level);
    }

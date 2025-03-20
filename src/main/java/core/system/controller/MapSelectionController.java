@@ -142,6 +142,7 @@ public class MapSelectionController {
 
     private void deleteMap(String mapName, int mapType) {
         try {
+            mapName += ".txt";
             String dirPath = mapType == MainController.DEFAULT ? "src/main/resources/default_levels"
                     : "src/main/resources/custom_levels";
 

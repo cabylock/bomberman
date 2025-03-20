@@ -70,7 +70,7 @@ public class MapGenerator {
 
       // Define safe zones around players (no bricks or enemies)
       boolean[][] safeZone = new boolean[height][width];
-      int safeRadius = 3;
+      int safeRadius = 2;
 
       for (int[] spawn : spawnPoints) {
          for (int y = Math.max(1, spawn[0] - safeRadius); y <= Math.min(height - 2, spawn[0] + safeRadius); y++) {
@@ -151,11 +151,18 @@ public class MapGenerator {
    private static List<int[]> generatePlayerSpawnPoints(int height, int width, int playerCount) {
       List<int[]> spawnPoints = new ArrayList<>();
 
+      int[][] corners = {
+            { 1, 1 }, // Top-left
+            { 1, width - 2 }, // Top-right
+            { height - 2, 1 }, // Bottom-left
+            { height - 2, width - 2 } // Bottom-right
+      };
+
       //randomly generate spawn points for players
       for (int i = 0; i < playerCount; i++) {
-         int x = random.nextInt(width - 2) + 1;
-         int y = random.nextInt(height - 2) + 1;
-         spawnPoints.add(new int[] { y, x });
+         
+
+         spawnPoints.add(corners[i]);
       }
       return spawnPoints;
    }

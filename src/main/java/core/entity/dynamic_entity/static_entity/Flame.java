@@ -3,12 +3,12 @@ package core.entity.dynamic_entity.static_entity;
 import javafx.scene.image.Image;
 import core.entity.background_entity.Wall;
 
-import java.util.Map;
+
 
 import core.entity.background_entity.BackgroundEntity;
 import core.entity.dynamic_entity.DynamicEntity;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
-import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
+
 import core.entity.item_entity.ItemEntity;
 import core.entity.map_handle.MapEntity;
 
@@ -19,7 +19,7 @@ public class Flame extends StaticEntity {
    // Animation constants
    
    protected int length; // Length of the flame
-   protected int timeAlive = 100; // 60 frames = 1 second
+   protected int timeAlive = 60; // 60 frames = 1 second
 
 
   

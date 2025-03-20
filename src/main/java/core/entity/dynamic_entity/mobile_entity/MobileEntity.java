@@ -6,9 +6,11 @@ import core.entity.dynamic_entity.DynamicEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
+import core.entity.dynamic_entity.static_entity.Flame;
 import core.entity.item_entity.ItemEntity;
 import core.entity.map_handle.MapEntity;
 import core.graphics.Sprite;
+
 import core.system.Setting;
 import javafx.scene.image.Image;
 
@@ -111,6 +113,13 @@ public class MobileEntity extends DynamicEntity {
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
 
                System.out.println("Bomber collided with enemy");
+               return false;
+            }
+         }
+         else if(entity instanceof Flame)
+         {
+            if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
+               this.remove();
                return false;
             }
          }
