@@ -2,8 +2,8 @@ package core.entity.dynamic_entity.static_entity;
 
 
 
-import core.entity.map_handle.MapEntity;
 import core.graphics.Sprite;
+import core.map_handle.MapEntity;
 import javafx.scene.image.Image;
 
 

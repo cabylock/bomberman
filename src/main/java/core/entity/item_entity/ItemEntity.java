@@ -2,7 +2,7 @@ package core.entity.item_entity;
 
 import javafx.scene.image.Image;
 import core.entity.Entity;
-import core.entity.map_handle.MapEntity;
+import core.map_handle.MapEntity;
 
 public class ItemEntity extends Entity {
     public ItemEntity(int x, int y, Image image) {

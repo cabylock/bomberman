@@ -1,6 +1,6 @@
 package core.entity.item_entity;
 
-import core.entity.Entity;
+
 
 import javafx.scene.image.Image;
 

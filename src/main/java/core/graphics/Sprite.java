@@ -2,8 +2,7 @@ package core.graphics;
 
 import javafx.scene.image.*;
 
-import java.awt.image.BufferedImage;
-import java.nio.IntBuffer;
+
 
 /**
  * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)

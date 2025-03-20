@@ -10,9 +10,8 @@ import core.entity.dynamic_entity.DynamicEntity;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 
 import core.entity.item_entity.ItemEntity;
-import core.entity.map_handle.MapEntity;
-
 import core.graphics.Sprite;
+import core.map_handle.MapEntity;
 
 
 public class Flame extends StaticEntity {

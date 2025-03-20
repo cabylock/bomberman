@@ -2,7 +2,6 @@ package core.entity.dynamic_entity.mobile_entity.enemy_entity;
 
 import core.graphics.Sprite;
 import core.system.Setting;
-import core.util.Util;
 import javafx.scene.image.Image;
 
 

@@ -8,9 +8,8 @@ import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
 import core.entity.dynamic_entity.static_entity.Flame;
 import core.entity.item_entity.ItemEntity;
-import core.entity.map_handle.MapEntity;
 import core.graphics.Sprite;
-
+import core.map_handle.MapEntity;
 import core.system.Setting;
 import javafx.scene.image.Image;
 

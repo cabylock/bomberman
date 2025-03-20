@@ -1,4 +1,4 @@
-package core.entity.map_handle;
+package core.map_handle;
 import core.entity.dynamic_entity.*;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;

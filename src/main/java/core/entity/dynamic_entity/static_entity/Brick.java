@@ -1,7 +1,6 @@
 package core.entity.dynamic_entity.static_entity;
 
 import javafx.scene.image.Image;
-import core.entity.dynamic_entity.DynamicEntity;
 import core.graphics.Sprite;
 
 public class Brick extends StaticEntity {

@@ -1,5 +1,4 @@
 package core.entity.dynamic_entity.mobile_entity.enemy_entity;
-import core.entity.dynamic_entity.DynamicEntity;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.util.Util;
 import javafx.scene.image.Image;
