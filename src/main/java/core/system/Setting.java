@@ -8,7 +8,7 @@ public  class Setting {
    public static  int PLAYER_NUM = 1; 
 
 
-   public static  final int FPS_MAX = 200;
+   public static  final int FPS_MAX = 100;
    public static  final int FRAME_TIME_NS = 1_000_000_000 / FPS_MAX;
 
    public static final int BOMBER1 = 1;

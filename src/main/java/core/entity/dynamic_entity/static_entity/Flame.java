@@ -87,7 +87,7 @@ public class Flame extends StaticEntity {
 
       }
 
-      //true if the flame collides with a wall
+      //true if the flame is blocked with a wall/brick
       protected boolean flamecollision() {
          for (DynamicEntity entity : MapEntity.getDynamicEntities()) {
             if (entity instanceof Flame) {
@@ -102,7 +102,7 @@ public class Flame extends StaticEntity {
             if (entity instanceof Brick) {
                if (entity.getX() == x && entity.getY() == y) {
                   entity.remove();
-                  return false; 
+                  return true; 
                }
             }
             if(entity instanceof MobileEntity)
