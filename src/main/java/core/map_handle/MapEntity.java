@@ -180,9 +180,9 @@ public class MapEntity {
 
      
 
-      for (Entity entity : dynamicEntities) {
+      dynamicEntities.parallelStream().forEach(entity -> {
          entity.update();
-      }
+      });
    }
 
    public static void reset() {

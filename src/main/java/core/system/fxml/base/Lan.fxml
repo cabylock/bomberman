@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="core.system.controller.base.LanController"
+      alignment="CENTER"
+      spacing="20"
+      prefWidth="800"
+      prefHeight="600">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Text text="Bomberman LAN Mode"
+          fill="BLACK"
+          style="-fx-font-size: 32px; -fx-font-weight: bold;">
+    </Text>
+
+    <HBox alignment="CENTER" spacing="50">
+        <!-- Host game section -->
+        <VBox alignment="CENTER" spacing="15" style="-fx-border-color: #cccccc; -fx-border-width: 2px; -fx-padding: 15px; -fx-background-color: #f5f5f5;">
+            <Label text="Host Game" 
+                  style="-fx-font-size: 22px; -fx-text-fill: black;"/>
+            
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Port:" />
+                <TextField fx:id="hostPortField" text="8888" prefWidth="80" />
+            </HBox>
+            
+            <Button fx:id="hostButton" 
+                   text="Start Server" 
+                   onAction="#startServer"
+                   prefWidth="150"
+                   prefHeight="40"
+                   style="-fx-font-size: 16px;"/>
+        </VBox>
+
+        <!-- Join game section -->
+        <VBox alignment="CENTER" spacing="15" style="-fx-border-color: #cccccc; -fx-border-width: 2px; -fx-padding: 15px; -fx-background-color: #f5f5f5;">
+            <Label text="Join Game" 
+                  style="-fx-font-size: 22px; -fx-text-fill: black;"/>
+            
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="IP Address:" />
+                <TextField fx:id="ipAddressField" text="127.0.0.1" prefWidth="150" />
+            </HBox>
+            
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Port:" />
+                <TextField fx:id="clientPortField" text="8888" prefWidth="80" />
+            </HBox>
+            
+            <Button fx:id="connectButton" 
+                   text="Connect" 
+                   onAction="#connectToServer"
+                   prefWidth="150"
+                   prefHeight="40"
+                   style="-fx-font-size: 16px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Simple message testing area -->
+    <VBox spacing="10" style="-fx-border-color: #cccccc; -fx-border-width: 1px; -fx-padding: 10px;">
+        <Label text="Messages" style="-fx-font-size: 18px;"/>
+        <TextArea fx:id="messageDisplay" editable="false" prefHeight="150" wrapText="true"/>
+        <HBox spacing="10">
+            <TextField fx:id="messageField" prefWidth="650" promptText="Type a message" HBox.hgrow="ALWAYS"/>
+            <Button text="Send" onAction="#sendMessage" prefWidth="100"/>
+        </HBox>
+    </VBox>
+
+    <Button text="Back to Main Menu" 
+           onAction="#backToMainMenu"
+           prefWidth="200"
+           prefHeight="40"/>
+</VBox>

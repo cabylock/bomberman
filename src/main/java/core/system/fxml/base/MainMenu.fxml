@@ -48,6 +48,20 @@
                    prefHeight="40"
                    style="-fx-font-size: 16px;"/>
         </VBox>
+
+        <VBox alignment="CENTER" spacing="15" styleClass="mode-card">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="LAN Mode" 
+                  style="-fx-font-size: 24px; -fx-text-fill: black;"/>
+            <Button text="Connect" 
+                   onAction="#selectLanMode"
+                   prefWidth="150"
+                   prefHeight="40"
+                   style="-fx-font-size: 16px;"/>
+        </VBox>
+
     </HBox>
 
     <Button text="Exit Game" 

@@ -33,6 +33,24 @@ public class MainMenuController {
       stage.close();
    }
 
+   @FXML
+   public void selectLanMode() {
+      try {
+         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Lan.fxml"));
+         Parent root = loader.load();
+
+         LanController controller = loader.getController();
+         controller.setStage(stage);
+
+         Scene scene = new Scene(root);
+         stage.setScene(scene);
+         stage.show();
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("Error loading LAN mode: " + e.getMessage());
+      }
+   }
+
    // This method is now private since it's only called internally
    private void showMode() {
       try {
