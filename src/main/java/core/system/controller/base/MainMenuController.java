@@ -1,6 +1,5 @@
 package core.system.controller.base;
 
-import core.system.Setting;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,17 +14,56 @@ public class MainMenuController {
    }
 
    @FXML
-   private void selectSinglePlayerMode() {
-      // Set the game to 1 player mode
-      Setting.PLAYER_NUM = 1;
-      showMode(); // Go directly to map selection
+   public void initialize() {
+
    }
 
    @FXML
-   private void selectMultiPlayerMode() {
-      // Set the game to 2 player mode
-      Setting.PLAYER_NUM = 2;
-      showMode(); // Go directly to map selection
+   private void showAvailableMaps() {
+      try {
+         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/MapSelection.fxml"));
+         Parent root = loader.load();
+
+         MapSelectionController controller = loader.getController();
+         controller.setStage(stage);
+         controller.loadMaps();
+
+         Scene scene = new Scene(root);
+         stage.setScene(scene);
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   @FXML
+   private void createRandomMap() {
+      try {
+         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/RandomMap.fxml"));
+         Parent root = loader.load();
+
+         RandomMapController controller = loader.getController();
+         controller.setStage(stage);
+
+         Stage dialogStage = new Stage();
+         dialogStage.setTitle("Create Random Map");
+         dialogStage.initOwner(stage);
+
+         // Create the scene first with explicit dimensions
+         Scene scene = new Scene(root);
+         dialogStage.setScene(scene);
+
+         // Force minimum size on the stage
+         dialogStage.setMinWidth(500);
+         dialogStage.setMinHeight(400);
+
+         controller.setDialogStage(dialogStage);
+
+       
+
+         dialogStage.showAndWait();
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
    @FXML
@@ -33,19 +71,4 @@ public class MainMenuController {
       stage.close();
    }
 
-   // This method is now private since it's only called internally
-   private void showMode() {
-      try {
-         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
-         Parent root = loader.load();
-
-         ModeController controller = loader.getController();
-         controller.setStage(stage);
-
-         Scene scene = new Scene(root, 800, 600);
-         stage.setScene(scene);
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
 }

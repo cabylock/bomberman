@@ -5,7 +5,7 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
 import core.graphics.*;
 import core.map_handle.MapEntity;
-import core.system.controller.base.ModeController;
+import core.system.controller.base.MainMenuController;
 import core.system.controller.ingame.PauseMenuController;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
@@ -325,11 +325,11 @@ public class BombermanGame {
 
         try {
             // Load the MapSelection screen instead of Main
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/MainMenu.fxml"));
             Parent root = loader.load();
 
             // Get the controller and set the stage
-            ModeController controller = loader.getController();
+            MainMenuController controller = loader.getController();
             controller.setStage(stage);
 
             // Set the scene

@@ -100,10 +100,10 @@ public class MapSelectionController {
     @FXML
     private void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/MainMenu.fxml"));
             Parent root = loader.load();
 
-            ModeController controller = loader.getController();
+            MainMenuController controller = loader.getController();
             controller.setStage(stage);
 
             Scene scene = new Scene(root, 800, 600);
@@ -136,8 +136,20 @@ public class MapSelectionController {
     }
 
     private void startGameWithMap(String mapName, int mapType) {
-        BombermanGame game = new BombermanGame(mapName + ".txt", mapType);
-        game.createGameScene(stage);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
+            Parent root = loader.load();
+
+            ModeController modeController = loader.getController();
+            modeController.setStage(stage);
+            modeController.setMode(mapName+".txt", mapType);
+
+            Scene scene = new Scene(root, 800, 600);
+            stage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
     }
 
     private void deleteMap(String mapName, int mapType) {

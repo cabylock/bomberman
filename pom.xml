@@ -11,13 +11,13 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <javafx.version>17</javafx.version>
+        <javafx.version>21.0.1</javafx.version>
     </properties>
 
     <repositories>
         <repository>
             <id>maven-central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
+            <url>https://repo.maven.apache.org/maven</url>
         </repository>
     </repositories>
     
