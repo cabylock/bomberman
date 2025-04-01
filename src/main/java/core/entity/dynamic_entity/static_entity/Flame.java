@@ -6,8 +6,9 @@ import core.entity.background_entity.Wall;
 
 
 import core.entity.background_entity.BackgroundEntity;
-import core.entity.dynamic_entity.DynamicEntity;
-import core.entity.dynamic_entity.mobile_entity.MobileEntity;
+import core.entity.dynamic_entity.mobile_entity.Bomber;
+import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
+
 
 import core.entity.item_entity.ItemEntity;
 import core.graphics.Sprite;
@@ -88,7 +89,7 @@ public class Flame extends StaticEntity {
 
       //true if the flame is blocked with a wall/brick
       protected boolean flamecollision() {
-         for (DynamicEntity entity : MapEntity.getDynamicEntities()) {
+         for (StaticEntity entity : MapEntity.getStaticEntities()) {
             if (entity instanceof Flame) {
                continue;
             }
@@ -104,16 +105,22 @@ public class Flame extends StaticEntity {
                   return true; 
                }
             }
-            if(entity instanceof MobileEntity)
-            {
-               if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
+         }
+         for (Bomber entity : MapEntity.getBomberEntities()) {
+            if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
                   entity.remove();
                   return false; 
                   
                }
             }
+            for (EnemyEntity entity : MapEntity.getEnemyEntities()) {
+               if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
+                  entity.remove();
+                  return false;
+               }
+            }
 
-         }
+         
          for (BackgroundEntity entity : MapEntity.getBackgroundEntities()) {
             if (entity instanceof Wall) {
                if (entity.getX() == x && entity.getY() == y) {
@@ -162,7 +169,7 @@ public class Flame extends StaticEntity {
       }
 
       public void remove() {
-         MapEntity.removeDynamicEntity(this);
+         MapEntity.removeStaticEntity(this);
       }
 
 }

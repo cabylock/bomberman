@@ -215,7 +215,7 @@ public class BombermanGame {
     private void updateStatusBar() {
         // Get player entity to access health and bombs
         Entity playerEntity = null;
-        for (Entity entity : MapEntity.getDynamicEntities()) {
+        for (Entity entity : MapEntity.getBomberEntities()) {
             if (entity instanceof Bomber) {
                 playerEntity = entity;
                 break;
@@ -242,7 +242,7 @@ public class BombermanGame {
 
         // Count enemies
         int enemyCount = 0;
-        for (Entity entity : MapEntity.getDynamicEntities()) {
+        for (Entity entity : MapEntity.getEnemyEntities()) {
             if (entity instanceof EnemyEntity) { // Assuming Enemy class exists
                 enemyCount++;
             }
@@ -354,7 +354,13 @@ public class BombermanGame {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         MapEntity.getBackgroundEntities().forEach(entity -> entity.render(gc));
         MapEntity.getItemEntities().forEach(entity -> entity.render(gc));
-        for (Entity entity : MapEntity.getDynamicEntities()) {
+        for (Entity entity : MapEntity.getBomberEntities()) {
+            entity.render(gc);
+        }
+        for (Entity entity : MapEntity.getEnemyEntities()) {
+            entity.render(gc);
+        }
+        for (Entity entity : MapEntity.getStaticEntities()) {
             entity.render(gc);
         }
     }

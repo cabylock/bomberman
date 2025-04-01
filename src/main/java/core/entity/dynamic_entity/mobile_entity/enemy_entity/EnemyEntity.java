@@ -2,7 +2,7 @@ package core.entity.dynamic_entity.mobile_entity.enemy_entity;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.util.Util;
 import javafx.scene.image.Image;
-
+import core.map_handle.MapEntity;
 
 public class EnemyEntity extends MobileEntity {
 
@@ -41,7 +41,10 @@ public class EnemyEntity extends MobileEntity {
         
     }
 
-
+    @Override
+    public void remove() {
+        MapEntity.removeEnemyEntity(this);
+    }
    
 
    

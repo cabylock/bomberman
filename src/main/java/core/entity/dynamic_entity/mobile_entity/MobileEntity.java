@@ -3,6 +3,7 @@ package core.entity.dynamic_entity.mobile_entity;
 import core.entity.Entity;
 import core.entity.background_entity.Grass;
 import core.entity.dynamic_entity.DynamicEntity;
+import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
@@ -86,7 +87,7 @@ public class MobileEntity extends DynamicEntity {
 
    protected boolean moveCollision(int nextX, int nextY) {
 
-      for (DynamicEntity entity : MapEntity.getDynamicEntities()) {
+      for (StaticEntity entity : MapEntity.getStaticEntities()) {
          // collide to bomb
          if (entity instanceof Bomb ) {
 
@@ -106,23 +107,7 @@ public class MobileEntity extends DynamicEntity {
 
          
          }  
-
-         // collide to enemy
-         else if (this instanceof Bomber && entity instanceof EnemyEntity) {
-            if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-
-               System.out.println("Bomber collided with enemy");
-               return false;
-            }
-         }
-         else if(entity instanceof Flame)
-         {
-            if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-               this.remove();
-               return false;
-            }
-         }
-
+   
          else if(entity instanceof Brick)
          {
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
@@ -143,13 +128,7 @@ public class MobileEntity extends DynamicEntity {
             return true;
          }
       }
-      for (ItemEntity item : MapEntity.getItemEntities()) {
-         if (checkCollision(nextX, nextY, item.getX(), item.getY())) {
-            item.remove();
-            return false;
-         }
-      }
-
+   
       return false;
    }
 

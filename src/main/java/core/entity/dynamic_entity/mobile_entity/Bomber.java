@@ -1,6 +1,5 @@
 package core.entity.dynamic_entity.mobile_entity;
 
-
 import core.graphics.Sprite;
 import core.map_handle.MapEntity;
 import core.system.BombermanGame;
@@ -13,9 +12,14 @@ public class Bomber extends MobileEntity {
 
    protected int speed = 2;
    protected int typePlayer;
+   protected int bombCooldown = 0; // Thời gian trễ giữa các lần đặt bom
+   protected final int BOMB_COOLDOWN_TIME = 300; // 60 frame = 1 giây
 
+   public void increaseSpeed() {
+      speed *= 2;
+   }
 
-   public Bomber(int x, int y, Image image,int typePlayer) {
+   public Bomber(int x, int y, Image image, int typePlayer) {
       super(x, y, image);
       // Image arrays for animation
       this.typePlayer = typePlayer;
@@ -36,8 +40,10 @@ public class Bomber extends MobileEntity {
 
    @Override
    public void update() {
+      if (bombCooldown > 0) {
+         bombCooldown--;
+      }
 
-      
       if (typePlayer == 1) {
          if (BombermanGame.input.contains(Setting.BOMBER_MOVE_UP_1)) {
             move(Setting.UP_MOVING, speed);
@@ -63,7 +69,7 @@ public class Bomber extends MobileEntity {
             placeBomb();
          }
       }
-      
+
       else if (typePlayer == 2) {
          if (BombermanGame.input.contains(Setting.BOMBER_MOVE_UP_2)) {
             move(Setting.UP_MOVING, speed);
@@ -90,23 +96,26 @@ public class Bomber extends MobileEntity {
          }
       }
 
-
-
-
-
       updateAnimation();
    }
 
-   
    private void placeBomb() {
+      if (bombCooldown > 0) {
+         bombCooldown--;
+         return;
+      }
+
       BombermanGame.input.remove(KeyCode.SPACE);
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
       // System.out.println("Placing bomb at: " + bombX + " " + bombY);
-      Bomb bomb = new Bomb(bombX , bombY , Sprite.bomb.getFxImage());
-      MapEntity.addDynamicEntity(bomb);
+      Bomb bomb = new Bomb(bombX, bombY, Sprite.bomb.getFxImage());
+      MapEntity.addStaticEntity(bomb);
+      bombCooldown = BOMB_COOLDOWN_TIME; // Reset thời gian trễ
    }
-
-  
+   @Override
+   public void remove() {
+      MapEntity.removeBomber(this);
+   }
 }

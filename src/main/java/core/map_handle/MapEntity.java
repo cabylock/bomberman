@@ -1,4 +1,5 @@
 package core.map_handle;
+
 import core.entity.dynamic_entity.*;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
@@ -28,10 +29,11 @@ public class MapEntity {
    private static String name;
    private static int mapType;
    private static char[][] mapData;
-   private static List<DynamicEntity> dynamicEntities = new CopyOnWriteArrayList<DynamicEntity>();
+   private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
+   private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
+   private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
-
 
    public static int getWidth() {
       return width;
@@ -49,23 +51,18 @@ public class MapEntity {
       return mapData;
    }
 
-   
-
-
    public static void readMap(int level, int type) {
-      String filePath="";
+      String filePath = "";
       if (type == Setting.DEFAULT_MAP) {
-         
-          filePath = "/default_levels/Level" + level + ".txt";
-      }
-      else if (type == Setting.CUSTOM_MAP) {
-          filePath = "/custom_levels/Level" + level + ".txt";
+
+         filePath = "/default_levels/Level" + level + ".txt";
+      } else if (type == Setting.CUSTOM_MAP) {
+         filePath = "/custom_levels/Level" + level + ".txt";
       }
       readMap(filePath);
    }
 
-   public static void readMap(String filePath)
-   {
+   public static void readMap(String filePath) {
       try {
          // Try to load the resource
          InputStream is = MapEntity.class.getResourceAsStream(filePath);
@@ -106,7 +103,7 @@ public class MapEntity {
 
    public static void loadMap(String name, int mapType) {
       MapEntity.name = name;
-      String filePath = mapType == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name ;
+      String filePath = mapType == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name;
       readMap(filePath);
 
       for (int i = 0; i < height; i++) {
@@ -119,41 +116,39 @@ public class MapEntity {
                backgroundEntities.add(wall);
             } else if (c == '*') {
                StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
-               dynamicEntities.add(brick);
+               staticEntities.add(brick);
             } else if (c == 'x') {
                ItemEntity portal = new Portal(j, i, Sprite.portal.getFxImage());
                itemEntities.add(portal);
                StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
-               dynamicEntities.add(brick);
+               staticEntities.add(brick);
             } else if (c == 'p') {
-               MobileEntity player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER1);
-               dynamicEntities.add(player);
-            }
-            else if(c== 'q'&& Setting.PLAYER_NUM==2){
-               MobileEntity player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER2);
-               dynamicEntities.add(player);
-            }
-            else if (c == '1') {
+               Bomber player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER1);
+               bomberEntities.add(player);
+            } else if (c == 'q' && Setting.PLAYER_NUM == 2) {
+               Bomber player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER2);
+               bomberEntities.add(player);
+            } else if (c == '1') {
                EnemyEntity balloon = new Balloom(j, i, Sprite.balloom_left1.getFxImage());
-               dynamicEntities.add(balloon);
+               enemyEntities.add(balloon);
             } else if (c == '2') {
                EnemyEntity oneal = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
-               dynamicEntities.add(oneal);
+               enemyEntities.add(oneal);
             } else if (c == 'b') {
                ItemEntity BombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
                itemEntities.add(BombItem);
-               DynamicEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
-               dynamicEntities.add(brick);
+               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               staticEntities.add(brick);
             } else if (c == 'f') {
                ItemEntity FlameItem = new FlameItem(j, i, Sprite.powerup_flames.getFxImage());
                itemEntities.add(FlameItem);
-               DynamicEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
-               dynamicEntities.add(brick);
+               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               staticEntities.add(brick);
             } else if (c == 's') {
                ItemEntity SpeedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
                itemEntities.add(SpeedItem);
                StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
-               dynamicEntities.add(brick);
+               staticEntities.add(brick);
             } else {
                // Grass is already added at the beginning of the loop for every cell
             }
@@ -165,10 +160,9 @@ public class MapEntity {
 
    public static void loadMap(int level) {
       clear();
-      loadMap("Level" + level+".txt", Setting.DEFAULT_MAP);
+      loadMap("Level" + level + ".txt", Setting.DEFAULT_MAP);
 
    }
-
 
    public static void nextLevel() {
       clear();
@@ -178,62 +172,93 @@ public class MapEntity {
 
    public static void update() {
 
-     
-
-      for (Entity entity : dynamicEntities) {
+      for (Entity entity : bomberEntities) {
+         entity.update();
+      }
+      for (Entity entity : staticEntities) {
+         entity.update();
+      }
+      for (Entity entity : enemyEntities) {
+         entity.update();
+      }
+      for (Entity entity : itemEntities) {
          entity.update();
       }
    }
 
    public static void reset() {
       clear();
-      loadMap(name,mapType);
+      loadMap(name, mapType);
    }
-   
+
    public static void clear() {
-      dynamicEntities.clear();
-      backgroundEntities.clear();
+      bomberEntities.clear();
+      staticEntities.clear();
+      enemyEntities.clear();
       itemEntities.clear();
-      
+      backgroundEntities.clear();
+
    }
 
-   public static void addDynamicEntity(DynamicEntity entity) {
-      dynamicEntities.add(entity);
-      
+   public static void addBomber(Bomber entity) {
+      bomberEntities.add(entity);
+
    }
 
-   public static void removeDynamicEntity(Entity entity) {
-      dynamicEntities.remove(entity);
+   public static void addStaticEntity(StaticEntity entity) {
+      staticEntities.add(entity);
    }
 
-
-   public static List<DynamicEntity> getDynamicEntities() {
-      return dynamicEntities;
+   public static void addEnemyEntity(EnemyEntity entity) {
+      enemyEntities.add(entity);
    }
 
    public static void addItem(ItemEntity item) {
       itemEntities.add(item);
    }
 
+   public static void addBackgroundEntity(BackgroundEntity entity) {
+      backgroundEntities.add(entity);
+   }
+
+   public static void removeBomber(Bomber entity) {
+      bomberEntities.remove(entity);
+   }
+
+   public static void removeStaticEntity(StaticEntity entity) {
+      staticEntities.remove(entity);
+   }
+
    public static void removeItem(ItemEntity item) {
       itemEntities.remove(item);
    }
-   
-   public static List<ItemEntity> getItemEntities() {
-      return itemEntities;
+
+   public static void removeEnemyEntity(EnemyEntity entity) {
+      enemyEntities.remove(entity);
    }
 
-   public static void addBackgroundEntity(BackgroundEntity entity) {
-      backgroundEntities.add(entity);
+   public static void removeBackgroundEntity(BackgroundEntity entity) {
+      backgroundEntities.remove(entity);
+   }
+
+   public static List<Bomber> getBomberEntities() {
+      return bomberEntities;
+   }
+
+   public static List<StaticEntity> getStaticEntities() {
+      return staticEntities;
+   }
+
+   public static List<EnemyEntity> getEnemyEntities() {
+      return enemyEntities;
+   }
+
+   public static List<ItemEntity> getItemEntities() {
+      return itemEntities;
    }
 
    public static List<BackgroundEntity> getBackgroundEntities() {
       return backgroundEntities;
    }
-   
-   public static void removeBackgroundEntity(BackgroundEntity entity) {
-      backgroundEntities.remove(entity);
-   }
-
 
 }

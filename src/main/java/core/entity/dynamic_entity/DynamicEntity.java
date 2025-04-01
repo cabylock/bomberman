@@ -30,7 +30,7 @@ public abstract class DynamicEntity extends Entity {
 
    @Override
    public void remove() {
-      MapEntity.removeDynamicEntity(this);
+      
    }
 
 }

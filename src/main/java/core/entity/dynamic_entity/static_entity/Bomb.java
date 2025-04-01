@@ -59,7 +59,7 @@ public class Bomb extends StaticEntity {
                     break;
                 }
                 
-                MapEntity.addDynamicEntity(flameSegments[i][j]);
+                MapEntity.addStaticEntity(flameSegments[i][j]);;
             }
         }
         
