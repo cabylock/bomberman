@@ -3,6 +3,7 @@ import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.util.Util;
 import javafx.scene.image.Image;
 import core.map_handle.MapEntity;
+import core.entity.dynamic_entity.mobile_entity.Bomber;
 
 public class EnemyEntity extends MobileEntity {
 
@@ -18,6 +19,7 @@ public class EnemyEntity extends MobileEntity {
 
     @Override
     public void update() {
+        
 
     }
     
@@ -40,7 +42,15 @@ public class EnemyEntity extends MobileEntity {
         
         
     }
-
+    protected boolean EnemyCollision() {
+        for (Bomber bomber : MapEntity.getBomberEntities()) {
+            if (bomber.getXTile() == this.getXTile() && bomber.getYTile() == this.getYTile()) {
+                  bomber.dead();
+                  return true; 
+            }
+        }
+        return false;
+    }
     @Override
     public void remove() {
         MapEntity.removeEnemyEntity(this);

@@ -22,9 +22,9 @@ public class MobileEntity extends DynamicEntity {
 
    protected int direction = Setting.DOWN_MOVING;
 
-   protected final int ALIGN_TOLERANCE = 16; // Example tolerance value
-   
-   
+   protected final int ALIGN_TOLERANCE = 16;
+   protected final int ANIMATION_DELAY = 10;
+   protected final int DEAD_ANIMATION_DELAY = 40;
 
    public MobileEntity(int x, int y, Image image) {
       super(x, y, image);
@@ -35,13 +35,19 @@ public class MobileEntity extends DynamicEntity {
    }
 
    protected boolean move(int direction, int delta) {
-      // System.out.println("x: " + x + " y: " + y + " xTile: " + this.getXTile() + " yTile: " + this.getYTile());
-      moving = true;
+      // System.out.println("x: " + x + " y: " + y + " xTile: " + this.getXTile() + "
+      // yTile: " + this.getYTile());
+      if (!isAlive) {
+         return false;
+      }
+
+      this.direction = direction; // Cập nhật hướng trước
+      moving = true; // Đặt trạng thái di chuyển
+
       int deltaX = 0;
       int deltaY = 0;
 
-      switch(direction)
-      {
+      switch (direction) {
          case Setting.RIGHT_MOVING:
             deltaX = delta;
             break;
@@ -77,47 +83,36 @@ public class MobileEntity extends DynamicEntity {
             }
             return false;
          }
+         return false;
       } else {
          x = nextX;
          y = nextY;
          return true;
       }
-      return false;
    }
 
    protected boolean moveCollision(int nextX, int nextY) {
-
       for (StaticEntity entity : MapEntity.getStaticEntities()) {
-         // collide to bomb
-         if (entity instanceof Bomb ) {
-
+         if (entity instanceof Bomb) {
             if (this.bombpass) {
                continue;
             }
-            // Allow movement if the player is currently standing on the bomb
-            if (checkCollision(this.x, this.y, entity.getX(), entity.getY()))
-            {
+            if (checkCollision(this.x, this.y, entity.getX(), entity.getY())) {
                continue;
             }
-
-            // Block movement if trying to step onto the bomb
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
                return true;
             }
-
-         
-         }  
-   
-         else if(entity instanceof Brick)
-         {
+         } else if (entity instanceof Brick) {
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
+               
+               return true;
+            }
+         } else if (entity instanceof Flame) {
+            if (!this.flamepass && checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
                return true;
             }
          }
-
-         
-
-       
       }
 
       for (Entity bg : MapEntity.getBackgroundEntities()) {
@@ -128,11 +123,10 @@ public class MobileEntity extends DynamicEntity {
             return true;
          }
       }
-   
       return false;
    }
 
-   private boolean checkCollision(int x1, int y1, int x2, int y2) {
+   protected boolean checkCollision(int x1, int y1, int x2, int y2) {
       int size = Sprite.SCALED_SIZE;
       return (x1 + size > x2 && x1 < x2 + size
             && y1 + size > y2 && y1 < y2 + size);
@@ -141,19 +135,29 @@ public class MobileEntity extends DynamicEntity {
 
    @Override
    protected void updateAnimation() {
-      if (moving) {
-         animationDelay++;
-         if (animationDelay >= 10) {
+      animationDelay++;
+
+      if (!isAlive) {
+         if (animationDelay >= DEAD_ANIMATION_DELAY) {
+            if (animationStep < 2) {
+               animationStep++;
+            } else {
+               this.remove();
+               return;
+            }
+            animationDelay = 0;
+         }
+      } else if (moving) {
+         if (animationDelay >= ANIMATION_DELAY) {
             animationStep = (animationStep + 1) % 3;
             animationDelay = 0;
          }
-         image = images[direction][animationStep];
       } else {
          animationStep = 0;
-         image = images[direction][0];
+         animationDelay = 0;
       }
-   }
 
- 
+      image = images[direction][animationStep];
+   }
 
 }

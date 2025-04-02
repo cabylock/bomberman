@@ -1,4 +1,5 @@
 package core.system;
+
 import javafx.scene.input.KeyCode;
 
 public  class Setting {
@@ -14,22 +15,18 @@ public  class Setting {
    public static final int BOMBER1 = 1;
    public static final int BOMBER2 = 2;
 
-   public static final KeyCode BOMBER_MOVE_UP_1 = KeyCode.UP;
-   public static final KeyCode BOMBER_MOVE_DOWN_1 = KeyCode.DOWN;
-   public static final KeyCode BOMBER_MOVE_LEFT_1 = KeyCode.LEFT;
-   public static final KeyCode BOMBER_MOVE_RIGHT_1 = KeyCode.RIGHT;
-   public static final KeyCode BOMBER_PLACE_BOMB_1 = KeyCode.NUMPAD1;
-
-   
-   public static final KeyCode BOMBER_MOVE_UP_2 = KeyCode.W;
-   public static final KeyCode BOMBER_MOVE_DOWN_2 = KeyCode.S;
-   public static final KeyCode BOMBER_MOVE_LEFT_2 = KeyCode.A;
-   public static final KeyCode BOMBER_MOVE_RIGHT_2 = KeyCode.D;
-   public static final KeyCode BOMBER_PLACE_BOMB_2 = KeyCode.J;
+ 
+   public static final KeyCode[][] BOMBER_KEY_CONTROLS = {
+        
+         { KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP, KeyCode.DOWN, KeyCode.NUMPAD1 },
+         
+         { KeyCode.D, KeyCode.A, KeyCode.W, KeyCode.S, KeyCode.J }
+   };
 
    public static final int RIGHT_MOVING = 0;
    public static final int LEFT_MOVING = 1;
    public static final int UP_MOVING = 2;
    public static final int DOWN_MOVING = 3;
+   public static final int DEAD = 4;
 
 }

@@ -11,19 +11,18 @@ import javafx.scene.input.KeyCode;
 public class Bomber extends MobileEntity {
 
    protected int speed = 2;
+   protected int flameSize = 1;
    protected int typePlayer;
-   protected int bombCooldown = 0; // Thời gian trễ giữa các lần đặt bom
-   protected final int BOMB_COOLDOWN_TIME = 300; // 60 frame = 1 giây
+   protected int bombCountMax = 1;
 
-   public void increaseSpeed() {
-      speed *= 2;
-   }
+
+
 
    public Bomber(int x, int y, Image image, int typePlayer) {
       super(x, y, image);
       // Image arrays for animation
       this.typePlayer = typePlayer;
-      images = new Image[4][3];
+      images = new Image[5][3];
       images[Setting.RIGHT_MOVING][0] = Sprite.player_right.getFxImage();
       images[Setting.RIGHT_MOVING][1] = Sprite.player_right_1.getFxImage();
       images[Setting.RIGHT_MOVING][2] = Sprite.player_right_2.getFxImage();
@@ -36,86 +35,81 @@ public class Bomber extends MobileEntity {
       images[Setting.DOWN_MOVING][0] = Sprite.player_down.getFxImage();
       images[Setting.DOWN_MOVING][1] = Sprite.player_down_1.getFxImage();
       images[Setting.DOWN_MOVING][2] = Sprite.player_down_2.getFxImage();
+      images[Setting.DEAD][0] = Sprite.player_dead1.getFxImage();
+      images[Setting.DEAD][1] = Sprite.player_dead2.getFxImage();
+      images[Setting.DEAD][2] = Sprite.player_dead3.getFxImage();
    }
 
    @Override
    public void update() {
-      if (bombCooldown > 0) {
-         bombCooldown--;
+      
+
+      int playerIndex = typePlayer - 1;
+
+      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.UP_MOVING])) {
+         move(Setting.UP_MOVING, speed);
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.DOWN_MOVING])) {
+         move(Setting.DOWN_MOVING, speed);
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.LEFT_MOVING])) {
+         move(Setting.LEFT_MOVING, speed);
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.RIGHT_MOVING])) {
+         move(Setting.RIGHT_MOVING, speed);
+      } else {
+         moving = false;
       }
 
-      if (typePlayer == 1) {
-         if (BombermanGame.input.contains(Setting.BOMBER_MOVE_UP_1)) {
-            move(Setting.UP_MOVING, speed);
-            direction = Setting.UP_MOVING;
-            moving = true;
-         } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_DOWN_1)) {
-            move(Setting.DOWN_MOVING, speed);
-            direction = Setting.DOWN_MOVING;
-            moving = true;
-         } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_LEFT_1)) {
-            move(Setting.LEFT_MOVING, speed);
-            direction = Setting.LEFT_MOVING;
-            moving = true;
-         } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_RIGHT_1)) {
-            move(Setting.RIGHT_MOVING, speed);
-            direction = Setting.RIGHT_MOVING;
-            moving = true;
-         } else {
-            moving = false;
-         }
-         if (BombermanGame.input.contains(Setting.BOMBER_PLACE_BOMB_1)) {
-            BombermanGame.input.remove(Setting.BOMBER_PLACE_BOMB_1);
-            placeBomb();
-         }
+      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][4])) { // Phím đặt bom
+         BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[playerIndex][4]);
+         placeBomb();
       }
-
-      else if (typePlayer == 2) {
-         if (BombermanGame.input.contains(Setting.BOMBER_MOVE_UP_2)) {
-            move(Setting.UP_MOVING, speed);
-            direction = Setting.UP_MOVING;
-            moving = true;
-         } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_DOWN_2)) {
-            move(Setting.DOWN_MOVING, speed);
-            direction = Setting.DOWN_MOVING;
-            moving = true;
-         } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_LEFT_2)) {
-            move(Setting.LEFT_MOVING, speed);
-            direction = Setting.LEFT_MOVING;
-            moving = true;
-         } else if (BombermanGame.input.contains(Setting.BOMBER_MOVE_RIGHT_2)) {
-            move(Setting.RIGHT_MOVING, speed);
-            direction = Setting.RIGHT_MOVING;
-            moving = true;
-         } else {
-            moving = false;
-         }
-         if (BombermanGame.input.contains(Setting.BOMBER_PLACE_BOMB_2)) {
-            BombermanGame.input.remove(Setting.BOMBER_PLACE_BOMB_2);
-            placeBomb();
-         }
-      }
-
+      System.out.println( bombCountMax);
       updateAnimation();
    }
 
+   
+
    private void placeBomb() {
-      if (bombCooldown > 0) {
-         bombCooldown--;
+      if (bombCountMax == 0) {
+
          return;
       }
 
-      BombermanGame.input.remove(KeyCode.SPACE);
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
-      // System.out.println("Placing bomb at: " + bombX + " " + bombY);
-      Bomb bomb = new Bomb(bombX, bombY, Sprite.bomb.getFxImage());
-      MapEntity.addStaticEntity(bomb);
-      bombCooldown = BOMB_COOLDOWN_TIME; // Reset thời gian trễ
+      Bomb newBomb = new Bomb(bombX, bombY, Sprite.bomb.getFxImage(), flameSize, this);
+      MapEntity.addStaticEntity(newBomb);
+      bombCountMax--;
+
    }
+
+   public void increaseSpeed() {
+      speed++;
+   }
+
+   public void increaseFlameSize() {
+      flameSize++;
+   }
+
+   public void increaseBomb() {
+      bombCountMax++;
+      
+   }
+   public void bombExplode() {
+      bombCountMax++;
+   }
+
+   
+
+   public void dead() {
+      isAlive = false;
+      direction = Setting.DEAD;
+      moving = false;
+   }
+
    @Override
    public void remove() {
       MapEntity.removeBomber(this);
    }
+
 }

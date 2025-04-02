@@ -34,7 +34,7 @@ public class Oneal extends EnemyEntity {
       public void update() {
 
             defaultMove();
-
+            EnemyCollision();
             updateAnimation();
       }
 

@@ -37,7 +37,7 @@ public class Balloom extends EnemyEntity {
     public void update() {
 
         defaultMove();
-
+        EnemyCollision();
 
         updateAnimation();
 

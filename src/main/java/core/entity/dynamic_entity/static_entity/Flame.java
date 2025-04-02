@@ -108,7 +108,7 @@ public class Flame extends StaticEntity {
          }
          for (Bomber entity : MapEntity.getBomberEntities()) {
             if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
-                  entity.remove();
+                  entity.dead();
                   return false; 
                   
                }
@@ -171,5 +171,6 @@ public class Flame extends StaticEntity {
       public void remove() {
          MapEntity.removeStaticEntity(this);
       }
+      
 
 }
