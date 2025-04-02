@@ -39,6 +39,7 @@ public class Bomb extends StaticEntity {
             explode();
 
         }
+        
 
         updateAnimation();
 

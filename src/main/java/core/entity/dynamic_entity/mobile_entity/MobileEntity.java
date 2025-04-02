@@ -108,11 +108,7 @@ public class MobileEntity extends DynamicEntity {
                
                return true;
             }
-         } else if (entity instanceof Flame) {
-            if (!this.flamepass && checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-               return true;
-            }
-         }
+         } 
       }
 
       for (Entity bg : MapEntity.getBackgroundEntities()) {

@@ -149,6 +149,7 @@ public class Flame extends StaticEntity {
          if (timeAlive == 0) {
             remove();
          }
+         flamecollision();
          updateAnimation();
 
       }
