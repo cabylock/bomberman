@@ -28,6 +28,15 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
+
+      <Button fx:id="nextLevelButton" mnemonicParsing="false" onAction="#handleNextLevel" prefHeight="40.0" prefWidth="200.0" 
+              text="Next Level" textFill="BLACK">">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+
+
       <Button fx:id="menuButton" mnemonicParsing="false" onAction="#handleReturnToMenu" prefHeight="40.0" prefWidth="200.0" 
               text="Return to Menu" textFill="BLACK">">
          <font>

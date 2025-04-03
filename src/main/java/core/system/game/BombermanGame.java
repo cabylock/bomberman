@@ -266,6 +266,20 @@ public class BombermanGame {
         gameLoop.play();
     }
 
+    public void nextLevel() {
+        // Resume game if paused
+        isPaused = false;
+
+        // Stop and restart the game loop
+        if (gameLoop != null) {
+            gameLoop.stop();
+        }
+        
+        // Load the next level
+        GameControl.nextLevel();
+        gameLoop.play();
+    }
+
     // Update your restartGame method to support the pause menu
     public void restartGame() {
         // Resume game if paused
@@ -274,11 +288,11 @@ public class BombermanGame {
         // Stop and restart the game loop
         if (gameLoop != null) {
             gameLoop.stop();
-            gameLoop.play();
         }
-
+        
         // Reset the game
         GameControl.resetGame();
+        gameLoop.play();
     }
 
     // Make returnToMenu method public so the controller can access it

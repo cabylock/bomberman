@@ -11,21 +11,20 @@ import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.map_handle.MapEntity;
 import core.system.setting.Setting;
+import core.util.Util;
 
 public class GameControl {
-   
+
    private static String mapName;
    private static int mapType;
-   
+   private static int level;
+
+
    private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
    private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
-
-
-
-
 
    public static void update() {
 
@@ -43,8 +42,6 @@ public class GameControl {
       }
    }
 
-
-
    public static int getWidth() {
       return MapEntity.getWidth();
    }
@@ -57,16 +54,15 @@ public class GameControl {
       return MapEntity.getHeight();
    }
 
-
-
    public static void loadMap(int level) {
       clear();
-      GameControl.mapName = "Level" + level+".txt";
+      GameControl.level = level;
+      GameControl.mapName = "Level" + level + ".txt";
       GameControl.mapType = Setting.DEFAULT_MAP;
       MapEntity.loadMap(level);
 
    }
-   
+
    public static void loadMap(String mapName, int mapType) {
       clear();
       GameControl.mapName = mapName;
@@ -74,11 +70,24 @@ public class GameControl {
       MapEntity.loadMap(mapName, mapType);
    }
 
+   public static void nextLevel() {
+
+      if (mapType == Setting.CUSTOM_MAP) {
+         Util.showNotification("Custom map, please select another map or move to default map");
+         return;
+      }
+      if (level == Setting.MAX_LEVEL) {
+         Util.showNotification("Game Done, reset to play again");
+         return;
+      }
+      level++;
+      loadMap(level);
+   }
+
    public static void resetGame() {
       clear();
       MapEntity.loadMap(mapName, mapType);
    }
- 
 
    public static void clear() {
       bomberEntities.clear();
@@ -120,17 +129,21 @@ public class GameControl {
    public static List<Bomber> getBomberEntities() {
       return bomberEntities;
    }
+
    public static List<StaticEntity> getStaticEntities() {
       return staticEntities;
    }
+
    public static List<EnemyEntity> getEnemyEntities() {
       return enemyEntities;
    }
+
    public static List<BackgroundEntity> getBackgroundEntities() {
       return backgroundEntities;
    }
+
    public static List<ItemEntity> getItemEntities() {
       return itemEntities;
    }
-   
+
 }

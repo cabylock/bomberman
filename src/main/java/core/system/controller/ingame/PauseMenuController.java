@@ -54,6 +54,14 @@ public class PauseMenuController {
    }
 
    @FXML
+   private void handleNextLevel() {
+      if (overlay != null) {
+         overlay.getChildren().clear();
+         game.nextLevel();
+      }
+   }
+
+   @FXML
    private void handleRestart() {
       if (overlay != null) {
          overlay.getChildren().clear();
