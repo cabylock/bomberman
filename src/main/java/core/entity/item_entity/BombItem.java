@@ -1,7 +1,7 @@
 package core.entity.item_entity;
 
 import core.entity.dynamic_entity.mobile_entity.Bomber;
-import core.map_handle.MapEntity;
+import core.system.game.GameControl;
 import javafx.scene.image.Image;
 
 public class BombItem extends ItemEntity {
@@ -9,17 +9,15 @@ public class BombItem extends ItemEntity {
       super(x, y, image);
    }
 
-
    @Override
    public void update() {
-      for(Bomber bomber : MapEntity.getBomberEntities()){
-         if(checkCollision(bomber.getX(), bomber.getY(), this.getX(), this.getY())){
+      for (Bomber bomber : GameControl.getBomberEntities()) {
+         if (checkCollision(bomber.getX(), bomber.getY(), this.getX(), this.getY())) {
             bomber.increaseBomb();
-            MapEntity.removeItem(this);
+            GameControl.removeEntity(this);
             return;
          }
       }
    }
-   
 
 }

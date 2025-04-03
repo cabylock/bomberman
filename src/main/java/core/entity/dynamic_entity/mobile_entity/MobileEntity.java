@@ -7,7 +7,7 @@ import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
 import core.graphics.Sprite;
-import core.map_handle.MapEntity;
+import core.system.game.GameControl;
 import core.system.setting.Setting;
 import javafx.scene.image.Image;
 
@@ -89,7 +89,7 @@ public class MobileEntity extends DynamicEntity {
    }
 
    protected boolean moveCollision(int nextX, int nextY) {
-      for (StaticEntity entity : MapEntity.getStaticEntities()) {
+      for (StaticEntity entity : GameControl.getStaticEntities()) {
          if (entity instanceof Bomb) {
             if (this.bombpass) {
                continue;
@@ -108,7 +108,7 @@ public class MobileEntity extends DynamicEntity {
          } 
       }
 
-      for (Entity bg : MapEntity.getBackgroundEntities()) {
+      for (Entity bg : GameControl.getBackgroundEntities()) {
          if (bg instanceof Grass) {
             continue;
          }

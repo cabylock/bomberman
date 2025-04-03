@@ -1,8 +1,9 @@
 package core.entity.dynamic_entity.mobile_entity.enemy_entity;
+
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
+import core.system.game.GameControl;
 import core.util.Util;
 import javafx.scene.image.Image;
-import core.map_handle.MapEntity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 
 public class EnemyEntity extends MobileEntity {
@@ -14,20 +15,17 @@ public class EnemyEntity extends MobileEntity {
     public EnemyEntity(int x, int y, Image image) {
         super(x, y, image);
         constDirection = Util.randomRange(200, 500);
-        
+
     }
 
     @Override
     public void update() {
-        
 
     }
-    
-    protected  void defaultMove()
-    {
+
+    protected void defaultMove() {
         moveDelay--;
-        if (moveDelay == 0)
-        {
+        if (moveDelay == 0) {
             moveDelay = 5;
             if (constDirection == 0) {
                 direction = Util.randomDirection();
@@ -39,24 +37,22 @@ public class EnemyEntity extends MobileEntity {
                 }
             }
         }
-        
-        
+
     }
+
     protected boolean EnemyCollision() {
-        for (Bomber bomber : MapEntity.getBomberEntities()) {
+        for (Bomber bomber : GameControl.getBomberEntities()) {
             if (bomber.getXTile() == this.getXTile() && bomber.getYTile() == this.getYTile()) {
-                  bomber.dead();
-                  return true; 
+                bomber.dead();
+                return true;
             }
         }
         return false;
     }
+
     @Override
     public void remove() {
-        MapEntity.removeEnemyEntity(this);
+        GameControl.removeEntity(this);
     }
-   
 
-   
-   
 }

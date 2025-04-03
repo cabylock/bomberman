@@ -2,7 +2,7 @@ package core.entity.dynamic_entity.static_entity;
 
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.graphics.Sprite;
-import core.map_handle.MapEntity;
+import core.system.game.GameControl;
 import javafx.scene.image.Image;
 
 public class Bomb extends StaticEntity {
@@ -19,7 +19,7 @@ public class Bomb extends StaticEntity {
     protected final int[] DX = { 0, -1, 1, 0, 0 };
     protected final int[] DY = { 0, 0, 0, -1, 1 };
 
-    public Bomb(int x, int y, Image image, int flameSize,Bomber owner) {
+    public Bomb(int x, int y, Image image, int flameSize, Bomber owner) {
         super(x, y, image);
         this.flameSize = flameSize;
         this.owner = owner;
@@ -39,14 +39,13 @@ public class Bomb extends StaticEntity {
             explode();
 
         }
-        
 
         updateAnimation();
 
     }
 
     public void explode() {
-        
+
         owner.bombExplode();
         this.remove();
         for (int i = 0; i < 5; i++) {
@@ -60,8 +59,8 @@ public class Bomb extends StaticEntity {
                     break;
                 }
 
-                MapEntity.addStaticEntity(flameSegments[i][j]);
-                ;
+                GameControl.addEntity(flameSegments[i][j]);
+                
             }
         }
 

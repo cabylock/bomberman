@@ -3,7 +3,6 @@ package core.system.game;
 import core.entity.*;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
 import core.graphics.*;
-import core.map_handle.MapEntity;
 import core.system.controller.base.MainMenuController;
 import core.system.controller.ingame.PauseMenuController;
 import core.system.entry.Main;
@@ -65,7 +64,7 @@ public class BombermanGame {
         try {
             Thread.sleep(2000);
 
-            MapEntity.loadMap(mapName, Setting.CUSTOM_MAP);
+            GameControl.loadMap(mapName, Setting.CUSTOM_MAP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -78,7 +77,7 @@ public class BombermanGame {
         try {
             Thread.sleep(2000);
 
-            MapEntity.loadMap(mapName, Setting.CUSTOM_MAP);
+            GameControl.loadMap(mapName, Setting.CUSTOM_MAP);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -89,10 +88,10 @@ public class BombermanGame {
         if (mapType == Setting.DEFAULT_MAP) {
             int level = mapName.charAt(mapName.length() - 5) - '0';
 
-            MapEntity.loadMap(level);
+            GameControl.loadMap(level);
         } else if (mapType == Setting.CUSTOM_MAP) {
 
-            MapEntity.loadMap(mapName, Setting.CUSTOM_MAP);
+            GameControl.loadMap(mapName, Setting.CUSTOM_MAP);
         }
     }
 
@@ -106,7 +105,7 @@ public class BombermanGame {
         this.stage = stage;
 
         // Create Canvas
-        canvas = new Canvas(Sprite.SCALED_SIZE * MapEntity.getWidth(), Sprite.SCALED_SIZE * MapEntity.getHeight());
+        canvas = new Canvas(Sprite.SCALED_SIZE * GameControl.getWidth(), Sprite.SCALED_SIZE * GameControl.getHeight());
         gc = canvas.getGraphicsContext2D();
 
         // Create status bar
@@ -212,7 +211,7 @@ public class BombermanGame {
 
         // Count enemies
         int enemyCount = 0;
-        for (Entity entity : MapEntity.getEnemyEntities()) {
+        for (Entity entity : GameControl.getEnemyEntities()) {
             if (entity instanceof EnemyEntity) { // Assuming Enemy class exists
                 enemyCount++;
             }
@@ -279,7 +278,7 @@ public class BombermanGame {
         }
 
         // Reset the game
-        MapEntity.reset();
+        GameControl.resetGame();
     }
 
     // Make returnToMenu method public so the controller can access it
@@ -289,7 +288,7 @@ public class BombermanGame {
             gameLoop.stop();
             gameLoop = null;
         }
-        MapEntity.clear();
+        GameControl.clear();
         // Reset the game state if needed
         input.clear();
 
@@ -317,21 +316,15 @@ public class BombermanGame {
     }
 
     public void update() {
-        MapEntity.update();
+        GameControl.update();
     }
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        MapEntity.getBackgroundEntities().forEach(entity -> entity.render(gc));
-        MapEntity.getItemEntities().forEach(entity -> entity.render(gc));
-        for (Entity entity : MapEntity.getBomberEntities()) {
-            entity.render(gc);
-        }
-        for (Entity entity : MapEntity.getEnemyEntities()) {
-            entity.render(gc);
-        }
-        for (Entity entity : MapEntity.getStaticEntities()) {
-            entity.render(gc);
-        }
+        GameControl.getBackgroundEntities().forEach(entity -> entity.render(gc));
+        GameControl.getItemEntities().forEach(entity -> entity.render(gc));
+        GameControl.getStaticEntities().forEach(entity -> entity.render(gc));
+        GameControl.getBomberEntities().forEach(entity -> entity.render(gc));
+        GameControl.getEnemyEntities().forEach(entity -> entity.render(gc));
     }
 }

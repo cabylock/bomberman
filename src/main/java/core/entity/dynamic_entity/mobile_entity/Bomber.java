@@ -1,8 +1,8 @@
 package core.entity.dynamic_entity.mobile_entity;
 
 import core.graphics.Sprite;
-import core.map_handle.MapEntity;
 import core.system.game.BombermanGame;
+import core.system.game.GameControl;
 import core.system.setting.Setting;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import javafx.scene.image.Image;
@@ -13,9 +13,6 @@ public class Bomber extends MobileEntity {
    protected int flameSize = 1;
    protected int typePlayer;
    protected int bombCountMax = 1;
-
-
-
 
    public Bomber(int x, int y, Image image, int typePlayer) {
       super(x, y, image);
@@ -41,7 +38,6 @@ public class Bomber extends MobileEntity {
 
    @Override
    public void update() {
-      
 
       int playerIndex = typePlayer - 1;
 
@@ -61,11 +57,9 @@ public class Bomber extends MobileEntity {
          BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[playerIndex][4]);
          placeBomb();
       }
-      System.out.println( bombCountMax);
+      System.out.println(bombCountMax);
       updateAnimation();
    }
-
-   
 
    private void placeBomb() {
       if (bombCountMax == 0) {
@@ -77,7 +71,7 @@ public class Bomber extends MobileEntity {
       int bombY = this.getYTile();
 
       Bomb newBomb = new Bomb(bombX, bombY, Sprite.bomb.getFxImage(), flameSize, this);
-      MapEntity.addStaticEntity(newBomb);
+      GameControl.addEntity(newBomb);
       bombCountMax--;
 
    }
@@ -92,13 +86,12 @@ public class Bomber extends MobileEntity {
 
    public void increaseBomb() {
       bombCountMax++;
-      
+
    }
+
    public void bombExplode() {
       bombCountMax++;
    }
-
-   
 
    public void dead() {
       isAlive = false;
@@ -108,7 +101,7 @@ public class Bomber extends MobileEntity {
 
    @Override
    public void remove() {
-      MapEntity.removeBomber(this);
+      GameControl.removeEntity(this);
    }
 
 }
