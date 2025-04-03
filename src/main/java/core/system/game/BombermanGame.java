@@ -1,4 +1,4 @@
-package core.system;
+package core.system.game;
 
 import core.entity.*;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
@@ -6,6 +6,8 @@ import core.graphics.*;
 import core.map_handle.MapEntity;
 import core.system.controller.base.MainMenuController;
 import core.system.controller.ingame.PauseMenuController;
+import core.system.entry.Main;
+import core.system.setting.Setting;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
 import javafx.animation.KeyFrame;

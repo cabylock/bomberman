@@ -8,7 +8,7 @@ import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
 import core.graphics.Sprite;
 import core.map_handle.MapEntity;
-import core.system.Setting;
+import core.system.setting.Setting;
 import javafx.scene.image.Image;
 
 public class MobileEntity extends DynamicEntity {

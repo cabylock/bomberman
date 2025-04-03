@@ -1,4 +1,4 @@
-package core.system;
+package core.system.setting;
 
 import javafx.scene.input.KeyCode;
 

@@ -17,7 +17,7 @@ import core.entity.Entity;
 import core.entity.background_entity.*;
 import core.entity.item_entity.*;
 import core.graphics.Sprite;
-import core.system.Setting;
+import core.system.setting.Setting;
 
 public class MapEntity {
 

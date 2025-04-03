@@ -1,6 +1,6 @@
 package core.system.controller.base;
 
-import core.system.BombermanGame;
+import core.system.game.BombermanGame;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;

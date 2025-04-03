@@ -1,6 +1,6 @@
 package core.system.controller.ingame;
 
-import core.system.BombermanGame;
+import core.system.game.BombermanGame;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;

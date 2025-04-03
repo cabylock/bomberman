@@ -1,7 +1,7 @@
 package core.system.controller.base;
 
-import core.system.BombermanGame;
-import core.system.Setting;
+import core.system.game.BombermanGame;
+import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

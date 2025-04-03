@@ -2,8 +2,8 @@ package core.entity.dynamic_entity.mobile_entity;
 
 import core.graphics.Sprite;
 import core.map_handle.MapEntity;
-import core.system.BombermanGame;
-import core.system.Setting;
+import core.system.game.BombermanGame;
+import core.system.setting.Setting;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import javafx.scene.image.Image;
 

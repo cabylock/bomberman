@@ -1,9 +1,8 @@
 package core.entity.dynamic_entity.mobile_entity.enemy_entity;
 
 
-import core.system.Setting;
 import core.graphics.Sprite;
-
+import core.system.setting.Setting;
 import javafx.scene.image.Image;
 
 public class Oneal extends EnemyEntity {
