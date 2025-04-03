@@ -3,7 +3,6 @@ package core.entity.item_entity;
 import javafx.scene.image.Image;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.map_handle.MapEntity;
-import core.graphics.Sprite;
 
 public class SpeedItem extends ItemEntity {
     public SpeedItem(int x, int y, Image image) {

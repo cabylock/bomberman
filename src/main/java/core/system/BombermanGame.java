@@ -1,7 +1,6 @@
 package core.system;
 
 import core.entity.*;
-import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
 import core.graphics.*;
 import core.map_handle.MapEntity;
@@ -9,7 +8,6 @@ import core.system.controller.base.MainMenuController;
 import core.system.controller.ingame.PauseMenuController;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
-import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -44,7 +42,6 @@ public class BombermanGame {
     private GraphicsContext gc;
     private Canvas canvas;
     public static final Set<KeyCode> input = new HashSet<>();
-    // private AnimationTimer gameLoop;
     private Stage stage;
 
     // UI elements for status bar
@@ -148,28 +145,23 @@ public class BombermanGame {
 
         // Create the game loop
         gameLoop = new Timeline(
-                new KeyFrame(Duration.seconds(1.0 / Setting.FPS_MAX), e -> {
+                new KeyFrame(Duration.seconds(1.0 / Setting.FPS_MAX), _ -> {
                     update();
                     render();
                     updateStatusBar();
+
+                    // Count frames here instead
+                    frameCounter++;
+                    long now = System.nanoTime();
+                    if (now - lastFpsUpdateTime >= 1_000_000_000) {
+                        fps = frameCounter;
+                        frameCounter = 0;
+                        lastFpsUpdateTime = now;
+                        fpsText.setText("FPS: " + fps);
+                    }
                 }));
         gameLoop.setCycleCount(Timeline.INDEFINITE);
         gameLoop.play();
-
-        // FPS counter
-        AnimationTimer fpsCounter = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                frameCounter++;
-                if (now - lastFpsUpdateTime >= 1_000_000_000) {
-                    fps = frameCounter;
-                    frameCounter = 0;
-                    lastFpsUpdateTime = now;
-                    fpsText.setText("FPS: " + fps);
-                }
-            }
-        };
-        fpsCounter.start();
     }
 
     /**
@@ -213,32 +205,8 @@ public class BombermanGame {
      * Update the status bar with current game information
      */
     private void updateStatusBar() {
-        // Get player entity to access health and bombs
-        Entity playerEntity = null;
-        for (Entity entity : MapEntity.getBomberEntities()) {
-            if (entity instanceof Bomber) {
-                playerEntity = entity;
-                break;
-            }
-        }
-
-        if (playerEntity instanceof Bomber) {
-            // Bomber player = (Bomber) playerEntity;
-            // Update health display
-            // int health = player.getLives(); // Assuming Player class has getLives()
-            // method
-            int health = 1;
-            healthText.setText("❤ Health: " + health);
-
-            // Update bombs display
-            // int bombs = player.getBombCount(); // Assuming Player class has
-            // getBombCount() method
-            int bombs = 1;
-            bombsText.setText("💣 Bombs: " + bombs);
-
-            // Then in updateStatusBar method, add:
-            fpsText.setText("FPS: " + fps);
-        }
+        
+       
 
         // Count enemies
         int enemyCount = 0;

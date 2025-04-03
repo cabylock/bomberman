@@ -54,7 +54,7 @@ public class RandomMapController {
         // Set up slider value change listeners
         if (widthSlider != null && widthValueLabel != null) {
             // Update label when slider value changes
-            widthSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            widthSlider.valueProperty().addListener((_, _, newVal) -> {
                 int value = newVal.intValue();
                 widthValueLabel.setText(String.valueOf(value));
             });
@@ -62,7 +62,7 @@ public class RandomMapController {
 
         if (heightSlider != null && heightValueLabel != null) {
             // Update label when slider value changes
-            heightSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            heightSlider.valueProperty().addListener((_, _, newVal) -> {
                 int value = newVal.intValue();
                 heightValueLabel.setText(String.valueOf(value));
             });

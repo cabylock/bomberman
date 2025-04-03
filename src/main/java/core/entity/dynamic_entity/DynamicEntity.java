@@ -1,7 +1,6 @@
 package core.entity.dynamic_entity;
 
 import core.entity.Entity;
-import core.map_handle.*;
 import javafx.scene.image.Image;
 
 public abstract class DynamicEntity extends Entity {

@@ -1,6 +1,5 @@
 package core.system.controller.base;
 
-import core.entity.dynamic_entity.static_entity.Bomb;
 import core.system.BombermanGame;
 import core.system.Setting;
 import javafx.fxml.FXML;

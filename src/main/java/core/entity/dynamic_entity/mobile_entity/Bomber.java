@@ -6,7 +6,6 @@ import core.system.BombermanGame;
 import core.system.Setting;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 
 public class Bomber extends MobileEntity {
 

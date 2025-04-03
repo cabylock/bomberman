@@ -1,8 +1,6 @@
 package core.map_handle;
 
-import core.entity.dynamic_entity.*;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
-import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Balloom;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Oneal;

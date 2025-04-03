@@ -2,8 +2,6 @@ package core.system.controller.base;
 
 import java.io.File;
 import java.util.Optional;
-import core.system.BombermanGame;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,7 +31,7 @@ public class MapSelectionController {
         // Load default maps
         File defaultMapsDir = new File("src/main/resources/default_levels");
         if (defaultMapsDir.exists() && defaultMapsDir.isDirectory()) {
-            File[] mapFiles = defaultMapsDir.listFiles((dir, name) -> name.endsWith(".txt"));
+            File[] mapFiles = defaultMapsDir.listFiles((_, name) -> name.endsWith(".txt"));
             if (mapFiles != null) {
                 for (File mapFile : mapFiles) {
                     defaultMapList.getItems().add(mapFile.getName().replace(".txt", ""));
@@ -44,7 +42,7 @@ public class MapSelectionController {
         // Load custom maps
         File customMapsDir = new File("src/main/resources/custom_levels");
         if (customMapsDir.exists() && customMapsDir.isDirectory()) {
-            File[] mapFiles = customMapsDir.listFiles((dir, name) -> name.endsWith(".txt"));
+            File[] mapFiles = customMapsDir.listFiles((_, name) -> name.endsWith(".txt"));
             if (mapFiles != null) {
                 for (File mapFile : mapFiles) {
                     customMapList.getItems().add(mapFile.getName().replace(".txt", ""));
@@ -53,13 +51,13 @@ public class MapSelectionController {
         }
 
         // Set up selection listeners
-        defaultMapList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+        defaultMapList.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> {
             if (newVal != null) {
                 customMapList.getSelectionModel().clearSelection();
             }
         });
 
-        customMapList.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+        customMapList.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> {
             if (newVal != null) {
                 defaultMapList.getSelectionModel().clearSelection();
             }
