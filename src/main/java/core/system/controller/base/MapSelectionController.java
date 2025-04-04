@@ -2,6 +2,8 @@ package core.system.controller.base;
 
 import java.io.File;
 import java.util.Optional;
+
+import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -104,7 +106,7 @@ public class MapSelectionController {
             MainMenuController controller = loader.getController();
             controller.setStage(stage);
 
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
             stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,7 +144,7 @@ public class MapSelectionController {
             modeController.setStage(stage);
             modeController.setMode(mapName+".txt", mapType);
 
-            Scene scene = new Scene(root, 800, 600);
+            Scene scene = new Scene(root, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
             stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();

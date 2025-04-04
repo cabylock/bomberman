@@ -54,7 +54,7 @@ public class BombermanGame {
 
     // Add these fields to your BombermanGame class
     private Timeline gameLoop;
-    private StackPane gameRoot;
+    private static StackPane gameRoot;
     private boolean isPaused = false;
 
     // for custom map
@@ -224,7 +224,9 @@ public class BombermanGame {
     }
 
     // Add these new methods to BombermanGame class:
-
+    public static StackPane getGameRoot() {
+        return gameRoot;
+    }
     /**
      * Show the pause menu overlay
      */

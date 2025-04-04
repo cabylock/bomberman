@@ -57,7 +57,6 @@ public class Bomber extends MobileEntity {
          BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[playerIndex][4]);
          placeBomb();
       }
-      System.out.println(bombCountMax);
       updateAnimation();
    }
 

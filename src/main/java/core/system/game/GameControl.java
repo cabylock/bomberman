@@ -73,11 +73,11 @@ public class GameControl {
    public static void nextLevel() {
 
       if (mapType == Setting.CUSTOM_MAP) {
-         Util.showNotification("Custom map, please select another map or move to default map");
+         Util.showNotificationWindow("Please select another map or move to default map");
          return;
       }
       if (level == Setting.MAX_LEVEL) {
-         Util.showNotification("Game Done, reset to play again");
+         Util.showImage("/textures/win2.png",BombermanGame.getGameRoot());
          return;
       }
       level++;

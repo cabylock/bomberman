@@ -4,6 +4,9 @@ import javafx.scene.input.KeyCode;
 
 public class Setting {
 
+      public static final int SCREEN_HEIGHT = 600;
+      public static final int SCREEN_WIDTH = 800;
+
       public static final int DEFAULT_MAP = 0;
       public static final int CUSTOM_MAP = 1;
       public static final int MAX_LEVEL = 5;
