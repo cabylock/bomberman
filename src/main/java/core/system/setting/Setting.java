@@ -8,11 +8,23 @@ public class Setting {
       public static final int SCREEN_WIDTH = 800;
 
       public static final int DEFAULT_MAP = 0;
-      public static final int CUSTOM_MAP = 1;
       public static final int MAX_LEVEL = 5;
 
+      public static final int CUSTOM_MAP = 1;
+
+      public static final int SERVER_MODE = 0;
+      public static final int CLIENT_MODE = 1;
+      
+
       public static int PLAYER_NUM = 1;
+      public static String SERVER_ADDRESS = "localhost";
       public static int SERVER_PORT = 1234;
+      
+      public static String NETWORK_STATIC_ENTITIES = "STATIC";
+      public static String NETWORK_ENEMY_ENTITIES = "ENEMY";
+      public static String NETWORK_ITEM_ENTITIES = "ITEM";
+      public static String NETWORK_BOMBER_ENTITIES = "BOMBER";
+      public static String NETWORK_BACKGROUND_ENTITIES = "BACKGROUND";
 
       public static final int FPS_MAX = 100;
       public static final int FRAME_TIME_NS = 1_000_000_000 / FPS_MAX;

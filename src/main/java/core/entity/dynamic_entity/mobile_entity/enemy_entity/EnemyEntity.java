@@ -3,7 +3,6 @@ package core.entity.dynamic_entity.mobile_entity.enemy_entity;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.system.game.GameControl;
 import core.util.Util;
-import javafx.scene.image.Image;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 
 public class EnemyEntity extends MobileEntity {

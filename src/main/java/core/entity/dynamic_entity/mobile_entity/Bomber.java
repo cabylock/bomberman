@@ -4,6 +4,9 @@ import core.graphics.Sprite;
 import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
+
+
+
 import core.entity.dynamic_entity.static_entity.Bomb;
 
 public class Bomber extends MobileEntity {
@@ -11,7 +14,7 @@ public class Bomber extends MobileEntity {
    protected int speed = 2;
    protected int flameSize = 1;
    protected int typePlayer;
-   protected int bombCountMax = 1;
+   public int bombCountMax = 1;
 
    public Bomber(int x, int y, int imageId, int typePlayer) {
       super(x, y, imageId);

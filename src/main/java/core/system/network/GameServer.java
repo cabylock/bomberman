@@ -1,16 +1,21 @@
 package core.system.network;
+
 import java.io.*;
 import java.net.*;
 
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
- 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import core.entity.background_entity.BackgroundEntity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
+import core.system.setting.Setting;
 
 public class GameServer extends Thread {
 
@@ -18,22 +23,38 @@ public class GameServer extends Thread {
    private int port;
    private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
    private boolean isRunning = true;
-   
+
    private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
    private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
+   private ScheduledExecutorService broadcastScheduler;
+
    public void startServer(int port) {
       this.port = port;
       this.start();
       System.out.println("Server started on port " + port);
+
+      // Start auto-broadcasting
+      startAutoBroadcast();
+   }
+
+   private void startAutoBroadcast() {
+      broadcastScheduler = Executors.newScheduledThreadPool(1);
+      broadcastScheduler.scheduleAtFixedRate(() -> {
+         // Broadcast entity data to all clients
+         broadcastData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
+         broadcastData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
+         broadcastData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
+         broadcastData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
+         broadcastData(backgroundEntities, Setting.NETWORK_BACKGROUND_ENTITIES);
+      }, 0, 5, TimeUnit.SECONDS); // Broadcast every 5 seconds
    }
 
    @Override
-   public void run()
-   {
+   public void run() {
       try {
          serverSocket = new ServerSocket(port);
 
@@ -46,22 +67,27 @@ public class GameServer extends Thread {
       } catch (IOException e) {
          System.err.println("Error starting server: " + e.getMessage());
       }
+
    }
 
    public void stopServer() {
       isRunning = false;
+
+      // Stop auto-broadcasting
+      if (broadcastScheduler != null && !broadcastScheduler.isShutdown()) {
+         broadcastScheduler.shutdown();
+      }
+
       try {
          for (ClientHandler client : clients) {
-            client.sendMessage( "Server is shutting down.");
+            client.sendMessage("Server is shutting down.");
             client.interrupt();
             client.clientSocket.close();
          }
-      
+
          serverSocket.close();
          clients.clear();
          System.out.println("Server stopped.");
-
-
 
       } catch (IOException e) {
          System.err.println("Error stopping server: " + e.getMessage());
@@ -74,12 +100,16 @@ public class GameServer extends Thread {
       }
    }
 
-  
+   public void broadcastData(List<?> data, String type) {
+      for (ClientHandler client : clients) {
+         client.sendData(data, type);
+      }
+   }
 
    private static class ClientHandler extends Thread {
       private Socket clientSocket;
       private ObjectInputStream in;
-      
+
       private ObjectOutputStream out;
       private String clientName;
       private int clientPort;
@@ -111,46 +141,34 @@ public class GameServer extends Thread {
                if ("STRING".equals(message)) {
                   message = in.readUTF();
                   System.out.println("Client " + clientName + " sent: " + message);
-               } else if ("LIST".equals(message)) {
+               } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
                   Object obj = in.readObject();
+                  bomberEntities = (List<Bomber>) obj;
 
-                  if (obj instanceof List<?>) {
-                     List<?> list = (List<?>) obj;
-                     if (!list.isEmpty()) {
-                        Object firstElement = list.get(0);
-                        if (firstElement instanceof Bomber) {
-                           bomberEntities = (List<Bomber>) list;
-                           System.out.println("Client " + clientName + " sent a list of bombers: " + list);
-                        } else if (firstElement instanceof StaticEntity) {
-                           staticEntities = (List<StaticEntity>) list;
-                           System.out
-                                 .println(
-                                       "Client " + clientName + " sent a list of static entities: " + staticEntities);
-                        } else if (firstElement instanceof EnemyEntity) {
-                           enemyEntities = (List<EnemyEntity>) list;
-                           System.out.println("Client " + clientName + " sent a list of enemies: " + list);
-                        } else if (firstElement instanceof ItemEntity) {
-                           itemEntities = (List<ItemEntity>) list;
-                           System.out.println("Client " + clientName + " sent a list of items: " + list);
-                        } else if (firstElement instanceof BackgroundEntity) {
-                           backgroundEntities = (List<BackgroundEntity>) list;
-                           System.out.println("Client " + clientName + " sent a list of backgrounds: " + list);
-                        } else {
-                           System.out.println("Unknown list type received from client " + clientName);
-                        }
-                     }
+               } else if (Setting.NETWORK_ENEMY_ENTITIES.equals(message)) {
+                  Object obj = in.readObject();
+                  enemyEntities = (List<EnemyEntity>) obj;
 
-                  } else {
-                     System.out.println("Unknown message type from client " + clientName);
-                  }
+               } else if (Setting.NETWORK_STATIC_ENTITIES.equals(message)) {
+                  Object obj = in.readObject();
+                  staticEntities = (List<StaticEntity>) obj;
+
+               } else if (Setting.NETWORK_ITEM_ENTITIES.equals(message)) {
+                  Object obj = in.readObject();
+                  itemEntities = (List<ItemEntity>) obj;
+
+               } else if (Setting.NETWORK_BACKGROUND_ENTITIES.equals(message)) {
+                  Object obj = in.readObject();
+                  backgroundEntities = (List<BackgroundEntity>) obj;
 
                }
+
             }
-         } 
-         catch (IOException | ClassNotFoundException e) {
+
+         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error handling client: " + e.getMessage());
-         } 
-            
+         }
+
          finally {
             try {
                clientSocket.close();
@@ -162,6 +180,7 @@ public class GameServer extends Thread {
 
       public void sendMessage(String message) {
          try {
+            out.reset(); // Reset the stream to avoid memory issues
             out.writeUTF("STRING"); // Indicate the type of message
             out.writeUTF(message); // Send the message
             out.flush(); // Ensure the data is sent immediately
@@ -170,9 +189,10 @@ public class GameServer extends Thread {
          }
       }
 
-      public <T> void sendData(List<T> data) {
+      public <T> void sendData(List<T> data, String type) {
          try {
-            out.writeUTF("LIST"); // Indicate the type of message
+            out.reset(); // Reset the stream to avoid memory issues
+            out.writeUTF(type); // Indicate the type of message
             out.writeObject(data); // Serialize and send the object
             out.flush(); // Ensure the data is sent immediately
          } catch (IOException e) {
@@ -180,25 +200,22 @@ public class GameServer extends Thread {
          }
       }
 
-
    }
-   
-  
 
-   public static void main(String[] args) {
-      GameServer server = new GameServer();
-      server.startServer(8080);
-      
-      Scanner scanner = new Scanner(System.in);
-      while(true) {
-         System.out.println("Enter 'stop' to stop the server:");
-         String command = scanner.nextLine();
-         if (command.equalsIgnoreCase("stop")) {
-            server.stopServer();
-            scanner.close();
-            break;
-         }
-         server.broadcastMessage(command);
-      }
-   }
+   // public static void main(String[] args) {
+   // GameServer server = new GameServer();
+   // server.startServer(8080);
+
+   // Scanner scanner = new Scanner(System.in);
+   // while (true) {
+   // System.out.println("Enter 'stop' to stop the server:");
+   // String command = scanner.nextLine();
+   // if (command.equalsIgnoreCase("stop")) {
+   // server.stopServer();
+   // scanner.close();
+   // break;
+   // }
+   // server.broadcastMessage(command);
+   // }
+   // }
 }

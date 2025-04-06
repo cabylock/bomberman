@@ -1,11 +1,14 @@
 package core.entity;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
+
+import java.io.Serializable;
+
 import core.graphics.*;
 import core.util.Util;
 
-public abstract class Entity {
+public abstract class Entity implements Serializable {
+   private static final long serialVersionUID = 1L;
    protected int x;
    protected int y;
    protected int imageId;

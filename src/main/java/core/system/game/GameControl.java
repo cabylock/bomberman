@@ -20,7 +20,7 @@ public class GameControl {
    private static String mapName;
    private static int mapType;
    private static int level;
-   private static int gameMode;
+
    private static GameServer server;
    private static GameClient client;
 
@@ -33,27 +33,72 @@ public class GameControl {
    public static void InitializeServer() {
       server = new GameServer();
       server.startServer(Setting.SERVER_PORT);
-      client = new GameClient("localhost", Setting.SERVER_PORT);
+
+   }
+
+   public static void InitializeClient() {
+      client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
       client.connect();
+   }
+
+   public static void start(int gameMode) {
+      if(gameMode == Setting.SERVER_MODE)
+      {
+         server = new GameServer();
+         server.startServer(Setting.SERVER_PORT);
+      }
+      else if(gameMode == Setting.CLIENT_MODE)
+      {
+         client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
+         client.connect();
+      }
+      else 
+      {  // test mode
+         server = new GameServer();
+         server.startServer(Setting.SERVER_PORT);
+         client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
+         client.connect();
+      }
+      Thread runningThread = new Thread(() -> {
+         while (true) {
+            try {
+               Thread.sleep(1_000 / Setting.FPS_MAX);
+            } catch (InterruptedException e) {
+               e.printStackTrace();
+            }
+            update();
+         }
+      });
+      runningThread.setDaemon(true);
+      runningThread.start();
+   }
+
+   public static void stop() {
+      server.stopServer();
+      client.disconnect();
    }
 
    public static void update() {
 
       for (Entity entity : bomberEntities) {
          entity.update();
-         // client.sendData(List.of(entity));
-         // Util.sleep(2);
-
       }
+
+      client.sendData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
+
       for (Entity entity : staticEntities) {
          entity.update();
       }
+
+      client.sendData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
       for (Entity entity : enemyEntities) {
          entity.update();
       }
+      client.sendData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
       for (Entity entity : itemEntities) {
          entity.update();
       }
+      client.sendData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
    }
 
    public static int getWidth() {
@@ -74,8 +119,7 @@ public class GameControl {
       GameControl.mapName = "Level" + level + ".txt";
       GameControl.mapType = Setting.DEFAULT_MAP;
       MapEntity.loadMap(level);
-      // InitializeServer();
-      // Util.sleep(2);
+
    }
 
    public static void loadMap(String mapName, int mapType) {
@@ -125,6 +169,26 @@ public class GameControl {
       } else if (entity instanceof ItemEntity) {
          itemEntities.add((ItemEntity) entity);
       }
+   }
+
+   public static void setBomberEntities(List<Bomber> entities) {
+      bomberEntities = entities;
+   }
+
+   public static void setStaticEntities(List<StaticEntity> entities) {
+      staticEntities = entities;
+   }
+
+   public static void setEnemyEntities(List<EnemyEntity> entities) {
+      enemyEntities = entities;
+   }
+
+   public static void setBackgroundEntities(List<BackgroundEntity> entities) {
+      backgroundEntities = entities;
+   }
+
+   public static void setItemEntities(List<ItemEntity> entities) {
+      itemEntities = entities;
    }
 
    public static void removeEntity(Entity entity) {

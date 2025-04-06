@@ -144,10 +144,11 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.show();
 
+        GameControl.start(Setting.CLIENT_MODE);
         // Create the game loop
         gameLoop = new Timeline(
                 new KeyFrame(Duration.seconds(1.0 / Setting.FPS_MAX), _ -> {
-                    update();
+                    
                     render();
                     updateStatusBar();
 
@@ -304,6 +305,7 @@ public class BombermanGame {
             gameLoop = null;
         }
         GameControl.clear();
+        GameControl.stop();
         // Reset the game state if needed
         input.clear();
 
@@ -330,9 +332,7 @@ public class BombermanGame {
 
     }
 
-    public void update() {
-        GameControl.update();
-    }
+   
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());

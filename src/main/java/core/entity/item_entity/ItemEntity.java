@@ -1,6 +1,5 @@
 package core.entity.item_entity;
 
-import javafx.scene.image.Image;
 import core.entity.Entity;
 import core.system.game.GameControl;    
 import core.graphics.Sprite;
