@@ -10,12 +10,12 @@ import core.graphics.Sprite;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
 
-
 public class MobileEntity extends DynamicEntity {
    protected boolean moving = false;
    protected boolean bombpass = false;
-   protected boolean flamepass = false;
-   protected boolean isAlive = true;
+   protected int health = 1;
+   protected boolean isInvincible = false;
+   protected int invincibleTime = 180; // 180 frames = 1 giây
 
    protected int direction = Setting.DOWN_MOVING;
 
@@ -24,17 +24,23 @@ public class MobileEntity extends DynamicEntity {
    protected final int DEAD_ANIMATION_DELAY = 40;
 
    public MobileEntity(int x, int y, int imageId) {
-      super(x, y, imageId);   
+      super(x, y, imageId);
    }
 
    @Override
    public void update() {
+      if (isInvincible) {
+         invincibleTime--;
+         if (invincibleTime <= 0) {
+            isInvincible = false;
+         }
+      }
    }
 
    protected boolean move(int direction, int delta) {
       // System.out.println("x: " + x + " y: " + y + " xTile: " + this.getXTile() + "
       // yTile: " + this.getYTile());
-      if (!isAlive) {
+      if (health <= 0) {
          return false;
       }
 
@@ -91,21 +97,21 @@ public class MobileEntity extends DynamicEntity {
    protected boolean moveCollision(int nextX, int nextY) {
       for (StaticEntity entity : GameControl.getStaticEntities()) {
          if (entity instanceof Bomb) {
-            if (this.bombpass) {
-               continue;
-            }
             if (checkCollision(this.x, this.y, entity.getX(), entity.getY())) {
                continue;
             }
+
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
+               if (this.bombpass) {
+                  return false;
+               }
                return true;
             }
          } else if (entity instanceof Brick) {
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-               
                return true;
             }
-         } 
+         }
       }
 
       for (Entity bg : GameControl.getBackgroundEntities()) {
@@ -130,7 +136,7 @@ public class MobileEntity extends DynamicEntity {
    protected void updateAnimation() {
       animationDelay++;
 
-      if (!isAlive) {
+      if (health <= 0) {
          if (animationDelay >= DEAD_ANIMATION_DELAY) {
             if (animationStep < 2) {
                animationStep++;
@@ -139,6 +145,12 @@ public class MobileEntity extends DynamicEntity {
                return;
             }
             animationDelay = 0;
+         } else if (isInvincible) {
+            if (animationDelay >= ANIMATION_DELAY) {
+               animationStep = (animationStep + 1) % 3;
+               animationDelay = 0;
+            }
+
          }
       } else if (moving) {
          if (animationDelay >= ANIMATION_DELAY) {
@@ -149,8 +161,34 @@ public class MobileEntity extends DynamicEntity {
          animationStep = 0;
          animationDelay = 0;
       }
-
       imageId = imageIds[direction][animationStep];
    }
 
+   public void decreaseHealth() {
+      if (!isInvincible) {
+         if (health > 0){
+
+            this.health--;
+         }
+         if (this.health <= 0) {
+            this.dead();
+         } else {
+            // Kích hoạt thời gian bất tử khi mất mạng
+            isInvincible = true;
+            invincibleTime = 180;
+            direction = Setting.ANIMATION_NULL;
+         }
+
+      }
+   }
+
+   public void dead() {
+
+      direction = Setting.DEAD;
+      moving = false;
+   }
+
+   public boolean isInvincible() {
+      return isInvincible;
+   }
 }

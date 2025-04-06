@@ -12,12 +12,14 @@ public class Bomber extends MobileEntity {
    protected int flameSize = 1;
    protected int typePlayer;
    protected int bombCountMax = 1;
+   
+   protected boolean flamePass = false;
 
    public Bomber(int x, int y, int imageId, int typePlayer) {
       super(x, y, imageId);
       // Image arrays for animation
       this.typePlayer = typePlayer;
-      imageIds = new int[5][3];
+      imageIds = new int[6][3];
       imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER_RIGHT;
       imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER_RIGHT_1;
       imageIds[Setting.RIGHT_MOVING][2] = Sprite.PLAYER_RIGHT_2;
@@ -33,6 +35,9 @@ public class Bomber extends MobileEntity {
       imageIds[Setting.DEAD][0] = Sprite.PLAYER_DEAD1;
       imageIds[Setting.DEAD][1] = Sprite.PLAYER_DEAD2;
       imageIds[Setting.DEAD][2] = Sprite.PLAYER_DEAD3;
+      imageIds[Setting.ANIMATION_NULL][0] = Sprite.PLAYER_RIGHT;   
+      imageIds[Setting.ANIMATION_NULL][1] = Sprite.ANIMATION_NULL;
+      imageIds[Setting.ANIMATION_NULL][2] = Sprite.ANIMATION_NULL;
    }
 
    @Override
@@ -57,7 +62,9 @@ public class Bomber extends MobileEntity {
          placeBomb();
       }
       updateAnimation();
+      updateInvincible();
    }
+   
 
    private void placeBomb() {
       if (bombCountMax == 0) {
@@ -74,6 +81,10 @@ public class Bomber extends MobileEntity {
 
    }
 
+   public void setFlamePass(boolean flamePass) {
+      this.flamePass = flamePass;
+   }
+
    public void increaseSpeed() {
       speed++;
    }
@@ -84,17 +95,32 @@ public class Bomber extends MobileEntity {
 
    public void increaseBomb() {
       bombCountMax++;
-
    }
 
    public void bombExplode() {
       bombCountMax++;
    }
 
-   public void dead() {
-      isAlive = false;
-      direction = Setting.DEAD;
-      moving = false;
+   public void increaseHealth() {
+      health++;
+   }
+
+   public void setBombPass(boolean bombpass) {
+      this.bombpass = bombpass;
+
+   }
+
+   public boolean isFlamePass() {
+      return flamePass;
+   }
+   public void updateInvincible() {
+   
+      if (isInvincible) {
+         invincibleTime--;
+         if (invincibleTime <= 0) {
+            isInvincible = false;
+         }
+      }
    }
 
    @Override

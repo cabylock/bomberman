@@ -3,22 +3,19 @@ package core.entity.item_entity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.system.game.GameControl;
 
-public class FlameItem extends ItemEntity {
-    public FlameItem(int x, int y, int imageId) {
+public class FlamePassItem extends ItemEntity {
+    public FlamePassItem(int x, int y, int imageId) {
         super(x, y, imageId);
-
     }
 
     @Override
     public void update() {
         for (Bomber bomber : GameControl.getBomberEntities()) {
             if (checkCollision(bomber.getX(), bomber.getY(), this.getX(), this.getY())) {
-                bomber.increaseFlameSize();
+                bomber.setFlamePass(true);
                 GameControl.removeEntity(this);
                 return;
             }
         }
-
     }
-
 }

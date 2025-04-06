@@ -131,12 +131,14 @@ public class Sprite {
 	public static final int POWERUP_FLAMES = 85;
 	public static final int POWERUP_SPEED = 86;
 	public static final int POWERUP_WALLPASS = 87;
-	public static final int POWERUP_DETONATOR = 88;
+	public static final int POWERUP_HEALTH_UP = 88;
 	public static final int POWERUP_BOMB_PASS = 89;
 	public static final int POWERUP_FLAME_PASS = 90;
 	public static final int POWERUP_DETONATOR_PASS = 91;
 	public static final int POWERUP_SPEED_PASS = 92;
 	public static final int POWERUP_WALL_PASS = 93;
+	public static final int ANIMATION_NULL = 94;
+	
 
 	static {
 		sprites[GRASS] = new Sprite(DEFAULT_SIZE, 6, 0, SpriteSheet.tiles, 16, 16);
@@ -249,12 +251,13 @@ public class Sprite {
 		sprites[POWERUP_FLAMES] = new Sprite(DEFAULT_SIZE, 1, 10, SpriteSheet.tiles, 16, 16);
 		sprites[POWERUP_SPEED] = new Sprite(DEFAULT_SIZE, 2, 10, SpriteSheet.tiles, 16, 16);
 		sprites[POWERUP_WALLPASS] = new Sprite(DEFAULT_SIZE, 3, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_DETONATOR] = new Sprite(DEFAULT_SIZE, 4, 10, SpriteSheet.tiles, 16, 16);
+		sprites[POWERUP_HEALTH_UP] = new Sprite(DEFAULT_SIZE, 4, 10, SpriteSheet.tiles, 16, 16);
 		sprites[POWERUP_BOMB_PASS] = new Sprite(DEFAULT_SIZE, 5, 10, SpriteSheet.tiles, 16, 16);
 		sprites[POWERUP_FLAME_PASS] = new Sprite(DEFAULT_SIZE, 6, 10, SpriteSheet.tiles, 16, 16);
 		sprites[POWERUP_DETONATOR_PASS] = new Sprite(DEFAULT_SIZE, 7, 10, SpriteSheet.tiles, 16, 16);
 		sprites[POWERUP_SPEED_PASS] = new Sprite(DEFAULT_SIZE, 8, 10, SpriteSheet.tiles, 16, 16);
 		sprites[POWERUP_WALL_PASS] = new Sprite(DEFAULT_SIZE, 9, 10, SpriteSheet.tiles, 16, 16);
+		sprites[ANIMATION_NULL] = new Sprite(DEFAULT_SIZE, 11, 11, SpriteSheet.tiles, 16, 16);
 	}
 
 	public Sprite(int size, int x, int y, SpriteSheet sheet, int rw, int rh) {

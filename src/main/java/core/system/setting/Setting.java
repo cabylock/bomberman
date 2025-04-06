@@ -12,7 +12,7 @@ public class Setting {
       public static final int MAX_LEVEL = 5;
 
       public static int PLAYER_NUM = 1;
-      public static int SERVER_PORT = 1234;
+      public static int SERVER_PORT = 2005;
 
       public static final int FPS_MAX = 100;
       public static final int FRAME_TIME_NS = 1_000_000_000 / FPS_MAX;
@@ -32,5 +32,6 @@ public class Setting {
       public static final int UP_MOVING = 2;
       public static final int DOWN_MOVING = 3;
       public static final int DEAD = 4;
+      public static final int ANIMATION_NULL = 5;
 
 }

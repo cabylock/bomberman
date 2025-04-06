@@ -39,6 +39,7 @@ public class BombermanGame {
     private int frameCounter = 0;
     private long lastFpsUpdateTime = 0;
     private int fps = 0;
+    
 
     private GraphicsContext gc;
     private Canvas canvas;

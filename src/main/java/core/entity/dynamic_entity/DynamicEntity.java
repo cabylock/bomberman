@@ -7,11 +7,8 @@ public abstract class DynamicEntity extends Entity {
    protected int animationStep = 0;
    protected int animationDelay = 0;
 
- 
-
    // Image arrays for animation
    protected int[][] imageIds;
-
 
    public DynamicEntity(int x, int y, int imageId) {
       super(x, y, imageId);
@@ -21,14 +18,11 @@ public abstract class DynamicEntity extends Entity {
    public void update() {
    }
 
-   
-
-
    protected abstract void updateAnimation();
 
    @Override
    public void remove() {
-      
+
    }
 
 }

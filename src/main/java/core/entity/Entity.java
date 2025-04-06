@@ -1,15 +1,14 @@
 package core.entity;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import core.graphics.*;
 import core.util.Util;
+import java.io.Serializable;
 
-public abstract class Entity {
+public abstract class Entity implements Serializable {
    protected int x;
    protected int y;
    protected int imageId;
-
 
    public Entity(int xUnit, int yUnit, int imageId) {
       this.x = xUnit * Sprite.SCALED_SIZE;
@@ -38,10 +37,8 @@ public abstract class Entity {
       return Util.toGrid(y);
    }
 
-   
-
-
    public abstract void update();
+
    public abstract void remove();
 
 }

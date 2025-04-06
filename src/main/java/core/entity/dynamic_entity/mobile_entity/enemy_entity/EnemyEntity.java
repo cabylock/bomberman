@@ -43,7 +43,9 @@ public class EnemyEntity extends MobileEntity {
     protected boolean EnemyCollision() {
         for (Bomber bomber : GameControl.getBomberEntities()) {
             if (bomber.getXTile() == this.getXTile() && bomber.getYTile() == this.getYTile()) {
-                bomber.dead();
+                if (!bomber.isInvincible()) {
+                    bomber.decreaseHealth();
+                }
                 return true;
             }
         }

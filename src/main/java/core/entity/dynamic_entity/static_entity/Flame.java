@@ -97,9 +97,10 @@ public class Flame extends StaticEntity {
       }
       for (Bomber entity : GameControl.getBomberEntities()) {
          if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
-            entity.dead();
+            if (!entity.isFlamePass() && !entity.isInvincible()) {
+               entity.decreaseHealth();
+            }
             return false;
-
          }
       }
       for (EnemyEntity entity : GameControl.getEnemyEntities()) {
