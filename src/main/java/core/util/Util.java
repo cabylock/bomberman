@@ -6,11 +6,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 
-import java.io.File;
 import java.util.Random;
 
 public class Util {
@@ -23,6 +21,14 @@ public class Util {
       Random random = new Random();
       return random.nextInt(4);
 
+   }
+
+   public static void sleep(int seconds) {
+      try {
+         Thread.sleep(seconds * 1000);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
    }
 
    public static int randomRange(int min, int max) {

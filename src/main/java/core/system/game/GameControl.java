@@ -9,7 +9,9 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
-import core.map_handle.MapEntity;
+import core.map.MapEntity;
+import core.system.network.GameClient;
+import core.system.network.GameServer;
 import core.system.setting.Setting;
 import core.util.Util;
 
@@ -18,6 +20,9 @@ public class GameControl {
    private static String mapName;
    private static int mapType;
    private static int level;
+   private static int gameMode;
+   private static GameServer server;
+   private static GameClient client;
 
 
    private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
@@ -26,10 +31,22 @@ public class GameControl {
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
+
+   public static void  InitializeServer(){
+      server = new GameServer();
+      server.startServer(Setting.SERVER_PORT);
+      client = new GameClient("localhost", Setting.SERVER_PORT);
+      client.connect();
+   }
+
+
    public static void update() {
 
       for (Entity entity : bomberEntities) {
          entity.update();
+         client.sendData(List.of(entity));
+         Util.sleep(2);
+         
       }
       for (Entity entity : staticEntities) {
          entity.update();
@@ -60,7 +77,8 @@ public class GameControl {
       GameControl.mapName = "Level" + level + ".txt";
       GameControl.mapType = Setting.DEFAULT_MAP;
       MapEntity.loadMap(level);
-
+      InitializeServer();
+      Util.sleep(2);
    }
 
    public static void loadMap(String mapName, int mapType) {

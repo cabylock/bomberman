@@ -12,6 +12,7 @@ public class Setting {
       public static final int MAX_LEVEL = 5;
 
       public static int PLAYER_NUM = 1;
+      public static int SERVER_PORT = 1234;
 
       public static final int FPS_MAX = 100;
       public static final int FRAME_TIME_NS = 1_000_000_000 / FPS_MAX;

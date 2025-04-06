@@ -1,4 +1,4 @@
-package core.map_handle;
+package core.map;
 
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Balloom;
@@ -100,7 +100,7 @@ public class MapEntity {
       for (int i = 0; i < height; i++) {
          for (int j = 0; j < width; j++) {
             char c = mapData[i][j];
-            BackgroundEntity grass = new Grass(j, i, Sprite.grass.getFxImage());
+            BackgroundEntity grass = new Grass(j, i,Sprite.grass.getFxImage()); );
             GameControl.addEntity(grass);
             if (c == '#') {
                BackgroundEntity wall = new Wall(j, i, Sprite.wall.getFxImage());
