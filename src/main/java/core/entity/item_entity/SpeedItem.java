@@ -1,12 +1,11 @@
 package core.entity.item_entity;
 
-import javafx.scene.image.Image;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.system.game.GameControl;
 
 public class SpeedItem extends ItemEntity {
-    public SpeedItem(int x, int y, Image image) {
-        super(x, y, image);
+    public SpeedItem(int x, int y, int imageId) {
+        super(x, y, imageId);
     }
 
     @Override

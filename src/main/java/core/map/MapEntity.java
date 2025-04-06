@@ -25,7 +25,6 @@ public class MapEntity {
 
    private static char[][] mapData;
 
-
    public static int getWidth() {
       return width;
    }
@@ -93,52 +92,52 @@ public class MapEntity {
    }
 
    public static void loadMap(String name, int mapType) {
-      
+
       String filePath = mapType == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name;
       readMap(filePath);
 
       for (int i = 0; i < height; i++) {
          for (int j = 0; j < width; j++) {
             char c = mapData[i][j];
-            BackgroundEntity grass = new Grass(j, i,Sprite.grass.getFxImage()); );
+            BackgroundEntity grass = new Grass(j, i, Sprite.GRASS);
             GameControl.addEntity(grass);
             if (c == '#') {
-               BackgroundEntity wall = new Wall(j, i, Sprite.wall.getFxImage());
+               BackgroundEntity wall = new Wall(j, i, Sprite.WALL);
                GameControl.addEntity(wall);
             } else if (c == '*') {
-               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'x') {
-               ItemEntity portal = new Portal(j, i, Sprite.portal.getFxImage());
+               ItemEntity portal = new Portal(j, i, Sprite.PORTAL);
                GameControl.addEntity(portal);
-               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'p') {
-               Bomber player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER1);
+               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER1);
                GameControl.addEntity(player);
             } else if (c == 'q' && Setting.PLAYER_NUM == 2) {
-               Bomber player = new Bomber(j, i, Sprite.player_right.getFxImage(), Setting.BOMBER2);
+               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER2);
                GameControl.addEntity(player);
             } else if (c == '1') {
-               EnemyEntity balloon = new Balloom(j, i, Sprite.balloom_left1.getFxImage());
+               EnemyEntity balloon = new Balloom(j, i, Sprite.BALLOOM_LEFT1);
                GameControl.addEntity(balloon);
             } else if (c == '2') {
-               EnemyEntity oneal = new Oneal(j, i, Sprite.oneal_left1.getFxImage());
+               Oneal oneal = new Oneal(j, i, Sprite.ONEAL_LEFT1);
                GameControl.addEntity(oneal);
             } else if (c == 'b') {
-               ItemEntity BombItem = new BombItem(j, i, Sprite.powerup_bombs.getFxImage());
+               ItemEntity BombItem = new BombItem(j, i, Sprite.POWERUP_BOMBS);
                GameControl.addEntity(BombItem);
-               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'f') {
-               ItemEntity FlameItem = new FlameItem(j, i, Sprite.powerup_flames.getFxImage());
+               ItemEntity FlameItem = new FlameItem(j, i, Sprite.POWERUP_FLAMES);
                GameControl.addEntity(FlameItem);
-               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 's') {
-               ItemEntity SpeedItem = new SpeedItem(j, i, Sprite.powerup_speed.getFxImage());
+               ItemEntity SpeedItem = new SpeedItem(j, i, Sprite.POWERUP_SPEED);
                GameControl.addEntity(SpeedItem);
-               StaticEntity brick = new Brick(j, i, Sprite.brick.getFxImage());
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else {
                // Grass is already added at the beginning of the loop for every cell
@@ -146,20 +145,12 @@ public class MapEntity {
          }
 
       }
-     
+
    }
 
    public static void loadMap(int level) {
       loadMap("Level" + level + ".txt", Setting.DEFAULT_MAP);
 
    }
-
-   
-
-  
- 
-   
-
-
 
 }

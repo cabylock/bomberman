@@ -1,10 +1,8 @@
 package core.entity.background_entity;
 
-import javafx.scene.image.Image;
-
 public class Wall extends BackgroundEntity {
-   public Wall(int x, int y, Image image) {
-      super(x, y, image);
+   public Wall(int x, int y, int imageId) {
+      super(x, y, imageId);
    }
 
    @Override

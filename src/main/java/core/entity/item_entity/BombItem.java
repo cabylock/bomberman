@@ -2,11 +2,10 @@ package core.entity.item_entity;
 
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.system.game.GameControl;
-import javafx.scene.image.Image;
 
 public class BombItem extends ItemEntity {
-   public BombItem(int x, int y, Image image) {
-      super(x, y, image);
+   public BombItem(int x, int y, int imageId) {
+      super(x, y, imageId);
    }
 
    @Override

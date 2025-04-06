@@ -1,7 +1,6 @@
 package core.entity.dynamic_entity;
 
 import core.entity.Entity;
-import javafx.scene.image.Image;
 
 public abstract class DynamicEntity extends Entity {
 
@@ -11,11 +10,11 @@ public abstract class DynamicEntity extends Entity {
  
 
    // Image arrays for animation
-   protected Image[][] images;
+   protected int[][] imageIds;
 
 
-   public DynamicEntity(int x, int y, Image image) {
-      super(x, y, image);
+   public DynamicEntity(int x, int y, int imageId) {
+      super(x, y, imageId);
    }
 
    @Override

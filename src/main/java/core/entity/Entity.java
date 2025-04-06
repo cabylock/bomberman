@@ -8,18 +8,18 @@ import core.util.Util;
 public abstract class Entity {
    protected int x;
    protected int y;
-   protected Image image;
+   protected int imageId;
 
 
-   public Entity(int xUnit, int yUnit, Image image) {
+   public Entity(int xUnit, int yUnit, int imageId) {
       this.x = xUnit * Sprite.SCALED_SIZE;
       this.y = yUnit * Sprite.SCALED_SIZE;
-      this.image = image;
+      this.imageId = imageId;
 
    }
 
    public void render(GraphicsContext gc) {
-      gc.drawImage(image, x, y);
+      gc.drawImage(Sprite.sprites[imageId].getFxImage(), x, y);
    }
 
    public int getX() {

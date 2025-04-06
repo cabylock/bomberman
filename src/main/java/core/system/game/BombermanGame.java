@@ -206,8 +206,6 @@ public class BombermanGame {
      * Update the status bar with current game information
      */
     private void updateStatusBar() {
-        
-       
 
         // Count enemies
         int enemyCount = 0;
@@ -227,6 +225,7 @@ public class BombermanGame {
     public static StackPane getGameRoot() {
         return gameRoot;
     }
+
     /**
      * Show the pause menu overlay
      */
@@ -276,7 +275,7 @@ public class BombermanGame {
         if (gameLoop != null) {
             gameLoop.stop();
         }
-        
+
         // Load the next level
         GameControl.nextLevel();
         gameLoop.play();
@@ -291,7 +290,7 @@ public class BombermanGame {
         if (gameLoop != null) {
             gameLoop.stop();
         }
-        
+
         // Reset the game
         GameControl.resetGame();
         gameLoop.play();

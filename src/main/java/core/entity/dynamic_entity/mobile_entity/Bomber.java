@@ -5,7 +5,6 @@ import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
 import core.entity.dynamic_entity.static_entity.Bomb;
-import javafx.scene.image.Image;
 
 public class Bomber extends MobileEntity {
 
@@ -14,26 +13,26 @@ public class Bomber extends MobileEntity {
    protected int typePlayer;
    protected int bombCountMax = 1;
 
-   public Bomber(int x, int y, Image image, int typePlayer) {
-      super(x, y, image);
+   public Bomber(int x, int y, int imageId, int typePlayer) {
+      super(x, y, imageId);
       // Image arrays for animation
       this.typePlayer = typePlayer;
-      images = new Image[5][3];
-      images[Setting.RIGHT_MOVING][0] = Sprite.player_right.getFxImage();
-      images[Setting.RIGHT_MOVING][1] = Sprite.player_right_1.getFxImage();
-      images[Setting.RIGHT_MOVING][2] = Sprite.player_right_2.getFxImage();
-      images[Setting.LEFT_MOVING][0] = Sprite.player_left.getFxImage();
-      images[Setting.LEFT_MOVING][1] = Sprite.player_left_1.getFxImage();
-      images[Setting.LEFT_MOVING][2] = Sprite.player_left_2.getFxImage();
-      images[Setting.UP_MOVING][0] = Sprite.player_up.getFxImage();
-      images[Setting.UP_MOVING][1] = Sprite.player_up_1.getFxImage();
-      images[Setting.UP_MOVING][2] = Sprite.player_up_2.getFxImage();
-      images[Setting.DOWN_MOVING][0] = Sprite.player_down.getFxImage();
-      images[Setting.DOWN_MOVING][1] = Sprite.player_down_1.getFxImage();
-      images[Setting.DOWN_MOVING][2] = Sprite.player_down_2.getFxImage();
-      images[Setting.DEAD][0] = Sprite.player_dead1.getFxImage();
-      images[Setting.DEAD][1] = Sprite.player_dead2.getFxImage();
-      images[Setting.DEAD][2] = Sprite.player_dead3.getFxImage();
+      imageIds = new int[5][3];
+      imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER_RIGHT;
+      imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER_RIGHT_1;
+      imageIds[Setting.RIGHT_MOVING][2] = Sprite.PLAYER_RIGHT_2;
+      imageIds[Setting.LEFT_MOVING][0] = Sprite.PLAYER_LEFT;
+      imageIds[Setting.LEFT_MOVING][1] = Sprite.PLAYER_LEFT_1;
+      imageIds[Setting.LEFT_MOVING][2] = Sprite.PLAYER_LEFT_2;
+      imageIds[Setting.UP_MOVING][0] = Sprite.PLAYER_UP;
+      imageIds[Setting.UP_MOVING][1] = Sprite.PLAYER_UP_1;
+      imageIds[Setting.UP_MOVING][2] = Sprite.PLAYER_UP_2;
+      imageIds[Setting.DOWN_MOVING][0] = Sprite.PLAYER_DOWN;
+      imageIds[Setting.DOWN_MOVING][1] = Sprite.PLAYER_DOWN_1;
+      imageIds[Setting.DOWN_MOVING][2] = Sprite.PLAYER_DOWN_2;
+      imageIds[Setting.DEAD][0] = Sprite.PLAYER_DEAD1;
+      imageIds[Setting.DEAD][1] = Sprite.PLAYER_DEAD2;
+      imageIds[Setting.DEAD][2] = Sprite.PLAYER_DEAD3;
    }
 
    @Override
@@ -69,7 +68,7 @@ public class Bomber extends MobileEntity {
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
-      Bomb newBomb = new Bomb(bombX, bombY, Sprite.bomb.getFxImage(), flameSize, this);
+      Bomb newBomb = new Bomb(bombX, bombY, Sprite.BOMB, flameSize, this);
       GameControl.addEntity(newBomb);
       bombCountMax--;
 

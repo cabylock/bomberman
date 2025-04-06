@@ -11,25 +11,25 @@ public class Balloom extends EnemyEntity {
 
 
 
-    public Balloom(int x, int y, Image image) {
-        super(x, y, image);
+    public Balloom(int x, int y, int imageId) {
+        super(x, y, imageId);
 
-        images = new Image[4][3];
-        images[Setting.UP_MOVING][0] = Sprite.balloom_left1.getFxImage();
-        images[Setting.UP_MOVING][1] = Sprite.balloom_left2.getFxImage();
-        images[Setting.UP_MOVING][2] = Sprite.balloom_left3.getFxImage();
+        imageIds = new int[4][3];
+        imageIds[Setting.UP_MOVING][0] = Sprite.BALLOOM_LEFT1;
+        imageIds[Setting.UP_MOVING][1] = Sprite.BALLOOM_LEFT2;
+        imageIds[Setting.UP_MOVING][2] = Sprite.BALLOOM_LEFT3;
 
-        images[Setting.DOWN_MOVING][0] = Sprite.balloom_right1.getFxImage();
-        images[Setting.DOWN_MOVING][1] = Sprite.balloom_right2.getFxImage();
-        images[Setting.DOWN_MOVING][2] = Sprite.balloom_right3.getFxImage();
+        imageIds[Setting.DOWN_MOVING][0] = Sprite.BALLOOM_RIGHT1;
+        imageIds[Setting.DOWN_MOVING][1] = Sprite.BALLOOM_RIGHT2;
+        imageIds[Setting.DOWN_MOVING][2] = Sprite.BALLOOM_RIGHT3;
 
-        images[Setting.LEFT_MOVING][0] = Sprite.balloom_left1.getFxImage();
-        images[Setting.LEFT_MOVING][1] = Sprite.balloom_left2.getFxImage();
-        images[Setting.LEFT_MOVING][2] = Sprite.balloom_left3.getFxImage();
+        imageIds[Setting.LEFT_MOVING][0] = Sprite.BALLOOM_LEFT1;
+        imageIds[Setting.LEFT_MOVING][1] = Sprite.BALLOOM_LEFT2;
+        imageIds[Setting.LEFT_MOVING][2] = Sprite.BALLOOM_LEFT3;
 
-        images[Setting.RIGHT_MOVING][0] = Sprite.balloom_right1.getFxImage();
-        images[Setting.RIGHT_MOVING][1] = Sprite.balloom_right2.getFxImage();
-        images[Setting.RIGHT_MOVING][2] = Sprite.balloom_right3.getFxImage();
+        imageIds[Setting.RIGHT_MOVING][0] = Sprite.BALLOOM_RIGHT1;
+        imageIds[Setting.RIGHT_MOVING][1] = Sprite.BALLOOM_RIGHT2;
+        imageIds[Setting.RIGHT_MOVING][2] = Sprite.BALLOOM_RIGHT3;
         
     }
 

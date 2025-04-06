@@ -9,7 +9,7 @@ import core.entity.dynamic_entity.static_entity.Brick;
 import core.graphics.Sprite;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
-import javafx.scene.image.Image;
+
 
 public class MobileEntity extends DynamicEntity {
    protected boolean moving = false;
@@ -23,8 +23,8 @@ public class MobileEntity extends DynamicEntity {
    protected final int ANIMATION_DELAY = 10;
    protected final int DEAD_ANIMATION_DELAY = 40;
 
-   public MobileEntity(int x, int y, Image image) {
-      super(x, y, image);
+   public MobileEntity(int x, int y, int imageId) {
+      super(x, y, imageId);   
    }
 
    @Override
@@ -150,7 +150,7 @@ public class MobileEntity extends DynamicEntity {
          animationDelay = 0;
       }
 
-      image = images[direction][animationStep];
+      imageId = imageIds[direction][animationStep];
    }
 
 }

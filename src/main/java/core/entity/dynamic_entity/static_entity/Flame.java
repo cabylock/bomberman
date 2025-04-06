@@ -1,6 +1,5 @@
 package core.entity.dynamic_entity.static_entity;
 
-import javafx.scene.image.Image;
 import core.entity.background_entity.Wall;
 
 import core.entity.background_entity.BackgroundEntity;
@@ -26,54 +25,54 @@ public class Flame extends StaticEntity {
    protected final int DOWN_END = 6;
    protected int flameType;
 
-   public Flame(int x, int y, Image image, int flameType) {
-      super(x, y, Sprite.bomb_exploded.getFxImage());
-      images = new Image[7][3];
+   public Flame(int x, int y, int imageId, int flameType) {
+      super(x, y, imageId);
+      imageIds = new int[7][3];
       // Center flame
       if (flameType == CENTER) {
-         images[CENTER][0] = Sprite.bomb_exploded.getFxImage();
-         images[CENTER][1] = Sprite.bomb_exploded1.getFxImage();
-         images[CENTER][2] = Sprite.bomb_exploded2.getFxImage();
+         imageIds[CENTER][0] = Sprite.BOMB_EXPLODED;
+         imageIds[CENTER][1] = Sprite.BOMB_EXPLODED1;
+         imageIds[CENTER][2] = Sprite.BOMB_EXPLODED2;
       }
       // Horizontal flame
       if (flameType == HORIZONTAL) {
-         images[HORIZONTAL][0] = Sprite.explosion_horizontal.getFxImage();
-         images[HORIZONTAL][1] = Sprite.explosion_horizontal1.getFxImage();
-         images[HORIZONTAL][2] = Sprite.explosion_horizontal2.getFxImage();
+         imageIds[HORIZONTAL][0] = Sprite.EXPLOSION_HORIZONTAL;
+         imageIds[HORIZONTAL][1] = Sprite.EXPLOSION_HORIZONTAL1;
+         imageIds[HORIZONTAL][2] = Sprite.EXPLOSION_HORIZONTAL2;
       }
       // Vertical flame
       if (flameType == VERTICAL) {
-         images[VERTICAL][0] = Sprite.explosion_vertical.getFxImage();
-         images[VERTICAL][1] = Sprite.explosion_vertical1.getFxImage();
-         images[VERTICAL][2] = Sprite.explosion_vertical2.getFxImage();
+         imageIds[VERTICAL][0] = Sprite.EXPLOSION_VERTICAL;
+         imageIds[VERTICAL][1] = Sprite.EXPLOSION_VERTICAL1;
+         imageIds[VERTICAL][2] = Sprite.EXPLOSION_VERTICAL2;
       }
       // Left end flame
       if (flameType == LEFT_END) {
-         images[LEFT_END][0] = Sprite.explosion_horizontal_left_last.getFxImage();
-         images[LEFT_END][1] = Sprite.explosion_horizontal_left_last1.getFxImage();
-         images[LEFT_END][2] = Sprite.explosion_horizontal_left_last2.getFxImage();
+         imageIds[LEFT_END][0] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST;
+         imageIds[LEFT_END][1] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST1;
+         imageIds[LEFT_END][2] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST2;
       }
       // Right end flame
       if (flameType == RIGHT_END) {
-         images[RIGHT_END][0] = Sprite.explosion_horizontal_right_last.getFxImage();
-         images[RIGHT_END][1] = Sprite.explosion_horizontal_right_last1.getFxImage();
-         images[RIGHT_END][2] = Sprite.explosion_horizontal_right_last2.getFxImage();
+         imageIds[RIGHT_END][0] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST;
+         imageIds[RIGHT_END][1] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST1;
+         imageIds[RIGHT_END][2] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST2;
       }
       // Up end flame
       if (flameType == UP_END) {
-         images[UP_END][0] = Sprite.explosion_vertical_top_last.getFxImage();
-         images[UP_END][1] = Sprite.explosion_vertical_top_last1.getFxImage();
-         images[UP_END][2] = Sprite.explosion_vertical_top_last2.getFxImage();
+         imageIds[UP_END][0] = Sprite.EXPLOSION_VERTICAL_TOP_LAST;
+         imageIds[UP_END][1] = Sprite.EXPLOSION_VERTICAL_TOP_LAST1;
+         imageIds[UP_END][2] = Sprite.EXPLOSION_VERTICAL_TOP_LAST2;
       }
       // Down end flame
       if (flameType == DOWN_END) {
-         images[DOWN_END][0] = Sprite.explosion_vertical_down_last.getFxImage();
-         images[DOWN_END][1] = Sprite.explosion_vertical_down_last1.getFxImage();
-         images[DOWN_END][2] = Sprite.explosion_vertical_down_last2.getFxImage();
+         imageIds[DOWN_END][0] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST;
+         imageIds[DOWN_END][1] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST1;
+         imageIds[DOWN_END][2] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST2;
       }
 
       this.flameType = flameType;
-      this.image = images[flameType][0];
+      this.imageId = imageIds[flameType][0];
 
    }
 
@@ -150,7 +149,7 @@ public class Flame extends StaticEntity {
          animationDelay--;
       }
 
-      image = images[flameType][animationStep];
+      imageId = imageIds[flameType][animationStep];
    }
 
    public void remove() {

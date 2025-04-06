@@ -12,8 +12,8 @@ public class EnemyEntity extends MobileEntity {
     protected int speed = 1;
     protected int moveDelay = 5;
 
-    public EnemyEntity(int x, int y, Image image) {
-        super(x, y, image);
+    public EnemyEntity(int x, int y, int imageId) {
+        super(x, y, imageId);
         constDirection = Util.randomRange(200, 500);
 
     }

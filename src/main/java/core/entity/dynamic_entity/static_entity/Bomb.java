@@ -3,7 +3,7 @@ package core.entity.dynamic_entity.static_entity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.graphics.Sprite;
 import core.system.game.GameControl;
-import javafx.scene.image.Image;
+
 
 public class Bomb extends StaticEntity {
 
@@ -19,16 +19,16 @@ public class Bomb extends StaticEntity {
     protected final int[] DX = { 0, -1, 1, 0, 0 };
     protected final int[] DY = { 0, 0, 0, -1, 1 };
 
-    public Bomb(int x, int y, Image image, int flameSize, Bomber owner) {
-        super(x, y, image);
+    public Bomb(int x, int y, int imageId, int flameSize, Bomber owner) {
+        super(x, y, imageId);
         this.flameSize = flameSize;
         this.owner = owner;
         this.flameSegments = new Flame[5][flameSize + 1];
-        images = new Image[1][3];
+        imageIds = new int[1][3];
 
-        images[DEFAULT_IMAGE][0] = Sprite.bomb.getFxImage();
-        images[DEFAULT_IMAGE][1] = Sprite.bomb_1.getFxImage();
-        images[DEFAULT_IMAGE][2] = Sprite.bomb_2.getFxImage();
+        imageIds[DEFAULT_IMAGE][0] = Sprite.BOMB;
+        imageIds[DEFAULT_IMAGE][1] = Sprite.BOMB_1;
+        imageIds[DEFAULT_IMAGE][2] = Sprite.BOMB_2;
 
     }
 
@@ -54,13 +54,13 @@ public class Bomb extends StaticEntity {
                 int flameType = i == 0 ? 0 : j == flameSize ? i + 2 : (i + 1) / 2;
 
                 flameSegments[i][j] = new Flame(getXTile() + DX[i] * j, getYTile() + DY[i] * j,
-                        Sprite.explosion_horizontal.getFxImage(), flameType);
+                        Sprite.EXPLOSION_HORIZONTAL, flameType);
                 if (flameSegments[i][j].flamecollision()) {
                     break;
                 }
 
                 GameControl.addEntity(flameSegments[i][j]);
-                
+
             }
         }
 
@@ -79,7 +79,7 @@ public class Bomb extends StaticEntity {
             animationDelay--;
         }
 
-        image = images[DEFAULT_IMAGE][animationStep];
+        imageId = imageIds[DEFAULT_IMAGE][animationStep];
 
     }
 

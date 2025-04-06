@@ -6,8 +6,8 @@ import core.system.game.GameControl;
 import core.graphics.Sprite;
 
 public class ItemEntity extends Entity {
-    public ItemEntity(int x, int y, Image image) {
-        super(x, y, image);
+    public ItemEntity(int x, int y, int imageId) {
+        super(x, y, imageId);
     }
 
     @Override

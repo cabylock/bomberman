@@ -24,29 +24,26 @@ public class GameControl {
    private static GameServer server;
    private static GameClient client;
 
-
    private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
    private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
-
-   public static void  InitializeServer(){
+   public static void InitializeServer() {
       server = new GameServer();
       server.startServer(Setting.SERVER_PORT);
       client = new GameClient("localhost", Setting.SERVER_PORT);
       client.connect();
    }
 
-
    public static void update() {
 
       for (Entity entity : bomberEntities) {
          entity.update();
-         client.sendData(List.of(entity));
-         Util.sleep(2);
-         
+         // client.sendData(List.of(entity));
+         // Util.sleep(2);
+
       }
       for (Entity entity : staticEntities) {
          entity.update();
@@ -77,8 +74,8 @@ public class GameControl {
       GameControl.mapName = "Level" + level + ".txt";
       GameControl.mapType = Setting.DEFAULT_MAP;
       MapEntity.loadMap(level);
-      InitializeServer();
-      Util.sleep(2);
+      // InitializeServer();
+      // Util.sleep(2);
    }
 
    public static void loadMap(String mapName, int mapType) {
@@ -95,7 +92,7 @@ public class GameControl {
          return;
       }
       if (level == Setting.MAX_LEVEL) {
-         Util.showImage("/textures/win2.png",BombermanGame.getGameRoot());
+         Util.showImage("/textures/win2.png", BombermanGame.getGameRoot());
          return;
       }
       level++;
