@@ -43,23 +43,39 @@ public class Bomber extends MobileEntity {
 
       int playerIndex = typePlayer - 1;
 
-      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.UP_MOVING])) {
+
+   
+      if(clientId == Setting.CLIENT_ID)
+      {
+         updateMove(playerIndex);
+         updatePlaceBomb(playerIndex);
+         updateAnimation();
+      }
+   }
+
+   
+   private void updateMove(int typePlayer)
+   {
+      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.UP_MOVING])) {
          move(Setting.UP_MOVING, speed);
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.DOWN_MOVING])) {
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.DOWN_MOVING])) {
          move(Setting.DOWN_MOVING, speed);
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.LEFT_MOVING])) {
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.LEFT_MOVING])) {
          move(Setting.LEFT_MOVING, speed);
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][Setting.RIGHT_MOVING])) {
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.RIGHT_MOVING])) {
          move(Setting.RIGHT_MOVING, speed);
       } else {
          moving = false;
       }
+      
+   }
 
-      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerIndex][4])) { // Phím đặt bom
-         BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[playerIndex][4]);
+   private void updatePlaceBomb(int typePlayer)
+   {
+      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][4])) { // Phím đặt bom
+         BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][4]);
          placeBomb();
       }
-      updateAnimation();
    }
 
    private void placeBomb() {

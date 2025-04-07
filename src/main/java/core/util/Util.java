@@ -12,15 +12,15 @@ import javafx.scene.image.ImageView;
 import java.util.Random;
 
 public class Util {
-   private static Random random = new Random(Setting.SEED_RANDOM);
-
+   
    public static int toGrid(int x) {
       return Math.round((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
    }
-
+   
    public static int randomDirection() {
+       Random random = new Random(Setting.SEED_RANDOM);
       return random.nextInt(4);
-
+      
    }
 
    public static void sleep(int seconds) {
@@ -32,7 +32,7 @@ public class Util {
    }
 
    public static int randomRange(int min, int max) {
-      
+      Random random = new Random();
       return random.nextInt(max - min + 1) + min;
    }
 

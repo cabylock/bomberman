@@ -93,10 +93,9 @@ public class GameClient extends Thread {
    public void sendGameState() {
      
       sendData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
-      sendData(GameControl.getEnemyEntities(), Setting.NETWORK_ENEMY_ENTITIES);
-      sendData(GameControl.getStaticEntities(), Setting.NETWORK_STATIC_ENTITIES);
-      sendData(GameControl.getItemEntities(), Setting.NETWORK_ITEM_ENTITIES);
-
+      // sendData(GameControl.getEnemyEntities(), Setting.NETWORK_ENEMY_ENTITIES);
+      // sendData(GameControl.getStaticEntities(), Setting.NETWORK_STATIC_ENTITIES);
+      // sendData(GameControl.getItemEntities(), Setting.NETWORK_ITEM_ENTITIES);
    }
 
    public void receiveGameState() {

@@ -5,10 +5,14 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.Serializable;
 
 import core.graphics.*;
+import core.system.setting.Setting;
 import core.util.Util;
 
 public abstract class Entity implements Serializable {
    private static final long serialVersionUID = 1L;
+   protected static final int clientId = Setting.CLIENT_ID;
+   
+
    protected int x;
    protected int y;
    protected int imageId;

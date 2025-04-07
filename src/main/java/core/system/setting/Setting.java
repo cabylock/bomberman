@@ -1,5 +1,6 @@
 package core.system.setting;
 
+import core.util.Util;
 import javafx.scene.input.KeyCode;
 
 public class Setting {
@@ -15,11 +16,13 @@ public class Setting {
 
       public static final int SERVER_MODE = 0;
       public static final int CLIENT_MODE = 1;
+
       
 
       public static int PLAYER_NUM = 1;
       public static String SERVER_ADDRESS = "localhost";
       public static int SERVER_PORT = 2005;
+      public static int CLIENT_ID = Util.randomRange(0, 100000);
       
       public static String NETWORK_STATIC_ENTITIES = "STATIC";
       public static String NETWORK_ENEMY_ENTITIES = "ENEMY";
