@@ -78,6 +78,7 @@ public class GameControl {
             update();
             if (gameMode == Setting.SERVER_MODE) {
                server.broadcastGameState();
+               
             } 
             
          }
