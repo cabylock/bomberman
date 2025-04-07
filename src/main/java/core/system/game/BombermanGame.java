@@ -144,7 +144,7 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.show();
 
-        GameControl.start(Setting.SERVER_MODE);
+        GameControl.start(Setting.CLIENT_MODE);
         // Create the game loop
         gameLoop = new Timeline(
         new KeyFrame(Duration.seconds(1.0 / Setting.FPS_MAX), _ -> {

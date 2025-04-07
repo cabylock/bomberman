@@ -1,5 +1,6 @@
 
 package core.system.network;
+
 import java.net.Socket;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -23,13 +24,13 @@ public class GameClient extends Thread {
    private ObjectOutputStream out;
    private ObjectInputStream in;
    private Socket serverSocket;
-   private final int MAX_RETRIES = 3;
-   private final int RETRY_DELAY = 1000; // in milliseconds
+   private final int MAX_RETRIES = 5;
+   private final int RETRY_DELAY = 2000; // in milliseconds
 
    public GameClient(String serverAddress, int serverPort) {
       this.serverAddress = serverAddress;
       this.serverPort = serverPort;
-     
+
    }
 
    public boolean connect() {
@@ -40,6 +41,7 @@ public class GameClient extends Thread {
             out = new ObjectOutputStream(serverSocket.getOutputStream());
             in = new ObjectInputStream(serverSocket.getInputStream());
             System.out.println("Connected to server at " + serverAddress + ":" + serverPort);
+            receiveGameState();
             start();
             return true; // Exit the loop if connection is successful
          } catch (IOException e) {
@@ -56,10 +58,9 @@ public class GameClient extends Thread {
             }
          }
       }
-      return false; 
-      
-   }
+      return false;
 
+   }
 
    public void disconnect() {
       try {
@@ -75,113 +76,102 @@ public class GameClient extends Thread {
    @Override
    public void run() {
 
-      try {
-         
-         // Example of sending a message to the server
-         sendMessage("Hello from client!");
-
-         while(true) {
-            // Example of receiving a message from the server
-           
-            String message = in.readUTF();
-               if ("STRING".equals(message)) {
-                  message = in.readUTF();
-                  System.out.println("Server: " + message);
-               }
-               else if(Setting.NETWORK_BOMBER_ENTITIES.equals(message))
-               {
-                  Object obj = in.readObject();
-                  GameControl.setBomberEntities((List<Bomber>) obj);
-                  System.out.println("Bomber entities received: " + ((List<Bomber>) obj).get(0).getX() + " " + ((List<Bomber>) obj).get(0).getY());
-
-               }
-               else if(Setting.NETWORK_ENEMY_ENTITIES.equals(message))
-               {
-                  Object obj = in.readObject();
-                  GameControl.setEnemyEntities((List<EnemyEntity>) obj);
-
-               }
-               else if(Setting.NETWORK_STATIC_ENTITIES.equals(message))
-               {
-                  Object obj = in.readObject();
-                  GameControl.setStaticEntities((List<StaticEntity>) obj);
-
-               }
-               else if(Setting.NETWORK_ITEM_ENTITIES.equals(message))
-               {
-                  Object obj = in.readObject();
-                  GameControl.setItemEntities((List<ItemEntity>) obj);
-
-               }
-               else if(Setting.NETWORK_BACKGROUND_ENTITIES.equals(message))
-               {
-                  Object obj = in.readObject();
-                  GameControl.setBackgroundEntities((List<BackgroundEntity>) obj);
-
-               }
-         }
-
-         // Example of receiving a message from the server
-         
-
-         
-
-      } catch (IOException e) {
-         System.err.println("Error connecting to server: " + e.getMessage());
-      } catch (ClassNotFoundException e) {
-         System.err.println("Error deserializing object: " + e.getMessage());
-      } finally {
+      while(isAlive()) {
          try {
-            if (serverSocket != null && !serverSocket.isClosed()) {
-               serverSocket.close();
+            if(serverSocket == null || serverSocket.isClosed()) {
+               System.out.println("Server socket is closed");
+               break;
             }
-         } catch (IOException e) {
-            System.err.println("Error closing client socket: " + e.getMessage());
+            receiveGameState();
+         } catch (Exception e) {
+            System.err.println("Error receiving game state: " + e.getMessage());
+            break;
          }
       }
+   }
+
+   public void sendGameState() {
+     
+      sendData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
+      sendData(GameControl.getEnemyEntities(), Setting.NETWORK_ENEMY_ENTITIES);
+      sendData(GameControl.getStaticEntities(), Setting.NETWORK_STATIC_ENTITIES);
+      sendData(GameControl.getItemEntities(), Setting.NETWORK_ITEM_ENTITIES);
 
    }
 
-    public void sendMessage(String message) {
-       try {
-            out.reset(); // Reset the stream to avoid memory issues
-            out.writeUTF("STRING"); // Indicate the type of data being sent
-            out.writeUTF(message); // Send the message
-            out.flush(); // Ensure the data is sent immediately
-         } catch (IOException e) {
-            System.err.println("Error sending message: " + e.getMessage());
-         }
-      }
+   public void receiveGameState() {
+      try {
+         String message = in.readUTF();
+         if ("STRING".equals(message)) {
+            message = in.readUTF();
+            System.out.println("Server: " + message);
+         } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
+            Object obj = in.readObject();
+            GameControl.setBomberEntities((List<Bomber>) obj);
 
-      public <T> void sendData(List<T> data, String type) {
-         try {
-            out.reset();
-            out.writeUTF(type); // Indicate the type of data being sent
-            out.writeObject(data); // Serialize and send the object
+         } else if (Setting.NETWORK_ENEMY_ENTITIES.equals(message)) {
+            Object obj = in.readObject();
+            GameControl.setEnemyEntities((List<EnemyEntity>) obj);
 
-            // List<Bomber> bomberEntities = (List<Bomber>) data;
-            // System.out.println(bomberEntities.get(0).getXTile()+" "+ bomberEntities.get(0).getYTile());
-            
-            out.flush(); // Ensure the data is sent immediately
-         } catch (IOException e) {
-            System.err.println("Error sending object: " + e.getMessage());
+         } else if (Setting.NETWORK_STATIC_ENTITIES.equals(message)) {
+            Object obj = in.readObject();
+            GameControl.setStaticEntities((List<StaticEntity>) obj);
+
+         } else if (Setting.NETWORK_ITEM_ENTITIES.equals(message)) {
+            Object obj = in.readObject();
+            GameControl.setItemEntities((List<ItemEntity>) obj);
+
+         } else if (Setting.NETWORK_BACKGROUND_ENTITIES.equals(message)) {
+            Object obj = in.readObject();
+            GameControl.setBackgroundEntities((List<BackgroundEntity>) obj);
+
          }
+
+
+      } catch (   IOException e) {
+         System.err.println("Error receiving object: " + e.getMessage());
+      } catch (ClassNotFoundException e) {
+         System.err.println("Error deserializing object: " + e.getMessage());
+      } catch (Exception e) {
+         System.err.println("Unexpected error: " + e.getMessage());
+      } 
+
+   }
+
+   public void sendMessage(String message) {
+      try {
+         out.reset(); // Reset the stream to avoid memory issues
+         out.writeUTF("STRING"); // Indicate the type of data being sent
+         out.writeUTF(message); // Send the message
+         out.flush(); // Ensure the data is sent immediately
+      } catch (IOException e) {
+         System.err.println("Error sending message: " + e.getMessage());
       }
+   }
+
+   public <T> void sendData(List<T> data, String type) {
+      try {
+         out.reset();
+         out.writeUTF(type); // Indicate the type of data being sent
+         out.writeObject(data); // Serialize and send the object
+         out.flush(); // Ensure the data is sent immediately
+      } catch (IOException e) {
+         System.err.println("Error sending object: " + e.getMessage());
+      }
+   }
 
    // public static void main(String[] args) {
 
-   //    String serverAddress = "localhost"; // Replace with the server's IP address
-   //    int serverPort = 8080;
+   // String serverAddress = "localhost"; // Replace with the server's IP address
+   // int serverPort = 8080;
 
-   //    GameClient client = new GameClient(serverAddress, serverPort);
-   //    client.connect();
+   // GameClient client = new GameClient(serverAddress, serverPort);
+   // client.connect();
 
-      
-   //   Bomber bomber = new Bomber(0, 3, 0, 1);
-   //    client.sendData(List.of(bomber),"BOMBER");
-   //    // client.start();
+   // Bomber bomber = new Bomber(0, 3, 0, 1);
+   // client.sendData(List.of(bomber),"BOMBER");
+   // // client.start();
 
-      
    // }
 
 }
