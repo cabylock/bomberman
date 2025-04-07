@@ -44,24 +44,18 @@ public class GameControl {
 
    public static void start(int gameMode) {
       GameControl.gameMode = gameMode;
-      if(gameMode == Setting.SERVER_MODE)
-      {
+      if (gameMode == Setting.SERVER_MODE) {
          server = new GameServer();
          server.startServer(Setting.SERVER_PORT);
-         
-      }
-      else if(gameMode == Setting.CLIENT_MODE)
-      {
+
+      } else if (gameMode == Setting.CLIENT_MODE) {
          clear();
          client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-         if(!client.connect())
-         {
+         if (!client.connect()) {
             Util.showNotificationWindow("Cannot connect to server");
             return;
          }
-      }
-      else 
-      {  // test mode
+      } else { // test mode
          server = new GameServer();
          server.startServer(Setting.SERVER_PORT);
          client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
@@ -78,8 +72,12 @@ public class GameControl {
             update();
             if (gameMode == Setting.SERVER_MODE) {
                server.broadcastGameState();
-            } 
-            
+            }
+            if (gameMode == Setting.CLIENT_MODE) {
+               client.sendGameState();
+
+            }
+
          }
       });
       runningThread.setDaemon(true);
@@ -97,32 +95,18 @@ public class GameControl {
          entity.update();
       }
 
-      if (gameMode == Setting.CLIENT_MODE) {
-         client.sendData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
-      }
-
       for (Entity entity : staticEntities) {
          entity.update();
       }
-      if (gameMode == Setting.CLIENT_MODE) {
-         client.sendData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
-      }
 
-   
       for (Entity entity : enemyEntities) {
          entity.update();
-      }
-      
-      if( gameMode == Setting.CLIENT_MODE) {
-         client.sendData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
       }
 
       for (Entity entity : itemEntities) {
          entity.update();
       }
-      if (gameMode == Setting.CLIENT_MODE) {
-         client.sendData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
-      }
+
    }
 
    public static int getWidth() {
