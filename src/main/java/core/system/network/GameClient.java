@@ -32,7 +32,7 @@ public class GameClient extends Thread {
      
    }
 
-   public void connect() {
+   public boolean connect() {
       int retries = 0;
       while (retries < MAX_RETRIES) {
          try {
@@ -40,9 +40,10 @@ public class GameClient extends Thread {
             out = new ObjectOutputStream(serverSocket.getOutputStream());
             in = new ObjectInputStream(serverSocket.getInputStream());
             System.out.println("Connected to server at " + serverAddress + ":" + serverPort);
-            break; // Exit the loop if connection is successful
+            start();
+            return true; // Exit the loop if connection is successful
          } catch (IOException e) {
-            System.err.println("Error, Retry connect to server: "+ retries+1 +" time(s) "+ e.getMessage());
+            System.err.println("Error, Retry connect to server: " + retries + 1 + " time(s) " + e.getMessage());
             retries++;
             if (retries < MAX_RETRIES) {
                try {
@@ -55,6 +56,8 @@ public class GameClient extends Thread {
             }
          }
       }
+      return false; 
+      
    }
 
 
@@ -89,6 +92,7 @@ public class GameClient extends Thread {
                {
                   Object obj = in.readObject();
                   GameControl.setBomberEntities((List<Bomber>) obj);
+                  System.out.println("Bomber entities received: " + ((List<Bomber>) obj).get(0).getX() + " " + ((List<Bomber>) obj).get(0).getY());
 
                }
                else if(Setting.NETWORK_ENEMY_ENTITIES.equals(message))

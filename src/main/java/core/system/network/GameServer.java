@@ -15,6 +15,7 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
+import core.system.game.GameControl;
 import core.system.setting.Setting;
 
 public class GameServer extends Thread {
@@ -22,13 +23,13 @@ public class GameServer extends Thread {
    private ServerSocket serverSocket;
    private int port;
    private List<ClientHandler> clients = new CopyOnWriteArrayList<>();
-   private boolean isRunning = true;
+   private  boolean isRunning = true;
 
-   private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
-   private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
-   private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
-   private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
-   private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
+   private static List<Bomber> bomberEntities = GameControl.getBomberEntities();
+   private static List<StaticEntity> staticEntities = GameControl.getStaticEntities();
+   private static List<EnemyEntity> enemyEntities = GameControl.getEnemyEntities();
+   private static List<ItemEntity> itemEntities = GameControl.getItemEntities();
+   private static List<BackgroundEntity> backgroundEntities = GameControl.getBackgroundEntities();
 
    private ScheduledExecutorService broadcastScheduler;
 
@@ -38,19 +39,25 @@ public class GameServer extends Thread {
       System.out.println("Server started on port " + port);
 
       // Start auto-broadcasting
-      startAutoBroadcast();
+      
    }
 
-   private void startAutoBroadcast() {
-      broadcastScheduler = Executors.newScheduledThreadPool(1);
-      broadcastScheduler.scheduleAtFixedRate(() -> {
+   public  void broadcastGameState() {
+      
          // Broadcast entity data to all clients
+         
          broadcastData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
+         // System.out.println("Broadcasting bomber entities: " + bomberEntities.get(0).getX() + " " + bomberEntities.get(0).getY());
          broadcastData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
          broadcastData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
          broadcastData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
          broadcastData(backgroundEntities, Setting.NETWORK_BACKGROUND_ENTITIES);
-      }, 0, 5, TimeUnit.SECONDS); // Broadcast every 5 seconds
+      
+   }
+
+
+   public void updateGameState() {
+      
    }
 
    @Override
@@ -63,6 +70,7 @@ public class GameServer extends Thread {
             ClientHandler clientHandler = new ClientHandler(clientSocket);
             clientHandler.start();
             clients.add(clientHandler);
+            System.out.println("Client connected: " + clientHandler.clientName);
          }
       } catch (IOException e) {
          System.err.println("Error starting server: " + e.getMessage());
@@ -81,6 +89,7 @@ public class GameServer extends Thread {
       try {
          for (ClientHandler client : clients) {
             client.sendMessage("Server is shutting down.");
+            client.disconnect();
             client.interrupt();
             client.clientSocket.close();
          }
@@ -109,6 +118,7 @@ public class GameServer extends Thread {
    private static class ClientHandler extends Thread {
       private Socket clientSocket;
       private ObjectInputStream in;
+      private volatile boolean isRunning = true;
 
       private ObjectOutputStream out;
       private String clientName;
@@ -131,10 +141,10 @@ public class GameServer extends Thread {
       }
 
       @Override
-      public void run() {
+      public  void run() {
          try {
 
-            while (true) {
+            while (isRunning) {
 
                // Example of receiving a message from the client
                String message = in.readUTF();
@@ -170,11 +180,18 @@ public class GameServer extends Thread {
          }
 
          finally {
-            try {
+            disconnect();
+         }
+      }
+
+      public void disconnect() {
+         isRunning = false;
+         try {
+            if (clientSocket != null && !clientSocket.isClosed()) {
                clientSocket.close();
-            } catch (IOException e) {
-               System.err.println("Error closing client socket: " + e.getMessage());
             }
+         } catch (IOException e) {
+            System.err.println("Error disconnecting client: " + e.getMessage());
          }
       }
 
@@ -186,6 +203,7 @@ public class GameServer extends Thread {
             out.flush(); // Ensure the data is sent immediately
          } catch (IOException e) {
             System.err.println("Error sending message: " + e.getMessage());
+            disconnect();
          }
       }
 
@@ -197,6 +215,7 @@ public class GameServer extends Thread {
             out.flush(); // Ensure the data is sent immediately
          } catch (IOException e) {
             System.err.println("Error sending object: " + e.getMessage());
+            disconnect();
          }
       }
 

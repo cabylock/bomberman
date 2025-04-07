@@ -20,6 +20,7 @@ public class GameControl {
    private static String mapName;
    private static int mapType;
    private static int level;
+   private static int gameMode;
 
    private static GameServer server;
    private static GameClient client;
@@ -42,15 +43,22 @@ public class GameControl {
    }
 
    public static void start(int gameMode) {
+      GameControl.gameMode = gameMode;
       if(gameMode == Setting.SERVER_MODE)
       {
          server = new GameServer();
          server.startServer(Setting.SERVER_PORT);
+         
       }
       else if(gameMode == Setting.CLIENT_MODE)
       {
+         clear();
          client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-         client.connect();
+         if(!client.connect())
+         {
+            Util.showNotificationWindow("Cannot connect to server");
+            return;
+         }
       }
       else 
       {  // test mode
@@ -66,7 +74,12 @@ public class GameControl {
             } catch (InterruptedException e) {
                e.printStackTrace();
             }
+
             update();
+            if (gameMode == Setting.SERVER_MODE) {
+               server.broadcastGameState();
+            } 
+            
          }
       });
       runningThread.setDaemon(true);
@@ -84,21 +97,32 @@ public class GameControl {
          entity.update();
       }
 
-      client.sendData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
+      if (gameMode == Setting.CLIENT_MODE) {
+         client.sendData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
+      }
 
       for (Entity entity : staticEntities) {
          entity.update();
       }
+      if (gameMode == Setting.CLIENT_MODE) {
+         client.sendData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
+      }
 
-      client.sendData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
+   
       for (Entity entity : enemyEntities) {
          entity.update();
       }
-      client.sendData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
+      
+      if( gameMode == Setting.CLIENT_MODE) {
+         client.sendData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
+      }
+
       for (Entity entity : itemEntities) {
          entity.update();
       }
-      client.sendData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
+      if (gameMode == Setting.CLIENT_MODE) {
+         client.sendData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
+      }
    }
 
    public static int getWidth() {
