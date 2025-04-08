@@ -155,7 +155,7 @@ public class BombermanGame {
                 render();
                 if(now - lastUpdateTime >= Setting.FRAME_TIME_NS) {
                     GameControl.update();
-                    System.out.println(Setting.ID);
+                    
                     updateStatusBar();
                     
                     lastUpdateTime = now;

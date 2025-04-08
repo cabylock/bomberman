@@ -22,7 +22,7 @@ public class Setting {
       public static int PLAYER_NUM = 1;
       public static String SERVER_ADDRESS = "localhost";
       public static int SERVER_PORT = 2005;
-      public static int ID;
+      public static int ID= Util.uuid();
       
       public static String NETWORK_STATIC_ENTITIES = "STATIC";
       public static String NETWORK_ENEMY_ENTITIES = "ENEMY";
@@ -30,7 +30,7 @@ public class Setting {
       public static String NETWORK_BOMBER_ENTITIES = "BOMBER";
       public static String NETWORK_BACKGROUND_ENTITIES = "BACKGROUND";
 
-      public static final int FPS_MAX = 100;
+      public static final int FPS_MAX = 240;
       public static final int FRAME_TIME_NS = 1_000_000_000 / FPS_MAX;
 
       public static final int BOMBER1 = 1;

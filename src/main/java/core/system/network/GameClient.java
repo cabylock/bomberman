@@ -27,6 +27,7 @@ public class GameClient extends Thread {
    private Socket serverSocket;
    private final int MAX_RETRIES = 5;
    private final int RETRY_DELAY = 2000; // in milliseconds
+   private int receiveRetries = 5;
 
    private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
@@ -106,7 +107,7 @@ public class GameClient extends Thread {
    }
 
    public void syncGameState() {
-      sendGameState();
+      
       GameControl.setBomberEntities(bomberEntities);
       GameControl.setStaticEntities(staticEntities);
       GameControl.setEnemyEntities(enemyEntities);
@@ -147,6 +148,11 @@ public class GameClient extends Thread {
 
       } catch (   IOException e) {
          System.err.println("Error receiving object: " + e.getMessage());
+         receiveRetries--;
+         if(receiveRetries <= 0) {
+            System.err.println("Max retries reached. Disconnecting...");
+            disconnect();
+         }
       } catch (ClassNotFoundException e) {
          System.err.println("Error deserializing object: " + e.getMessage());
       } catch (Exception e) {

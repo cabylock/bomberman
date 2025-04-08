@@ -6,9 +6,7 @@ import java.net.*;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 
 import core.entity.background_entity.BackgroundEntity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
@@ -17,7 +15,7 @@ import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
-import core.util.Util;
+
 
 public class GameServer extends Thread {
 
@@ -25,6 +23,7 @@ public class GameServer extends Thread {
    private int port;
    private static List<ClientHandler> clients = new CopyOnWriteArrayList<>();
    private boolean isRunning = true;
+  
    
    private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
@@ -46,7 +45,7 @@ public class GameServer extends Thread {
       backgroundEntities = GameControl.getBackgroundEntities();
       itemEntities = GameControl.getItemEntities();
 
-      broadcastGameState();
+      
 
    }
 
@@ -126,6 +125,7 @@ public class GameServer extends Thread {
       private Socket clientSocket;
       private ObjectInputStream in;
       private volatile boolean isRunning = true;
+      private int receiveRetries = 5;
 
       private ObjectOutputStream out;
       private String clientName;
@@ -215,6 +215,11 @@ public class GameServer extends Thread {
 
          } catch (IOException e) {
             System.err.println("Error receive " + clientName + ": " + e.getMessage());
+            receiveRetries--;
+            if (receiveRetries <= 0) {
+               System.err.println("Max retries reached. Disconnecting " + clientName + "...");
+               disconnect();
+            }
          } catch (ClassNotFoundException e) {
             System.err.println("Error reading object from client: " + e.getMessage());
          }
