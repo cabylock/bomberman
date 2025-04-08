@@ -18,9 +18,15 @@ public class Util {
    }
    
    public static int randomDirection() {
-       Random random = new Random(Setting.SEED_RANDOM);
+      Random random = new Random();
       return random.nextInt(4);
-      
+
+   }
+   
+   public static int uuid() {
+      Random random = new Random();
+      int id = random.nextInt(100000);
+      return id;
    }
 
    public static void sleep(int seconds) {

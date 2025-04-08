@@ -44,6 +44,7 @@ public class GameControl {
 
    public static void start(int gameMode) {
       GameControl.gameMode = gameMode;
+      Setting.ID = Util.uuid();
       if (gameMode == Setting.SERVER_MODE) {
          server = new GameServer();
          server.startServer(Setting.SERVER_PORT);
@@ -61,27 +62,9 @@ public class GameControl {
          client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
          client.connect();
       }
-      Thread runningThread = new Thread(() -> {
-         while (true) {
-            try {
-               Thread.sleep(1_000 / Setting.FPS_MAX);
-            } catch (InterruptedException e) {
-               e.printStackTrace();
-            }
-
-            update();
-            if (gameMode == Setting.SERVER_MODE) {
-               server.broadcastGameState();
-            }
-            if (gameMode == Setting.CLIENT_MODE) {
-               client.sendGameState();
-
-            }
-
-         }
-      });
-      runningThread.setDaemon(true);
-      runningThread.start();
+      
+         
+     
    }
 
    public static void stop() {
@@ -89,24 +72,48 @@ public class GameControl {
       client.disconnect();
    }
 
+   public static void syncGameState() {
+     if(gameMode == Setting.SERVER_MODE) {
+         server.syncGameState();
+      } else if (gameMode == Setting.CLIENT_MODE) {
+         client.syncGameState();
+      }
+   }
+
    public static void update() {
 
-      for (Entity entity : bomberEntities) {
-         entity.update();
-      }
+      syncGameState();
+     
+         for (Bomber entity : bomberEntities) {
+            if(entity.Id == Setting.ID) {
+               entity.update();
+            }
+         }
 
-      for (Entity entity : staticEntities) {
-         entity.update();
-      }
+         for (StaticEntity entity : staticEntities) {
+            if(entity.Id == Setting.ID) {
+               entity.update();
+            }
+         }
 
-      for (Entity entity : enemyEntities) {
-         entity.update();
-      }
-
-      for (Entity entity : itemEntities) {
-         entity.update();
-      }
-
+         for (EnemyEntity entity : enemyEntities) {
+            if (entity.Id == Setting.ID) {
+               entity.update();
+            }
+         }
+         
+         for (ItemEntity entity : itemEntities) {
+            if (entity.Id == Setting.ID) {
+               entity.update();
+            }
+         }
+         
+         if (gameMode == Setting.SERVER_MODE) {
+            server.broadcastGameState();
+         } else if (gameMode == Setting.CLIENT_MODE) {
+            client.sendGameState();
+         }
+      
    }
 
    public static int getWidth() {

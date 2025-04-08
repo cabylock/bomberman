@@ -10,7 +10,7 @@ import core.util.Util;
 
 public abstract class Entity implements Serializable {
    private static final long serialVersionUID = 1L;
-   protected static final int clientId = Setting.CLIENT_ID;
+   public static  int Id = Setting.ID;
    
 
    protected int x;

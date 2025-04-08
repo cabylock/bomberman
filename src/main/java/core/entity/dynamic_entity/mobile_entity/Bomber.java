@@ -5,8 +5,6 @@ import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
 
-
-
 import core.entity.dynamic_entity.static_entity.Bomb;
 
 public class Bomber extends MobileEntity {
@@ -43,19 +41,17 @@ public class Bomber extends MobileEntity {
 
       int playerIndex = typePlayer - 1;
 
+      updateMove(playerIndex);
 
-   
-      if(clientId == Setting.CLIENT_ID)
-      {
-         updateMove(playerIndex);
-         updatePlaceBomb(playerIndex);
-         updateAnimation();
-      }
+      updateAnimation();
    }
 
-   
-   private void updateMove(int typePlayer)
-   {
+   private void updateMove(int typePlayer) {
+
+      if(Id != Setting.ID) {
+         return;
+      }
+
       if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.UP_MOVING])) {
          move(Setting.UP_MOVING, speed);
       } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.DOWN_MOVING])) {
@@ -64,18 +60,13 @@ public class Bomber extends MobileEntity {
          move(Setting.LEFT_MOVING, speed);
       } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.RIGHT_MOVING])) {
          move(Setting.RIGHT_MOVING, speed);
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][4])) { // Phím đặt bom
+         BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][4]);
+         placeBomb();
       } else {
          moving = false;
       }
-      
-   }
 
-   private void updatePlaceBomb(int typePlayer)
-   {
-      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][4])) { // Phím đặt bom
-         BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][4]);
-         placeBomb();
-      }
    }
 
    private void placeBomb() {

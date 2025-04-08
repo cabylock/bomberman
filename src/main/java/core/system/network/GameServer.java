@@ -17,6 +17,7 @@ import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
+import core.util.Util;
 
 public class GameServer extends Thread {
 
@@ -24,9 +25,14 @@ public class GameServer extends Thread {
    private int port;
    private static List<ClientHandler> clients = new CopyOnWriteArrayList<>();
    private boolean isRunning = true;
-   private int  initialTime = 20;
+   
+   private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
+   private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
+   private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
+   private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
+   private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
-   private ScheduledExecutorService broadcastScheduler;
+
 
    public void startServer(int port) {
       this.port = port;
@@ -34,6 +40,12 @@ public class GameServer extends Thread {
       System.out.println("Server started on port " + port);
 
       // Start auto-broadcasting
+      bomberEntities = GameControl.getBomberEntities();
+      staticEntities = GameControl.getStaticEntities();
+      enemyEntities = GameControl.getEnemyEntities();
+      backgroundEntities = GameControl.getBackgroundEntities();
+      itemEntities = GameControl.getItemEntities();
+
       broadcastGameState();
 
    }
@@ -42,17 +54,21 @@ public class GameServer extends Thread {
 
       // Broadcast entity data to all clients
 
-      broadcastData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
-      // System.out.println("Broadcasting bomber entities: " +
-      // bomberEntities.get(0).getX() + " " + bomberEntities.get(0).getY());
-      broadcastData(GameControl.getEnemyEntities(), Setting.NETWORK_ENEMY_ENTITIES);
-      broadcastData(GameControl.getStaticEntities(), Setting.NETWORK_STATIC_ENTITIES);
-      broadcastData(GameControl.getItemEntities(), Setting.NETWORK_ITEM_ENTITIES);
-      if (initialTime >= 0) {
-         broadcastData(GameControl.getBackgroundEntities(), Setting.NETWORK_BACKGROUND_ENTITIES);
-         initialTime --; 
-      }
+      broadcastData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
+      broadcastData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
+      broadcastData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
+      broadcastData(backgroundEntities, Setting.NETWORK_BACKGROUND_ENTITIES);
+      broadcastData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
 
+   }
+
+   public void syncGameState() {
+      GameControl.setBomberEntities(bomberEntities);
+      GameControl.setStaticEntities(staticEntities);
+      GameControl.setEnemyEntities(enemyEntities);
+      GameControl.setBackgroundEntities(backgroundEntities);
+      GameControl.setItemEntities(itemEntities);
+      
    }
 
    @Override
@@ -65,6 +81,7 @@ public class GameServer extends Thread {
             ClientHandler clientHandler = new ClientHandler(clientSocket);
             clientHandler.start();
             clients.add(clientHandler);
+
             System.out.println("Client connected: " + clientHandler.clientName);
          }
       } catch (IOException e) {
@@ -75,11 +92,6 @@ public class GameServer extends Thread {
 
    public void stopServer() {
       isRunning = false;
-
-      // Stop auto-broadcasting
-      if (broadcastScheduler != null && !broadcastScheduler.isShutdown()) {
-         broadcastScheduler.shutdown();
-      }
 
       try {
          for (ClientHandler client : clients) {
@@ -135,10 +147,10 @@ public class GameServer extends Thread {
       }
 
       @Override
-      public  void run() {
+      public void run() {
          while (isRunning) {
             try {
-               if(clientSocket == null || clientSocket.isClosed()) {
+               if (clientSocket == null || clientSocket.isClosed()) {
                   disconnect();
                   break;
                }
@@ -147,9 +159,9 @@ public class GameServer extends Thread {
                System.err.println("Error receiving data from client: " + e.getMessage());
 
             }
-            
+
          }
-              
+
       }
 
       public void disconnect() {
@@ -159,14 +171,13 @@ public class GameServer extends Thread {
                clientSocket.close();
                in.close();
                out.close();
-               
+
                System.out.println("Client " + clientName + " disconnected.");
 
             }
          } catch (IOException e) {
             System.err.println("Error disconnecting client: " + e.getMessage());
-         }
-         finally {
+         } finally {
             clients.remove(this);
          }
       }
@@ -177,34 +188,36 @@ public class GameServer extends Thread {
             String message = in.readUTF();
             if ("STRING".equals(message)) {
                message = in.readUTF();
-               System.out.println("Client " + clientName + " sent: " + message);
+               System.out.println("Received message from " + clientName + ": " + message);
+            
             } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               GameControl.setBomberEntities((List<Bomber>) obj);
-            } else if (Setting.NETWORK_ENEMY_ENTITIES.equals(message)) {
+               bomberEntities = (List<Bomber>) obj;
+
+            }
+            else if (Setting.NETWORK_ENEMY_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               GameControl.setEnemyEntities((List<EnemyEntity>) obj);
+               enemyEntities = (List<EnemyEntity>) obj;
 
             } else if (Setting.NETWORK_STATIC_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               GameControl.setStaticEntities((List<StaticEntity>) obj);
-
-            } else if (Setting.NETWORK_ITEM_ENTITIES.equals(message)) {
-               Object obj = in.readObject();
-               GameControl.setItemEntities((List<ItemEntity>) obj);
+               staticEntities = (List<StaticEntity>) obj;
 
             } else if (Setting.NETWORK_BACKGROUND_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               GameControl.setBackgroundEntities((List<BackgroundEntity>) obj);
+               backgroundEntities = (List<BackgroundEntity>) obj;
+
+            } else if (Setting.NETWORK_ITEM_ENTITIES.equals(message)) {
+               Object obj = in.readObject();
+               itemEntities = (List<ItemEntity>) obj;
 
             }
 
-         }
-         catch (IOException e) {
+         } catch (IOException e) {
             System.err.println("Error receive " + clientName + ": " + e.getMessage());
          } catch (ClassNotFoundException e) {
             System.err.println("Error reading object from client: " + e.getMessage());
-         } 
+         }
       }
 
       public void sendMessage(String message) {
@@ -215,9 +228,10 @@ public class GameServer extends Thread {
             out.flush(); // Ensure the data is sent immediately
          } catch (IOException e) {
             System.err.println("Error sending message: " + e.getMessage());
-            
+
          }
       }
+
 
       public <T> void sendData(List<T> data, String type) {
          try {

@@ -9,6 +9,7 @@ import core.system.entry.Main;
 import core.system.setting.Setting;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
+import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -36,24 +37,24 @@ import java.util.HashSet;
 
 public class BombermanGame {
 
-    private int frameCounter = 0;
-    private long lastFpsUpdateTime = 0;
-    private int fps = 0;
+
 
     private GraphicsContext gc;
     private Canvas canvas;
     public static final Set<KeyCode> input = new HashSet<>();
     private Stage stage;
 
+    private long lastUpdateTime = 0;
+
     // UI elements for status bar
     private Text healthText;
     private Text bombsText;
     private Text enemiesText;
     private Text scoreText;
-    private Text fpsText;
+
 
     // Add these fields to your BombermanGame class
-    private Timeline gameLoop;
+    private AnimationTimer gameLoop;
     private static StackPane gameRoot;
     private boolean isPaused = false;
 
@@ -144,26 +145,25 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.show();
 
-        GameControl.start(Setting.CLIENT_MODE);
+        GameControl.start(2);
         // Create the game loop
-        gameLoop = new Timeline(
-        new KeyFrame(Duration.seconds(1.0 / Setting.FPS_MAX), _ -> {
-                    
-                    render();
-                    updateStatusBar();
+        // 
+        gameLoop = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                
+                render();
+                if(now - lastUpdateTime < Setting.FRAME_TIME_NS) {
+                    return;
+                }
+                lastUpdateTime = now;
 
-                    // Count frames here instead
-                    frameCounter++;
-                    long now = System.nanoTime();
-                    if (now - lastFpsUpdateTime >= 1_000_000_000) {
-                        fps = frameCounter;
-                        frameCounter = 0;
-                        lastFpsUpdateTime = now;
-                        fpsText.setText("FPS: " + fps);
-                    }
-                }));
-        gameLoop.setCycleCount(Timeline.INDEFINITE);
-        gameLoop.play();
+               GameControl.update();
+                
+                updateStatusBar();
+            }
+        };
+        gameLoop.start();
     }
 
     /**
@@ -193,12 +193,10 @@ public class BombermanGame {
         scoreText.setFill(Color.WHITE);
 
         // In your createStatusBar method, add:
-        fpsText = new Text("FPS: 0");
-        fpsText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        fpsText.setFill(Color.WHITE);
+        
 
         // Add to status bar
-        statusBar.getChildren().addAll(healthText, bombsText, enemiesText, scoreText, fpsText);
+        statusBar.getChildren().addAll(healthText, bombsText, enemiesText, scoreText);
 
         return statusBar;
     }
@@ -233,7 +231,7 @@ public class BombermanGame {
     private void showPauseMenu() {
         // Pause the game
         isPaused = true;
-        gameLoop.pause();
+        gameLoop.stop();
 
         try {
             // Load the pause menu FXML
@@ -265,7 +263,7 @@ public class BombermanGame {
      */
     public void resumeGame() {
         isPaused = false;
-        gameLoop.play();
+        gameLoop.start();
     }
 
     public void nextLevel() {
@@ -279,7 +277,7 @@ public class BombermanGame {
 
         // Load the next level
         GameControl.nextLevel();
-        gameLoop.play();
+        gameLoop.start();
     }
 
     // Update your restartGame method to support the pause menu
@@ -294,7 +292,7 @@ public class BombermanGame {
 
         // Reset the game
         GameControl.resetGame();
-        gameLoop.play();
+        gameLoop.start();
     }
 
     // Make returnToMenu method public so the controller can access it
@@ -331,8 +329,6 @@ public class BombermanGame {
         }
 
     }
-
-   
 
     public void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
