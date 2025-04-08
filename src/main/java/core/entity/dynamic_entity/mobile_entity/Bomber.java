@@ -4,7 +4,7 @@ import core.graphics.Sprite;
 import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
-
+import core.entity.Entity;
 import core.entity.dynamic_entity.static_entity.Bomb;
 
 public class Bomber extends MobileEntity {
@@ -48,9 +48,7 @@ public class Bomber extends MobileEntity {
 
    private void updateMove(int typePlayer) {
 
-      if(Id != Setting.ID) {
-         return;
-      }
+      
 
       if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.UP_MOVING])) {
          move(Setting.UP_MOVING, speed);

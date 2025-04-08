@@ -85,25 +85,25 @@ public class GameControl {
       syncGameState();
      
          for (Bomber entity : bomberEntities) {
-            if(entity.Id == Setting.ID) {
+            if(entity.getId() == Setting.ID) {
                entity.update();
             }
          }
 
          for (StaticEntity entity : staticEntities) {
-            if(entity.Id == Setting.ID) {
+            if(entity.getId() == Setting.ID) {
                entity.update();
             }
          }
 
          for (EnemyEntity entity : enemyEntities) {
-            if (entity.Id == Setting.ID) {
+            if (entity.getId() == Setting.ID) {
                entity.update();
             }
          }
          
          for (ItemEntity entity : itemEntities) {
-            if (entity.Id == Setting.ID) {
+            if (entity.getId() == Setting.ID) {
                entity.update();
             }
          }

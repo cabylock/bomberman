@@ -22,7 +22,7 @@ public class Setting {
       public static int PLAYER_NUM = 1;
       public static String SERVER_ADDRESS = "localhost";
       public static int SERVER_PORT = 2005;
-      public static int ID = 0;
+      public static int ID;
       
       public static String NETWORK_STATIC_ENTITIES = "STATIC";
       public static String NETWORK_ENEMY_ENTITIES = "ENEMY";

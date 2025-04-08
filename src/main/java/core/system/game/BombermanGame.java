@@ -145,7 +145,7 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.show();
 
-        GameControl.start(2);
+        GameControl.start(Setting.SERVER_MODE);
         // Create the game loop
         // 
         gameLoop = new AnimationTimer() {
@@ -153,14 +153,15 @@ public class BombermanGame {
             public void handle(long now) {
                 
                 render();
-                if(now - lastUpdateTime < Setting.FRAME_TIME_NS) {
-                    return;
+                if(now - lastUpdateTime >= Setting.FRAME_TIME_NS) {
+                    GameControl.update();
+                    System.out.println(Setting.ID);
+                    updateStatusBar();
+                    
+                    lastUpdateTime = now;
                 }
-                lastUpdateTime = now;
 
-               GameControl.update();
                 
-                updateStatusBar();
             }
         };
         gameLoop.start();

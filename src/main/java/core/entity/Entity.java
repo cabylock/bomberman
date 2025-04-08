@@ -10,7 +10,7 @@ import core.util.Util;
 
 public abstract class Entity implements Serializable {
    private static final long serialVersionUID = 1L;
-   public static  int Id = Setting.ID;
+  
    
 
    protected int x;
@@ -27,6 +27,10 @@ public abstract class Entity implements Serializable {
 
    public void render(GraphicsContext gc) {
       gc.drawImage(Sprite.sprites[imageId].getFxImage(), x, y);
+   }
+
+   public  int getId() {
+      return  Setting.ID;
    }
 
    public int getX() {
