@@ -107,7 +107,7 @@ public class MapGenerator {
       }
 
       // Add items under bricks
-      String[] items = { "b", "f", "s" };
+      String[] items = { "b", "f", "s","m","h","o","w" };
       int totalBricks = countCharacter(map, '*');
       int itemCount = (int) (totalBricks * itemDensity);
       int itemsPlaced = 0;

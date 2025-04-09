@@ -23,6 +23,7 @@ public class Oneal extends EnemyEntity {
             imageIds[Setting.RIGHT_MOVING][0] = Sprite.ONEAL_RIGHT1;
             imageIds[Setting.RIGHT_MOVING][1] = Sprite.ONEAL_RIGHT2;
             imageIds[Setting.RIGHT_MOVING][2] = Sprite.ONEAL_RIGHT3;
+            
       }
 
       @Override

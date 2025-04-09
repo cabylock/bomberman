@@ -12,7 +12,20 @@ import core.system.setting.Setting;
 
 public class MobileEntity extends DynamicEntity {
    protected boolean moving = false;
-   protected boolean bombpass = false;
+   protected boolean flamePass = false;
+   protected boolean bombPass = false;
+   protected boolean speedUp = false;
+   protected boolean flameUp = false;
+   protected boolean bombUp = false;
+   protected boolean wallPass = false;
+
+   protected int flamePassTime = 0;
+   protected int bombPassTime = 0;
+   protected int speedUpTime = 0;
+   protected int flameUpTime = 0;
+   protected int bombUpTime = 0;
+   protected int wallPassTime = 0;
+
    protected int health = 1;
    protected boolean isInvincible = false;
    protected int invincibleTime = 180; // 180 frames = 1 giây
@@ -32,13 +45,7 @@ public class MobileEntity extends DynamicEntity {
 
    @Override
    public void update(double deltaTime) {
-      updateAnimation(deltaTime);
-      if (isInvincible) {
-         invincibleTime--;
-         if (invincibleTime <= 0) {
-            isInvincible = false;
-         }
-      }
+     
    }
 
    protected boolean move(int direction, int baseSpeed, double deltaTime) {
@@ -107,13 +114,16 @@ public class MobileEntity extends DynamicEntity {
             }
 
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-               if (this.bombpass) {
+               if (this.bombPass) {
                   return false;
                }
                return true;
             }
          } else if (entity instanceof Brick) {
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
+               if(this.wallPass){
+                  return false;
+               }
                return true;
             }
          }
@@ -124,6 +134,9 @@ public class MobileEntity extends DynamicEntity {
             continue;
          }
          if (checkCollision(nextX, nextY, bg.getX(), bg.getY())) {
+            if( this.wallPass){
+               return false;
+            }
             return true;
          }
       }
@@ -135,6 +148,16 @@ public class MobileEntity extends DynamicEntity {
       return (x1 + size > x2 && x1 < x2 + size
             && y1 + size > y2 && y1 < y2 + size);
 
+   }
+
+   public void updateInvincible() {
+
+      if (isInvincible) {
+         invincibleTime--;
+         if (invincibleTime <= 0) {
+            isInvincible = false;
+         }
+      }
    }
 
    @Override
@@ -171,14 +194,14 @@ public class MobileEntity extends DynamicEntity {
 
    public void decreaseHealth() {
       if (!isInvincible) {
-         if (health > 0){
+         if (health > 0) {
 
             this.health--;
          }
          if (this.health <= 0) {
             this.dead();
          } else {
-            // Kích hoạt thời gian bất tử khi mất mạng
+            
             isInvincible = true;
             invincibleTime = 180;
             direction = Setting.ANIMATION_NULL;

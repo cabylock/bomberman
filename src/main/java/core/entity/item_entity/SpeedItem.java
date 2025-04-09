@@ -12,7 +12,7 @@ public class SpeedItem extends ItemEntity {
     public void update(double deltaTime) {
         for (Bomber bomber : GameControl.getBomberEntities()) {
             if (checkCollision(bomber.getX(), bomber.getY(), this.getX(), this.getY())) {
-                bomber.increaseSpeed();
+                bomber.setSpeedUp(true);
                 GameControl.removeEntity(this);
                 return;
             }
