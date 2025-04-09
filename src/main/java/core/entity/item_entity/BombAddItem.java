@@ -3,8 +3,8 @@ package core.entity.item_entity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.system.game.GameControl;
 
-public class BombItem extends ItemEntity {
-   public BombItem(int x, int y, int imageId) {
+public class BombAddItem extends ItemEntity {
+   public BombAddItem(int x, int y, int imageId) {
       super(x, y, imageId);
    }
 

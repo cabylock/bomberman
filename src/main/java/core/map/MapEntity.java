@@ -125,12 +125,12 @@ public class MapEntity {
                Oneal oneal = new Oneal(j, i, Sprite.ONEAL_LEFT1);
                GameControl.addEntity(oneal);
             } else if (c == 'b') {
-               ItemEntity BombItem = new BombItem(j, i, Sprite.POWERUP_BOMBS);
+               ItemEntity BombItem = new BombAddItem(j, i, Sprite.POWERUP_BOMBS);
                GameControl.addEntity(BombItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'f') {
-               ItemEntity FlameItem = new FlameItem(j, i, Sprite.POWERUP_FLAMES);
+               ItemEntity FlameItem = new FlameAddItem(j, i, Sprite.POWERUP_FLAMES);
                GameControl.addEntity(FlameItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
@@ -139,7 +139,25 @@ public class MapEntity {
                GameControl.addEntity(SpeedItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
-            } else {
+            } else if (c == 'o') {
+               ItemEntity BombPassItem = new BombPassItem(j, i, Sprite.POWERUP_BOMB_PASS);
+               GameControl.addEntity(BombPassItem);
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
+               GameControl.addEntity(brick);
+
+            } else if (c == 'm') {
+               ItemEntity FlamePassItem = new FlamePassItem(j, i, Sprite.POWERUP_FLAME_PASS);
+               GameControl.addEntity(FlamePassItem);
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
+               GameControl.addEntity(brick);
+            } else if (c == 'h') {
+               ItemEntity HeartItem = new HealthUpItem(j, i, Sprite.POWERUP_HEALTH_UP);
+               GameControl.addEntity(HeartItem);
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
+               GameControl.addEntity(brick);
+            }
+
+            else {
                // Grass is already added at the beginning of the loop for every cell
             }
          }

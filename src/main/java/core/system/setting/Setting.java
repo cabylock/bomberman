@@ -60,5 +60,6 @@ public class Setting {
       public static final int DOWN_MOVING = 3;
       public static final int BOMB_PLACE = 4;
       public static final int DEAD = 4;
+      public static final int ANIMATION_NULL = 5;
 
 }

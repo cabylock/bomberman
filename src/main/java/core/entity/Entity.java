@@ -7,6 +7,7 @@ import java.io.Serializable;
 import core.graphics.*;
 import core.system.setting.Setting;
 import core.util.Util;
+import java.io.Serializable;
 
 public abstract class Entity implements Serializable {
    private static final long serialVersionUID = 1L;
