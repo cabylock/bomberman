@@ -31,9 +31,6 @@ public class GameControl {
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
-   private static int networkSyncCounter = 0;
-   private static final int NETWORK_SYNC_INTERVAL = 5; // Sync every 5 frames
-
    public static void InitializeServer() {
       server = new GameServer();
       server.startServer(Setting.SERVER_PORT);
@@ -65,6 +62,7 @@ public class GameControl {
          client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
          client.connect();
       }
+      
 
    }
 
@@ -73,21 +71,11 @@ public class GameControl {
       client.disconnect();
    }
 
-   public static void syncGameState() {
-      if (gameMode == Setting.SERVER_MODE) {
-         server.syncGameState();
-      } else if (gameMode == Setting.CLIENT_MODE) {
-         client.syncGameState();
-      }
-   }
+ 
 
    public static void update() {
-      // Only sync periodically, not every frame
-      networkSyncCounter++;
-      if (networkSyncCounter >= NETWORK_SYNC_INTERVAL) {
-         syncGameState();
-         networkSyncCounter = 0;
-      }
+
+  
 
       for (Bomber entity : bomberEntities) {
          if (entity.getId() == Setting.ID) {
@@ -113,14 +101,12 @@ public class GameControl {
          }
       }
 
-      // Only broadcast/send periodically
-      if (networkSyncCounter == 0) {
-         if (gameMode == Setting.SERVER_MODE) {
-            server.broadcastGameState();
-         } else if (gameMode == Setting.CLIENT_MODE) {
-            client.sendGameState();
-         }
+      if (gameMode == Setting.SERVER_MODE) {
+         server.broadcastGameState();
+      } else if (gameMode == Setting.CLIENT_MODE) {
+         client.sendGameState();
       }
+
    }
 
    public static int getWidth() {

@@ -13,16 +13,16 @@ public class Bomb extends StaticEntity {
     private int flameSize;
     private Flame[][] flameSegments;
     // private int timeToExplode = 120;
-    private Bomber owner;
+    private int  ownerId;
 
     // Directional constants
     protected final int[] DX = { 0, -1, 1, 0, 0 };
     protected final int[] DY = { 0, 0, 0, -1, 1 };
 
-    public Bomb(int x, int y, int imageId, int flameSize, Bomber owner) {
+    public Bomb(int x, int y, int imageId, int flameSize, int ownerId) {
         super(x, y, imageId);
         this.flameSize = flameSize;
-        this.owner = owner;
+        this.ownerId = ownerId;
         this.flameSegments = new Flame[5][flameSize + 1];
         imageIds = new int[1][3];
 
@@ -46,7 +46,13 @@ public class Bomb extends StaticEntity {
 
     public void explode() {
 
-        owner.bombExplode();
+        for (Bomber bomber : GameControl.getBomberEntities()) {
+            if (bomber.getId() == ownerId) {
+                
+                bomber.bombExplode();
+            }
+        }
+     
         this.remove();
         for (int i = 0; i < 5; i++) {
             for (int j = 1; j <= flameSize; j++) {

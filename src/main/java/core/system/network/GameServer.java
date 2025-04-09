@@ -25,11 +25,6 @@ public class GameServer extends Thread {
    private boolean isRunning = true;
   
    
-   private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
-   private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
-   private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
-   private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
-   private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
 
 
@@ -38,12 +33,7 @@ public class GameServer extends Thread {
       this.start();
       System.out.println("Server started on port " + port);
 
-      // Start auto-broadcasting
-      bomberEntities = GameControl.getBomberEntities();
-      staticEntities = GameControl.getStaticEntities();
-      enemyEntities = GameControl.getEnemyEntities();
-      backgroundEntities = GameControl.getBackgroundEntities();
-      itemEntities = GameControl.getItemEntities();
+
 
       
 
@@ -53,22 +43,13 @@ public class GameServer extends Thread {
 
       // Broadcast entity data to all clients
 
-      broadcastData(bomberEntities, Setting.NETWORK_BOMBER_ENTITIES);
-      broadcastData(staticEntities, Setting.NETWORK_STATIC_ENTITIES);
-      broadcastData(enemyEntities, Setting.NETWORK_ENEMY_ENTITIES);
-      broadcastData(backgroundEntities, Setting.NETWORK_BACKGROUND_ENTITIES);
-      broadcastData(itemEntities, Setting.NETWORK_ITEM_ENTITIES);
-
+    broadcastData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
+      broadcastData(GameControl.getEnemyEntities(), Setting.NETWORK_ENEMY_ENTITIES);
+      broadcastData(GameControl.getStaticEntities(), Setting.NETWORK_STATIC_ENTITIES);
+      broadcastData(GameControl.getBackgroundEntities(), Setting.NETWORK_BACKGROUND_ENTITIES);
+      broadcastData(GameControl.getItemEntities(), Setting.NETWORK_ITEM_ENTITIES);
    }
 
-   public void syncGameState() {
-      GameControl.setBomberEntities(bomberEntities);
-      GameControl.setStaticEntities(staticEntities);
-      GameControl.setEnemyEntities(enemyEntities);
-      GameControl.setBackgroundEntities(backgroundEntities);
-      GameControl.setItemEntities(itemEntities);
-      
-   }
 
    @Override
    public void run() {
@@ -192,24 +173,29 @@ public class GameServer extends Thread {
             
             } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               bomberEntities = (List<Bomber>) obj;
+               List<Bomber> bomberEntities = (List<Bomber>) obj;
+               GameControl.setBomberEntities(bomberEntities);
 
             }
             else if (Setting.NETWORK_ENEMY_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               enemyEntities = (List<EnemyEntity>) obj;
+               List<EnemyEntity> enemyEntities = (List<EnemyEntity>) obj;
+               GameControl.setEnemyEntities(enemyEntities);
 
             } else if (Setting.NETWORK_STATIC_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               staticEntities = (List<StaticEntity>) obj;
+               List<StaticEntity> staticEntities = (List<StaticEntity>) obj;
+               GameControl.setStaticEntities(staticEntities);
 
             } else if (Setting.NETWORK_BACKGROUND_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               backgroundEntities = (List<BackgroundEntity>) obj;
+               List<BackgroundEntity> backgroundEntities = (List<BackgroundEntity>) obj;
+               GameControl.setBackgroundEntities(backgroundEntities);
 
             } else if (Setting.NETWORK_ITEM_ENTITIES.equals(message)) {
                Object obj = in.readObject();
-               itemEntities = (List<ItemEntity>) obj;
+               List<ItemEntity> itemEntities = (List<ItemEntity>) obj;
+               GameControl.setItemEntities(itemEntities);
 
             }
 

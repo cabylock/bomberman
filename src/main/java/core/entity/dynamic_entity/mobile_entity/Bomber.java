@@ -76,7 +76,7 @@ public class Bomber extends MobileEntity {
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
-      Bomb newBomb = new Bomb(bombX, bombY, Sprite.BOMB, flameSize, this);
+      Bomb newBomb = new Bomb(bombX, bombY, Sprite.BOMB, flameSize, id);
       GameControl.addEntity(newBomb);
       bombCountMax--;
 

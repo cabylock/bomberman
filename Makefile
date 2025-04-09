@@ -15,3 +15,9 @@ check-port:
 
 stop-server:
 	sudo kill -9 $(sudo lsof -t -i:8080)
+
+copy:
+	cp -r /media/cabylock/file/source_code/server/bomberman/ /media/cabylock/file/source_code/client/
+
+
+
