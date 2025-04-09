@@ -7,36 +7,46 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 
 public class EnemyEntity extends MobileEntity {
 
-    protected int constDirection;
-    protected int speed = 1;
-    protected int moveDelay = 5;
+    
+    protected int speed = 20; // Increased default speed
+    protected double moveTimer = 0;
+    protected double directionChangeTimer = 0;
+    protected double movementFrequencyTime = 0.01f;
 
     public EnemyEntity(int x, int y, int imageId) {
         super(x, y, imageId);
-        constDirection = Util.randomRange(200, 500);
-
+        
+        // Initialize with random direction
+        direction = Util.randomDirection();
     }
 
     @Override
-    public void update() {
-
+    public void update(double deltaTime) {
+        defaultMove(deltaTime);
+        updateAnimation(deltaTime);
     }
 
-    protected void defaultMove() {
-        moveDelay--;
-        if (moveDelay == 0) {
-            moveDelay = 5;
-            if (constDirection == 0) {
-                direction = Util.randomDirection();
-                constDirection = Util.randomRange(200, 500);
-            } else {
-                constDirection--;
-                if (!move(direction, speed)) {
-                    direction = Util.randomDirection();
-                }
-            }
+    protected void defaultMove(double deltaTime) {
+        // Update movement timer
+        moveTimer += deltaTime;
+        directionChangeTimer += deltaTime;
+
+        // Time to change direction randomly
+        if (directionChangeTimer >= 2.0) { // Change direction every 2 seconds
+            direction = Util.randomDirection();
+            directionChangeTimer = 0;
         }
 
+        // Move at consistent intervals
+        if (moveTimer >= movementFrequencyTime) {
+            moveTimer = 0;
+
+            // Try to move in the current direction
+            if (!move(direction, speed, deltaTime)) {
+                // If movement is blocked, pick a new direction immediately
+                direction = Util.randomDirection();
+            }
+        }
     }
 
     protected boolean EnemyCollision() {
@@ -53,5 +63,4 @@ public class EnemyEntity extends MobileEntity {
     public void remove() {
         GameControl.removeEntity(this);
     }
-
 }

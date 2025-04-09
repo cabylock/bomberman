@@ -25,18 +25,14 @@
 
 
     <VBox spacing="15" alignment="CENTER">
-        <Button text="Show Available Maps" 
+        <Button text="START GAME" 
                onAction="#showAvailableMaps"
                prefWidth="300"
                prefHeight="60"
          />
                
                
-        <Button text="Create Random Map" 
-               onAction="#createRandomMap"
-               prefWidth="300"
-               prefHeight="60"
-         />
+        
                
                <Button text="Exit Game" 
            onAction="#exit"

@@ -8,11 +8,13 @@ public class Brick extends StaticEntity {
     }
 
     @Override
-    public void update() {
+    public void update(double deltaTime) {
+        // No specific update logic for Brick
     }
 
     @Override
-    protected void updateAnimation() {
+    protected void updateAnimation(double deltaTime) {
+        // No animation for Brick
     }
 
 }

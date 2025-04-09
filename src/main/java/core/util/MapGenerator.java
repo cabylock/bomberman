@@ -28,9 +28,9 @@ public class MapGenerator {
      
 
       // Calculate densities based on level
-      double enemyDensity = Math.min(0.4 + (level * 0.5), 2.0);
-      double brickDensity = Math.min(0.3 + (level * 0.01), 0.6);
-      double itemDensity = Math.max(0.7 - (level * 0.02), 0.3);
+      double enemyDensity = Math.min(0.5 + (level * 1), 3.0);
+      double brickDensity = Math.min(0.5 + (level * 0.01), 0.6);
+      double itemDensity = Math.max(0.5 - (level * 0.02), 0.3);
 
       char[][] map = new char[height][width];
 
@@ -70,7 +70,7 @@ public class MapGenerator {
 
       // Define safe zones around players (no bricks or enemies)
       boolean[][] safeZone = new boolean[height][width];
-      int safeRadius = 2;
+      int safeRadius = 3;
 
       for (int[] spawn : spawnPoints) {
          for (int y = Math.max(1, spawn[0] - safeRadius); y <= Math.min(height - 2, spawn[0] + safeRadius); y++) {

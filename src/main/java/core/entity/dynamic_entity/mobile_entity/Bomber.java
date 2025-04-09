@@ -8,7 +8,7 @@ import core.entity.dynamic_entity.static_entity.Bomb;
 
 public class Bomber extends MobileEntity {
 
-   protected int speed = 2;
+   private int speed = 25; 
    protected int flameSize = 1;
    protected int typePlayer;
    public int bombCountMax = 1;
@@ -17,8 +17,7 @@ public class Bomber extends MobileEntity {
       super(x, y, imageId);
       // Image arrays for animation
       this.typePlayer = typePlayer;
-      if (typePlayer == Setting.BOMBER2)
-      {
+      if (typePlayer == Setting.BOMBER2) {
          id++;
       }
       imageIds = new int[5][3];
@@ -40,20 +39,19 @@ public class Bomber extends MobileEntity {
    }
 
    @Override
-   public void update() {
-
-      updateAnimation();
+   public void update(double deltaTime) {
+      updateAnimation(deltaTime);
    }
 
-   public void control(String command) {
+   public void control(String command, double deltaTime) {
       if (command.equals(Setting.MOVE_DOWN)) {
-         move(Setting.DOWN_MOVING, speed);
+         move(Setting.DOWN_MOVING, speed, deltaTime);
       } else if (command.equals(Setting.MOVE_UP)) {
-         move(Setting.UP_MOVING, speed);
+         move(Setting.UP_MOVING, speed, deltaTime);
       } else if (command.equals(Setting.MOVE_LEFT)) {
-         move(Setting.LEFT_MOVING, speed);
+         move(Setting.LEFT_MOVING, speed, deltaTime);
       } else if (command.equals(Setting.MOVE_RIGHT)) {
-         move(Setting.RIGHT_MOVING, speed);
+         move(Setting.RIGHT_MOVING, speed, deltaTime);
       } else if (command.equals(Setting.PLACE_BOMB)) {
          placeBomb();
       } else {

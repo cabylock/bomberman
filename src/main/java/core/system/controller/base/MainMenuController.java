@@ -35,36 +35,7 @@ public class MainMenuController {
       }
    }
 
-   @FXML
-   private void createRandomMap() {
-      try {
-         FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/RandomMap.fxml"));
-         Parent root = loader.load();
-
-         RandomMapController controller = loader.getController();
-         controller.setStage(stage);
-
-         Stage dialogStage = new Stage();
-         dialogStage.setTitle("Create Random Map");
-         dialogStage.initOwner(stage);
-
-         // Create the scene first with explicit dimensions
-         Scene scene = new Scene(root);
-         dialogStage.setScene(scene);
-
-         // Force minimum size on the stage
-         dialogStage.setMinWidth(500);
-         dialogStage.setMinHeight(400);
-
-         controller.setDialogStage(dialogStage);
-
-       
-
-         dialogStage.showAndWait();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
+  
 
    @FXML
    private void exit() {

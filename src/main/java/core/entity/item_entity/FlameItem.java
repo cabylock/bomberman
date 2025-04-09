@@ -6,11 +6,10 @@ import core.system.game.GameControl;
 public class FlameItem extends ItemEntity {
     public FlameItem(int x, int y, int imageId) {
         super(x, y, imageId);
-
     }
 
     @Override
-    public void update() {
+    public void update(double deltaTime) {
         for (Bomber bomber : GameControl.getBomberEntities()) {
             if (checkCollision(bomber.getX(), bomber.getY(), this.getX(), this.getY())) {
                 bomber.increaseFlameSize();
@@ -18,7 +17,7 @@ public class FlameItem extends ItemEntity {
                 return;
             }
         }
-
     }
 
+   
 }

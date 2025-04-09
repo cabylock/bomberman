@@ -8,7 +8,7 @@ public class Portal extends ItemEntity {
     }
 
     @Override
-    public void update() {
+    public void update(double deltaTime) {
     }
 
 }

@@ -9,12 +9,9 @@ public class StaticEntity extends DynamicEntity {
         super(x, y, imageId);
     }
 
+  
     @Override
-    public void update() {
-    }
-
-    @Override
-    protected void updateAnimation() {
+    protected void updateAnimation(double deltaTime) {
     }
 
     @Override

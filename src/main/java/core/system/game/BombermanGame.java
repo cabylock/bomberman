@@ -10,8 +10,6 @@ import core.system.setting.Setting;
 import core.util.Util;
 import javafx.scene.input.KeyCode;
 import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -30,14 +28,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.util.Duration;
-
 import java.util.Set;
 import java.util.HashSet;
 
 public class BombermanGame {
-
-
 
     private GraphicsContext gc;
     private Canvas canvas;
@@ -45,6 +39,7 @@ public class BombermanGame {
     private Stage stage;
 
     private long lastUpdateTime = 0;
+    private double deltaTime = 0.0; // Time between frames in seconds
 
     // UI elements for status bar
     private Text healthText;
@@ -52,38 +47,14 @@ public class BombermanGame {
     private Text enemiesText;
     private Text scoreText;
 
-
     // Add these fields to your BombermanGame class
     private AnimationTimer gameLoop;
     private static StackPane gameRoot;
     private boolean isPaused = false;
 
-    // for custom map
-    public BombermanGame(int level, String mapName) {
-        Util.generateRandomMap(level, mapName);
+   
 
-        try {
-            Thread.sleep(2000);
-
-            GameControl.loadMap(mapName, Setting.CUSTOM_MAP);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // for more custom map
-    public BombermanGame(int level, int width, int height, String mapName) {
-        Util.generateCustomMap(level, height, width, mapName);
-
-        try {
-            Thread.sleep(2000);
-
-            GameControl.loadMap(mapName, Setting.CUSTOM_MAP);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
+  
     // for default or custom map
     public BombermanGame(String mapName, int mapType) {
         if (mapType == Setting.DEFAULT_MAP) {
@@ -146,22 +117,25 @@ public class BombermanGame {
         stage.show();
 
         GameControl.start(Setting.GAME_MODE);
-        // Create the game loop
-        // 
+
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                
-                render();
-                if(now - lastUpdateTime >= Setting.FRAME_TIME_NS) {
-                    GameControl.update();
-                    
-                    updateStatusBar();
-                    
-                    lastUpdateTime = now;
+                // Calculate delta time in seconds (from nanoseconds)
+                if (lastUpdateTime > 0) {
+                    deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
+                    // Cap delta time to prevent huge jumps after lag
+                    if (deltaTime > 0.08)
+                        deltaTime = 0.08;
                 }
 
-                
+                render();
+
+                // Always update with delta time regardless of frame timing
+                GameControl.update(deltaTime);
+                updateStatusBar();
+
+                lastUpdateTime = now;
             }
         };
         gameLoop.start();
@@ -194,7 +168,6 @@ public class BombermanGame {
         scoreText.setFill(Color.WHITE);
 
         // In your createStatusBar method, add:
-        
 
         // Add to status bar
         statusBar.getChildren().addAll(healthText, bombsText, enemiesText, scoreText);

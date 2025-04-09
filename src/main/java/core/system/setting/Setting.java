@@ -35,7 +35,7 @@ public class Setting {
       public static String NETWORK_BACKGROUND_ENTITIES = "BACKGROUND";
 
       public static final int FPS_MAX = 240;
-      public static final int FRAME_TIME_NS = 1_000_000_000 / FPS_MAX;
+      public static final int FRAME_TIME_NS = 1 / FPS_MAX;
 
       public static final int BOMBER1 = 0;
       public static final int BOMBER2 = 1;

@@ -3,12 +3,9 @@ package core.entity.dynamic_entity.mobile_entity.enemy_entity;
 import core.graphics.Sprite;
 import core.system.setting.Setting;
 
-
 public class Balloom extends EnemyEntity {
-    
-    protected int speed = 1;
 
-
+    private int speed = 20;
 
     public Balloom(int x, int y, int imageId) {
         super(x, y, imageId);
@@ -29,20 +26,12 @@ public class Balloom extends EnemyEntity {
         imageIds[Setting.RIGHT_MOVING][0] = Sprite.BALLOOM_RIGHT1;
         imageIds[Setting.RIGHT_MOVING][1] = Sprite.BALLOOM_RIGHT2;
         imageIds[Setting.RIGHT_MOVING][2] = Sprite.BALLOOM_RIGHT3;
-        
     }
 
     @Override
-    public void update() {
-
-        defaultMove();
+    public void update(double deltaTime) {
+        defaultMove(deltaTime);
         EnemyCollision();
-
-        updateAnimation();
-
+        updateAnimation(deltaTime);
     }
-
-    
-    
-
 }

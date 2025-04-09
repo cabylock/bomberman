@@ -23,6 +23,8 @@ public class GameControl {
    private static int level;
    private static int gameMode;
 
+   private static double deltaTime;
+
    private static GameServer server;
    private static GameClient client;
 
@@ -74,47 +76,43 @@ public class GameControl {
 
    }
 
-   public static void update() {
-
-      handleInput();
+   public static void update(double deltaTime) {
+      GameControl.deltaTime = deltaTime;
+      handleInput(deltaTime);
 
       if (gameMode == Setting.CLIENT_MODE) {
-
          return;
       }
 
       for (EnemyEntity entity : enemyEntities) {
-         entity.update();
+         entity.update(deltaTime);
       }
       for (StaticEntity entity : staticEntities) {
-         entity.update();
+         entity.update(deltaTime);
       }
       for (ItemEntity entity : itemEntities) {
-         entity.update();
+         entity.update(deltaTime);
       }
       for (Bomber entity : bomberEntities.values()) {
-         entity.update();
+         entity.update(deltaTime);
       }
 
       if (gameMode == Setting.SERVER_MODE) {
          server.broadcastGameState();
       }
-
    }
 
-   public static void handleInput() {
+   public static void handleInput(double deltaTime) {
       // First player (always present)
-      handlePlayerInput(Setting.BOMBER1, Setting.ID);
+      handlePlayerInput(Setting.BOMBER1, Setting.ID, deltaTime);
 
       // Second player (only in multiplayer modes)
-      if (gameMode == Setting.MULTI_MODE ) {
-         // In local multiplayer, player 2 uses a different ID (could be Setting.ID + 1)
-
-      handlePlayerInput(Setting.BOMBER2, Setting.ID+1);
+      if (gameMode == Setting.MULTI_MODE) {
+         handlePlayerInput(Setting.BOMBER2, Setting.ID + 1, deltaTime);
       }
    }
 
-   private static void handlePlayerInput(int playerType, int playerId) {
+   private static void handlePlayerInput(int playerType, int playerId, double deltaTime) {
       // Check if player entity exists
       if (!bomberEntities.containsKey(playerId)) {
          return;
@@ -138,11 +136,15 @@ public class GameControl {
       // Execute command based on game mode
       if (gameMode != Setting.CLIENT_MODE) {
          // Direct control for local or server modes
-         bomberEntities.get(playerId).control(command);
-      } else  {
-        
+         bomberEntities.get(playerId).control(command, deltaTime);
+      } else {
          client.sendCommand(command, playerId);
       }
+   }
+
+   public static double getDeltaTime()
+   {
+      return deltaTime;
    }
 
    public static int getWidth() {
@@ -241,7 +243,7 @@ public class GameControl {
 
    public static void removeEntity(Entity entity) {
       if (entity instanceof Bomber) {
-         bomberEntities.remove(entity);
+         bomberEntities.remove(entity.getId());
       } else if (entity instanceof StaticEntity) {
          staticEntities.remove(entity);
       } else if (entity instanceof EnemyEntity) {

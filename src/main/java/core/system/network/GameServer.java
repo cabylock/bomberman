@@ -185,7 +185,7 @@ public class GameServer extends Thread {
             } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
                String command = in.readUTF();
                int id = in.readInt();
-               GameControl.getBomberEntitiesMap().get(id).control(command);
+               GameControl.getBomberEntitiesMap().get(id).control(command,GameControl.getDeltaTime());
 
             }
 

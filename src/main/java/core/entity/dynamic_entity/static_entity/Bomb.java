@@ -4,16 +4,15 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.graphics.Sprite;
 import core.system.game.GameControl;
 
-
 public class Bomb extends StaticEntity {
 
-    protected int timeAlive = 300; // 120 frames = 2 seconds
+    protected float timeAlive = 3.0f; // 3 seconds before explosion
+    protected float animationTimer = 0;
 
     private final int DEFAULT_IMAGE = 0;
     private int flameSize;
     private Flame[][] flameSegments;
-    // private int timeToExplode = 120;
-    private int  ownerId;
+    private int ownerId;
 
     // Directional constants
     protected final int[] DX = { 0, -1, 1, 0, 0 };
@@ -33,26 +32,25 @@ public class Bomb extends StaticEntity {
     }
 
     @Override
-    public void update() {
-        timeAlive--;
-        if (timeAlive == 0) {
+    public void update(double deltaTime) {
+        timeAlive -= deltaTime;
+        if (timeAlive <= 0) {
             explode();
-
         }
-
-        updateAnimation();
-
+        updateAnimation(deltaTime);
     }
+
+
 
     public void explode() {
 
         for (Bomber bomber : GameControl.getBomberEntities()) {
             if (bomber.getId() == ownerId) {
-                
+
                 bomber.bombExplode();
             }
         }
-     
+
         this.remove();
         for (int i = 0; i < 5; i++) {
             for (int j = 1; j <= flameSize; j++) {
@@ -73,20 +71,17 @@ public class Bomb extends StaticEntity {
     }
 
     @Override
-    public void updateAnimation() {
+    public void updateAnimation(double deltaTime) {
+        animationTimer += deltaTime;
 
-        if (animationDelay == 0) {
-            animationStep++;
-            if (animationStep == 3) {
-                animationStep = 0;
-            }
-            animationDelay = 20;
-        } else {
-            animationDelay--;
+        // Change animation frame approximately every 0.33 seconds
+        if (animationTimer >= 0.33) {
+            animationStep = (animationStep + 1) % 3;
+            animationTimer = 0;
         }
 
         imageId = imageIds[DEFAULT_IMAGE][animationStep];
-
     }
+
 
 }

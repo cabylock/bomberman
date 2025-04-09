@@ -9,7 +9,7 @@ public class BombItem extends ItemEntity {
    }
 
    @Override
-   public void update() {
+   public void update(double deltaTime) {
       for (Bomber bomber : GameControl.getBomberEntities()) {
          if (checkCollision(bomber.getX(), bomber.getY(), this.getX(), this.getY())) {
             bomber.increaseBomb();
@@ -19,4 +19,5 @@ public class BombItem extends ItemEntity {
       }
    }
 
+  
 }

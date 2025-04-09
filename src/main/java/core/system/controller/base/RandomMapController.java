@@ -1,6 +1,7 @@
 package core.system.controller.base;
 
 import core.system.game.BombermanGame;
+import core.util.Util;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -89,7 +90,7 @@ public class RandomMapController {
         }
 
         // Get width and height from sliders
-        int width = 31; // Default value
+        int width = 15; // Default value
         int height = 15; // Default value
 
         if (widthSlider != null) {
@@ -105,8 +106,9 @@ public class RandomMapController {
 
         try {
             // Start the game with the generated map using the selected level and dimensions
-            BombermanGame game = new BombermanGame(level, width, height, mapName);
-            game.createGameScene(stage);
+            Util.generateCustomMap(level, height, width, mapName);
+            Util.sleep(2);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

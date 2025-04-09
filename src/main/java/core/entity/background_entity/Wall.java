@@ -6,7 +6,8 @@ public class Wall extends BackgroundEntity {
    }
 
    @Override
-   public void update() {
+   public void update(double deltaTime) {
+      // No specific update logic for Wall
    }
 
 }

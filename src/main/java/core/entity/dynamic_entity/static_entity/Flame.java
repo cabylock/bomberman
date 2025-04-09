@@ -14,7 +14,8 @@ public class Flame extends StaticEntity {
    // Animation constants
 
    protected int length; // Length of the flame
-   protected int timeAlive = 60; // 60 frames = 1 second
+   protected float timeAlive = 1.0f; // 1 second lifetime
+   protected float animationTimer = 0;
 
    protected final int CENTER = 0;
    protected final int HORIZONTAL = 1;
@@ -129,28 +130,30 @@ public class Flame extends StaticEntity {
    }
 
    @Override
-   public void update() {
-      timeAlive--;
-      if (timeAlive == 0) {
+   public void update(double deltaTime) {
+      timeAlive -= deltaTime;
+      if (timeAlive <= 0) {
          remove();
       }
       flamecollision();
-      updateAnimation();
-
+      updateAnimation(deltaTime);
    }
 
-   @Override
-   public void updateAnimation() {
+   
 
-      if (animationDelay == 0) {
+   @Override
+   public void updateAnimation(double deltaTime) {
+      animationTimer += deltaTime;
+
+      // Change animation frame every 0.33 seconds (3 frames per second)
+      if (animationTimer >= 0.33) {
          animationStep = (animationStep + 1) % 3;
-         animationDelay = 20;
-      } else {
-         animationDelay--;
+         animationTimer = 0;
       }
 
       imageId = imageIds[flameType][animationStep];
    }
+
 
    public void remove() {
       GameControl.removeEntity(this);

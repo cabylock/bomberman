@@ -10,7 +10,6 @@ import core.graphics.Sprite;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
 
-
 public class MobileEntity extends DynamicEntity {
    protected boolean moving = false;
    protected boolean bombpass = false;
@@ -20,49 +19,54 @@ public class MobileEntity extends DynamicEntity {
    protected int direction = Setting.DOWN_MOVING;
 
    protected final int ALIGN_TOLERANCE = 16;
-   protected final int ANIMATION_DELAY = 10;
-   protected final int DEAD_ANIMATION_DELAY = 40;
+
+   protected float animationTimer = 0;
+   protected float deadAnimationTimer = 0;
+   protected final float ANIMATION_TIME = 0.05f; // Animation frame time in seconds
+   protected final float DEAD_ANIMATION_TIME = 0.5f; // Dead animation frame time
 
    public MobileEntity(int x, int y, int imageId) {
-      super(x, y, imageId);   
+      super(x, y, imageId);
    }
 
    @Override
-   public void update() {
+   public void update(double deltaTime) {
+      updateAnimation(deltaTime);
    }
 
-   protected boolean move(int direction, int delta) {
-      // System.out.println("x: " + x + " y: " + y + " xTile: " + this.getXTile() + "
-      // yTile: " + this.getYTile());
+   protected boolean move(int direction, int baseSpeed, double deltaTime) {
       if (!isAlive) {
          return false;
       }
 
-      this.direction = direction; // Cập nhật hướng trước
-      moving = true; // Đặt trạng thái di chuyển
+      this.direction = direction;
+      moving = true;
 
-      int deltaX = 0;
-      int deltaY = 0;
+      // Calculate actual movement distance based on delta time
+      double speed = baseSpeed * deltaTime * 10; // Remove the (int) cast to allow fractional movement
+
+      double deltaX = 0;
+      double deltaY = 0;
 
       switch (direction) {
          case Setting.RIGHT_MOVING:
-            deltaX = delta;
+            deltaX = speed;
             break;
          case Setting.LEFT_MOVING:
-            deltaX = -delta;
+            deltaX = -speed;
             break;
          case Setting.DOWN_MOVING:
-            deltaY = delta;
+            deltaY = speed;
             break;
          case Setting.UP_MOVING:
-            deltaY = -delta;
+            deltaY = -speed;
             break;
          default:
             break;
       }
 
-      int nextX = x + deltaX;
-      int nextY = y + deltaY;
+      double nextX = x + deltaX;
+      double nextY = y + deltaY;
 
       if (moveCollision(nextX, nextY)) {
          if (Math.abs(deltaX) > 0 && Math.abs(nextY - this.getYTile() * Sprite.SCALED_SIZE) < ALIGN_TOLERANCE) {
@@ -88,7 +92,7 @@ public class MobileEntity extends DynamicEntity {
       }
    }
 
-   protected boolean moveCollision(int nextX, int nextY) {
+   protected boolean moveCollision(double nextX, double nextY) {
       for (StaticEntity entity : GameControl.getStaticEntities()) {
          if (entity instanceof Bomb) {
             if (this.bombpass) {
@@ -102,10 +106,9 @@ public class MobileEntity extends DynamicEntity {
             }
          } else if (entity instanceof Brick) {
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-               
                return true;
             }
-         } 
+         }
       }
 
       for (Entity bg : GameControl.getBackgroundEntities()) {
@@ -119,7 +122,7 @@ public class MobileEntity extends DynamicEntity {
       return false;
    }
 
-   protected boolean checkCollision(int x1, int y1, int x2, int y2) {
+   protected boolean checkCollision(double x1, double y1, double x2, double y2) {
       int size = Sprite.SCALED_SIZE;
       return (x1 + size > x2 && x1 < x2 + size
             && y1 + size > y2 && y1 < y2 + size);
@@ -127,27 +130,27 @@ public class MobileEntity extends DynamicEntity {
    }
 
    @Override
-   protected void updateAnimation() {
-      animationDelay++;
-
+   protected void updateAnimation(double deltaTime) {
       if (!isAlive) {
-         if (animationDelay >= DEAD_ANIMATION_DELAY) {
+         deadAnimationTimer += deltaTime;
+         if (deadAnimationTimer >= DEAD_ANIMATION_TIME) {
             if (animationStep < 2) {
                animationStep++;
             } else {
                this.remove();
                return;
             }
-            animationDelay = 0;
+            deadAnimationTimer = 0;
          }
       } else if (moving) {
-         if (animationDelay >= ANIMATION_DELAY) {
+         animationTimer += deltaTime;
+         if (animationTimer >= ANIMATION_TIME) {
             animationStep = (animationStep + 1) % 3;
-            animationDelay = 0;
+            animationTimer = 0;
          }
       } else {
          animationStep = 0;
-         animationDelay = 0;
+         animationTimer = 0;
       }
 
       imageId = imageIds[direction][animationStep];

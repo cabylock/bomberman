@@ -13,8 +13,8 @@ import java.util.Random;
 
 public class Util {
 
-   public static int toGrid(int x) {
-      return Math.round((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
+   public static int toGrid(double  x) {
+      return (int)((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
    }
 
    public static int randomDirection() {
@@ -42,16 +42,6 @@ public class Util {
       return random.nextInt(max - min + 1) + min;
    }
 
-   /**
-    * Generate a random map for the specified level
-    * 
-    * @param level Level number
-    */
-   public static void generateRandomMap(int level, String name) {
-      int width = 31; // Standard width
-      int height = 13; // Standard height
-      MapGenerator.generateMap(level, height, width, name);
-   }
 
    /**
     * Generate a random map with custom dimensions
