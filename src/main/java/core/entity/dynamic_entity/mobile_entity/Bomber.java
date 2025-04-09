@@ -4,7 +4,6 @@ import core.graphics.Sprite;
 import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
-import core.entity.Entity;
 import core.entity.dynamic_entity.static_entity.Bomb;
 
 public class Bomber extends MobileEntity {
@@ -18,6 +17,10 @@ public class Bomber extends MobileEntity {
       super(x, y, imageId);
       // Image arrays for animation
       this.typePlayer = typePlayer;
+      if (typePlayer == Setting.BOMBER2)
+      {
+         id++;
+      }
       imageIds = new int[5][3];
       imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER_RIGHT;
       imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER_RIGHT_1;
@@ -39,35 +42,28 @@ public class Bomber extends MobileEntity {
    @Override
    public void update() {
 
-      int playerIndex = typePlayer - 1;
-
-      updateMove(playerIndex);
-
       updateAnimation();
    }
 
-   private void updateMove(int typePlayer) {
-
-      
-
-      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.UP_MOVING])) {
-         move(Setting.UP_MOVING, speed);
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.DOWN_MOVING])) {
+   public void control(String command) {
+      if (command.equals(Setting.MOVE_DOWN)) {
          move(Setting.DOWN_MOVING, speed);
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.LEFT_MOVING])) {
+      } else if (command.equals(Setting.MOVE_UP)) {
+         move(Setting.UP_MOVING, speed);
+      } else if (command.equals(Setting.MOVE_LEFT)) {
          move(Setting.LEFT_MOVING, speed);
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.RIGHT_MOVING])) {
+      } else if (command.equals(Setting.MOVE_RIGHT)) {
          move(Setting.RIGHT_MOVING, speed);
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[typePlayer][4])) { // Phím đặt bom
-         BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][4]);
+      } else if (command.equals(Setting.PLACE_BOMB)) {
          placeBomb();
       } else {
          moving = false;
       }
-
    }
 
    private void placeBomb() {
+
+      BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][4]);
       if (bombCountMax == 0) {
 
          return;

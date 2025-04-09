@@ -1,8 +1,9 @@
 package core.system.game;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
+import java.util.Map;
 import core.entity.Entity;
 import core.entity.background_entity.BackgroundEntity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
@@ -25,7 +26,7 @@ public class GameControl {
    private static GameServer server;
    private static GameClient client;
 
-   private static List<Bomber> bomberEntities = new CopyOnWriteArrayList<Bomber>();
+   private static Map<Integer, Bomber> bomberEntities = new ConcurrentHashMap<>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<StaticEntity>();
    private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<EnemyEntity>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
@@ -38,75 +39,110 @@ public class GameControl {
    }
 
    public static void InitializeClient() {
+      clear();
       client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-      client.connect();
+      if (!client.connect()) {
+         Util.showNotificationWindow("Cannot connect to server");
+         return;
+      }
+
    }
 
    public static void start(int gameMode) {
       GameControl.gameMode = gameMode;
 
       if (gameMode == Setting.SERVER_MODE) {
-         server = new GameServer();
-         server.startServer(Setting.SERVER_PORT);
+         InitializeServer();
 
       } else if (gameMode == Setting.CLIENT_MODE) {
-         clear();
-         client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-         if (!client.connect()) {
-            Util.showNotificationWindow("Cannot connect to server");
-            return;
-         }
-      } else { // test mode
-         server = new GameServer();
-         server.startServer(Setting.SERVER_PORT);
-         client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-         client.connect();
+         InitializeClient();
+      } else if (gameMode == Setting.SINGLE_MODE) {
+
+      } else if (gameMode == Setting.MULTI_MODE) {
+
       }
-      
 
    }
 
    public static void stop() {
-      server.stopServer();
-      client.disconnect();
-   }
+      if (gameMode == Setting.SERVER_MODE) {
+         server.stopServer();
+      } else if (gameMode == Setting.CLIENT_MODE) {
+         client.disconnect();
+      }
+      gameMode = Setting.SINGLE_MODE;
 
- 
+   }
 
    public static void update() {
 
-  
+      handleInput();
 
-      for (Bomber entity : bomberEntities) {
-         if (entity.getId() == Setting.ID) {
-            entity.update();
-         }
-      }
+      if (gameMode == Setting.CLIENT_MODE) {
 
-      for (StaticEntity entity : staticEntities) {
-         if (entity.getId() == Setting.ID) {
-            entity.update();
-         }
+         return;
       }
 
       for (EnemyEntity entity : enemyEntities) {
-         if (entity.getId() == Setting.ID) {
-            entity.update();
-         }
+         entity.update();
       }
-
+      for (StaticEntity entity : staticEntities) {
+         entity.update();
+      }
       for (ItemEntity entity : itemEntities) {
-         if (entity.getId() == Setting.ID) {
-            entity.update();
-         }
+         entity.update();
+      }
+      for (Bomber entity : bomberEntities.values()) {
+         entity.update();
       }
 
       if (gameMode == Setting.SERVER_MODE) {
          server.broadcastGameState();
-      } else if (gameMode == Setting.CLIENT_MODE) {
-         client.sendGameState();
       }
 
+   }
+
+   public static void handleInput() {
+      // First player (always present)
+      handlePlayerInput(Setting.BOMBER1, Setting.ID);
+
+      // Second player (only in multiplayer modes)
+      if (gameMode == Setting.MULTI_MODE ) {
+         // In local multiplayer, player 2 uses a different ID (could be Setting.ID + 1)
+
+      handlePlayerInput(Setting.BOMBER2, Setting.ID+1);
+      }
+   }
+
+   private static void handlePlayerInput(int playerType, int playerId) {
+      // Check if player entity exists
+      if (!bomberEntities.containsKey(playerId)) {
+         return;
+      }
+
+      String command = Setting.STOP;
+
+      // Check each possible input in order of priority
+      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.UP_MOVING])) {
+         command = Setting.MOVE_UP;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.DOWN_MOVING])) {
+         command = Setting.MOVE_DOWN;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.LEFT_MOVING])) {
+         command = Setting.MOVE_LEFT;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.RIGHT_MOVING])) {
+         command = Setting.MOVE_RIGHT;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.BOMB_PLACE])) {
+         command = Setting.PLACE_BOMB;
+      }
+
+      // Execute command based on game mode
+      if (gameMode != Setting.CLIENT_MODE) {
+         // Direct control for local or server modes
+         bomberEntities.get(playerId).control(command);
+      } else  {
+        
+         client.sendCommand(command, playerId);
+      }
    }
 
    public static int getWidth() {
@@ -166,8 +202,10 @@ public class GameControl {
    }
 
    public static void addEntity(Entity entity) {
+
       if (entity instanceof Bomber) {
-         bomberEntities.add((Bomber) entity);
+         Bomber bomber = (Bomber) entity;
+         bomberEntities.put(bomber.getId(), bomber);
       } else if (entity instanceof StaticEntity) {
          staticEntities.add((StaticEntity) entity);
       } else if (entity instanceof EnemyEntity) {
@@ -180,7 +218,9 @@ public class GameControl {
    }
 
    public static void setBomberEntities(List<Bomber> entities) {
-      bomberEntities = entities;
+      for (Bomber bomber : entities) {
+         bomberEntities.put(bomber.getId(), bomber);
+      }
    }
 
    public static void setStaticEntities(List<StaticEntity> entities) {
@@ -213,8 +253,12 @@ public class GameControl {
       }
    }
 
-   public static List<Bomber> getBomberEntities() {
+   public static Map<Integer, Bomber> getBomberEntitiesMap() {
       return bomberEntities;
+   }
+
+   public static List<Bomber> getBomberEntities() {
+      return new CopyOnWriteArrayList<>(bomberEntities.values());
    }
 
    public static List<StaticEntity> getStaticEntities() {

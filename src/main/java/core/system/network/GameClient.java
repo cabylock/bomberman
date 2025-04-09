@@ -43,6 +43,7 @@ public class GameClient extends Thread {
             out = new ObjectOutputStream(serverSocket.getOutputStream());
             in = new ObjectInputStream(serverSocket.getInputStream());
             System.out.println("Connected to server at " + serverAddress + ":" + serverPort);
+            
             receiveGameState();
             start();
             return true; // Exit the loop if connection is successful
@@ -93,22 +94,25 @@ public class GameClient extends Thread {
    }
 
    // In GameClient.java
-public void sendGameState() {
-    // Only send entities owned by this client
-    sendData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
-    
-   // Send minimal data for other types
-    // Only sending bombers and static entities is often sufficient
-}
 
+   public void sendCommand(String command, int id ) {
+      try {
+         out.writeUTF(Setting.NETWORK_BOMBER_ENTITIES);
+         out.writeUTF(command);
+         out.writeInt(id);
+         out.flush();
+      } catch (IOException e) {
+         System.err.println("Error sending Bomber entities: " + e.getMessage());
+      }
+   }
  
 
    public void receiveGameState() {
       try {
          String message = in.readUTF();
-         if ("STRING".equals(message)) {
-            message = in.readUTF();
-            System.out.println("Server: " + message);
+         if ("ID".equals(message)) {
+            int id  = in.readInt();
+            Setting.ID = id;
 
          } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
             Object obj = in.readObject();
@@ -149,35 +153,7 @@ public void sendGameState() {
 
    }
 
-   public void sendMessage(String message) {
-      try {
-         out.reset(); // Reset the stream to avoid memory issues
-         out.writeUTF("STRING"); // Indicate the type of data being sent
-         out.writeUTF(message); // Send the message
-         out.flush(); // Ensure the data is sent immediately
-      } catch (IOException e) {
-         System.err.println("Error sending message: " + e.getMessage());
-      }
-   }
-
-   public <T> void sendData(List<T> data, String type) {
-      try {
-         out.reset();
-         out.writeUTF(type); // Indicate the type of data being sent
-         out.writeObject(data); // Serialize and send the object
-         out.flush(); // Ensure the data is sent immediately
-      } catch (IOException e) {
-         System.err.println("Error sending object: " + e.getMessage());
-      }
-   }
-
-   // public static void main(String[] args) {
-
-   // String serverAddress = "localhost"; // Replace with the server's IP address
-   // int serverPort = 8080;
-
-   // GameClient client = new GameClient(serverAddress, serverPort);
-   // client.connect();
+ 
 
    // Bomber bomber = new Bomber(0, 3, 0, 1);
    // client.sendData(List.of(bomber),"BOMBER");

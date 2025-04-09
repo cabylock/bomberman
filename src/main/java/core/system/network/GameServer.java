@@ -6,16 +6,11 @@ import java.net.*;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-
-import core.entity.background_entity.BackgroundEntity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
-import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
-import core.entity.dynamic_entity.static_entity.StaticEntity;
-import core.entity.item_entity.ItemEntity;
+
 import core.system.game.GameControl;
 import core.system.setting.Setting;
-
+import core.util.Util;
 
 public class GameServer extends Thread {
 
@@ -23,19 +18,15 @@ public class GameServer extends Thread {
    private int port;
    private static List<ClientHandler> clients = new CopyOnWriteArrayList<>();
    private boolean isRunning = true;
-  
-   
 
-
+   // Add this constant for maximum clients
+   private static final int MAX_CLIENTS = 4;
+    
 
    public void startServer(int port) {
       this.port = port;
       this.start();
       System.out.println("Server started on port " + port);
-
-
-
-      
 
    }
 
@@ -43,13 +34,12 @@ public class GameServer extends Thread {
 
       // Broadcast entity data to all clients
 
-    broadcastData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
+      broadcastData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
+      
       broadcastData(GameControl.getEnemyEntities(), Setting.NETWORK_ENEMY_ENTITIES);
       broadcastData(GameControl.getStaticEntities(), Setting.NETWORK_STATIC_ENTITIES);
-      broadcastData(GameControl.getBackgroundEntities(), Setting.NETWORK_BACKGROUND_ENTITIES);
       broadcastData(GameControl.getItemEntities(), Setting.NETWORK_ITEM_ENTITIES);
    }
-
 
    @Override
    public void run() {
@@ -58,16 +48,30 @@ public class GameServer extends Thread {
 
          while (isRunning) {
             Socket clientSocket = serverSocket.accept();
-            ClientHandler clientHandler = new ClientHandler(clientSocket);
-            clientHandler.start();
-            clients.add(clientHandler);
 
-            System.out.println("Client connected: " + clientHandler.clientName);
+            // Check if maximum clients limit reached
+            if (clients.size() >= MAX_CLIENTS) {
+               // Send rejection message to client
+               try (ObjectOutputStream tempOut = new ObjectOutputStream(clientSocket.getOutputStream())) {
+                  tempOut.writeUTF("SERVER_FULL");
+                  tempOut.writeUTF("Server has reached maximum capacity of " + MAX_CLIENTS + " players.");
+                  tempOut.flush();
+                  clientSocket.close();
+               }
+               System.out.println("Connection rejected: Server full (" + MAX_CLIENTS + "/" + MAX_CLIENTS + ")");
+            } else {
+               // Accept the connection
+               ClientHandler clientHandler = new ClientHandler(clientSocket);
+               clientHandler.start();
+               clients.add(clientHandler);
+               
+               System.out.println("Client connected: " + clientHandler.clientName +
+                     " (" + clients.size() + "/" + MAX_CLIENTS + ")");
+            }
          }
       } catch (IOException e) {
          System.err.println("Error starting server: " + e.getMessage());
       }
-
    }
 
    public void stopServer() {
@@ -129,6 +133,13 @@ public class GameServer extends Thread {
 
       @Override
       public void run() {
+         int newId = Util.uuid();
+         sendCommand("ID", newId);
+         Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1);
+         clientBomber.setId(newId);
+         GameControl.addEntity(clientBomber);
+
+         sendData(GameControl.getBackgroundEntities(), Setting.NETWORK_BACKGROUND_ENTITIES);
          while (isRunning) {
             try {
                if (clientSocket == null || clientSocket.isClosed()) {
@@ -170,32 +181,11 @@ public class GameServer extends Thread {
             if ("STRING".equals(message)) {
                message = in.readUTF();
                System.out.println("Received message from " + clientName + ": " + message);
-            
+
             } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
-               Object obj = in.readObject();
-               List<Bomber> bomberEntities = (List<Bomber>) obj;
-               GameControl.setBomberEntities(bomberEntities);
-
-            }
-            else if (Setting.NETWORK_ENEMY_ENTITIES.equals(message)) {
-               Object obj = in.readObject();
-               List<EnemyEntity> enemyEntities = (List<EnemyEntity>) obj;
-               GameControl.setEnemyEntities(enemyEntities);
-
-            } else if (Setting.NETWORK_STATIC_ENTITIES.equals(message)) {
-               Object obj = in.readObject();
-               List<StaticEntity> staticEntities = (List<StaticEntity>) obj;
-               GameControl.setStaticEntities(staticEntities);
-
-            } else if (Setting.NETWORK_BACKGROUND_ENTITIES.equals(message)) {
-               Object obj = in.readObject();
-               List<BackgroundEntity> backgroundEntities = (List<BackgroundEntity>) obj;
-               GameControl.setBackgroundEntities(backgroundEntities);
-
-            } else if (Setting.NETWORK_ITEM_ENTITIES.equals(message)) {
-               Object obj = in.readObject();
-               List<ItemEntity> itemEntities = (List<ItemEntity>) obj;
-               GameControl.setItemEntities(itemEntities);
+               String command = in.readUTF();
+               int id = in.readInt();
+               GameControl.getBomberEntitiesMap().get(id).control(command);
 
             }
 
@@ -206,8 +196,6 @@ public class GameServer extends Thread {
                System.err.println("Max retries reached. Disconnecting " + clientName + "...");
                disconnect();
             }
-         } catch (ClassNotFoundException e) {
-            System.err.println("Error reading object from client: " + e.getMessage());
          }
       }
 
@@ -223,8 +211,18 @@ public class GameServer extends Thread {
          }
       }
 
+      public void sendCommand(String command, int id) {
+         try {
+            out.reset(); // Reset the stream to avoid memory issues
+            out.writeUTF(command); // Send the command
+            out.writeInt(id); // Send the ID
+            out.flush(); // Ensure the data is sent immediately
+         } catch (IOException e) {
+            System.err.println("Error sending command: " + e.getMessage());
+         }
+      }
 
-      public <T> void sendData(List<T> data, String type) {
+      public synchronized <T> void sendData(List<T> data, String type) {
          try {
             out.reset(); // Reset the stream to avoid memory issues
             out.writeUTF(type); // Indicate the type of message

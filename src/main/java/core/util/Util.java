@@ -12,17 +12,17 @@ import javafx.scene.image.ImageView;
 import java.util.Random;
 
 public class Util {
-   
+
    public static int toGrid(int x) {
       return Math.round((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
    }
-   
+
    public static int randomDirection() {
       Random random = new Random();
       return random.nextInt(4);
 
    }
-   
+
    public static int uuid() {
       Random random = new Random();
       int id = random.nextInt(100000);
@@ -47,10 +47,10 @@ public class Util {
     * 
     * @param level Level number
     */
-   public static void generateRandomMap(int level, String name, int playerNum) {
+   public static void generateRandomMap(int level, String name) {
       int width = 31; // Standard width
       int height = 13; // Standard height
-      MapGenerator.generateMap(level, height, width, name, playerNum);
+      MapGenerator.generateMap(level, height, width, name);
    }
 
    /**
@@ -60,8 +60,8 @@ public class Util {
     * @param height Map height
     * @param width  Map width
     */
-   public static void generateCustomMap(int level, int height, int width, String name, int playerNum) {
-      MapGenerator.generateMap(level, height, width, name, playerNum);
+   public static void generateCustomMap(int level, int height, int width, String name) {
+      MapGenerator.generateMap(level, height, width, name);
    }
 
    public static void showNotificationWindow(String message) {
@@ -76,52 +76,43 @@ public class Util {
       });
    }
 
-   public static void showImage(String filePath, StackPane stackPane)
-   {
+   public static void showImage(String filePath, StackPane stackPane) {
       // Create a new stage (window)
-            
-            
-            // Load the image
 
-            Image image = new Image(  Util.class.getResourceAsStream(filePath));
-            
-            // Create an image view
-            ImageView imageView = new ImageView(image);
-            
-            
-            // Create layout and add the image view
-            if(stackPane == null)
-            {
-               stackPane = new StackPane();
-               stackPane.getChildren().add(imageView);
+      // Load the image
 
-               Stage imageStage = new Stage();
-               imageStage.setTitle(null);
-               javafx.application.Platform.runLater(() -> {
-                  imageStage.setWidth(Setting.SCREEN_WIDTH);
-                  imageStage.setHeight(Setting.SCREEN_HEIGHT);
-               });
-               
+      Image image = new Image(Util.class.getResourceAsStream(filePath));
 
-               Scene scene = new Scene(stackPane, Setting.SCREEN_WIDTH,Setting.SCREEN_HEIGHT);
-               // Create scene with appropriate size
-               imageStage.setScene(scene);
-               imageStage.centerOnScreen();
+      // Create an image view
+      ImageView imageView = new ImageView(image);
 
-               // Show the window
-               imageStage.show();
+      // Create layout and add the image view
+      if (stackPane == null) {
+         stackPane = new StackPane();
+         stackPane.getChildren().add(imageView);
 
-            }
-            else {
+         Stage imageStage = new Stage();
+         imageStage.setTitle(null);
+         javafx.application.Platform.runLater(() -> {
+            imageStage.setWidth(Setting.SCREEN_WIDTH);
+            imageStage.setHeight(Setting.SCREEN_HEIGHT);
+         });
 
-               stackPane.getChildren().clear();
-               stackPane.getChildren().add(imageView);
-            }
+         Scene scene = new Scene(stackPane, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
+         // Create scene with appropriate size
+         imageStage.setScene(scene);
+         imageStage.centerOnScreen();
 
-         
-         
-            stackPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+         // Show the window
+         imageStage.show();
 
+      } else {
+
+         stackPane.getChildren().clear();
+         stackPane.getChildren().add(imageView);
+      }
+
+      stackPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 
    }
 

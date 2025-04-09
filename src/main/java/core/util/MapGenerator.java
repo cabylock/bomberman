@@ -19,13 +19,13 @@ public class MapGenerator {
     * @param name        Map file name
     * @param playerCount Number of players (1 or 2)
     */
-   public static void generateMap(int level, int height, int width, String name, int playerCount) {
+   public static void generateMap(int level, int height, int width, String name) {
       // Ensure dimensions are odd
       height = height % 2 == 0 ? height + 1 : height;
       width = width % 2 == 0 ? width + 1 : width;
 
       // Validate player count
-      playerCount = Math.min(Math.max(playerCount, 1), 2);
+     
 
       // Calculate densities based on level
       double enemyDensity = Math.min(0.4 + (level * 0.5), 2.0);
@@ -57,7 +57,7 @@ public class MapGenerator {
             map[y][x] = '#';
          }
       }
-
+      int playerCount = 2; 
       // Create potential spawn points for players
       List<int[]> spawnPoints = generatePlayerSpawnPoints(height, width, playerCount);
 

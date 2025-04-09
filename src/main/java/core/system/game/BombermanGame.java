@@ -60,7 +60,7 @@ public class BombermanGame {
 
     // for custom map
     public BombermanGame(int level, String mapName) {
-        Util.generateRandomMap(level, mapName, Setting.PLAYER_NUM);
+        Util.generateRandomMap(level, mapName);
 
         try {
             Thread.sleep(2000);
@@ -73,7 +73,7 @@ public class BombermanGame {
 
     // for more custom map
     public BombermanGame(int level, int width, int height, String mapName) {
-        Util.generateCustomMap(level, height, width, mapName, Setting.PLAYER_NUM);
+        Util.generateCustomMap(level, height, width, mapName);
 
         try {
             Thread.sleep(2000);
@@ -145,7 +145,7 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.show();
 
-        GameControl.start(Setting.SERVER_MODE);
+        GameControl.start(Setting.GAME_MODE);
         // Create the game loop
         // 
         gameLoop = new AnimationTimer() {

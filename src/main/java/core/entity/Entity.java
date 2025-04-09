@@ -33,8 +33,12 @@ public abstract class Entity implements Serializable {
       gc.drawImage(Sprite.sprites[imageId].getFxImage(), x, y);
    }
 
-   public  int getId() {
+   public int getId() {
       return id;
+   }
+   
+   public void setId(int id) {
+      this.id = id;
    }
 
    public int getX() {

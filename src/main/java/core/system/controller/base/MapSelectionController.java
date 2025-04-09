@@ -142,7 +142,7 @@ public class MapSelectionController {
 
             ModeController modeController = loader.getController();
             modeController.setStage(stage);
-            modeController.setMode(mapName+".txt", mapType);
+            modeController.setMap(mapName+".txt", mapType);
 
             Scene scene = new Scene(root, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
             stage.setScene(scene);
