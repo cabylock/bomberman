@@ -52,10 +52,6 @@ public class BombermanGame {
     private static StackPane gameRoot;
     private boolean isPaused = false;
 
-
-
-
-
     // for default or custom map
     public BombermanGame(String mapName, int mapType) {
         if (mapType == Setting.DEFAULT_MAP) {

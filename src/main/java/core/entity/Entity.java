@@ -26,7 +26,7 @@ public abstract class Entity implements Serializable {
    }
 
    public void render(GraphicsContext gc) {
-      gc.drawImage(Sprite.sprites[imageId].getFxImage(), x, y);
+      gc.drawImage(Sprite.getSprite(imageId).getFxImage(), x, y);
    }
 
    public int getId() {
