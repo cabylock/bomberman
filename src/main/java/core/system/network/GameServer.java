@@ -135,7 +135,7 @@ public class GameServer extends Thread {
       public void run() {
          int newId = Util.uuid();
          sendCommand("ID", newId);
-         Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1);
+         Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1,clientName);
          clientBomber.setId(newId);
          GameControl.addEntity(clientBomber);
 

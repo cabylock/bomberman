@@ -239,6 +239,10 @@ public class BombermanGame {
 
     public void nextLevel() {
         // Resume game if paused
+        if( Setting.GAME_MODE == Setting.CLIENT_MODE ) {
+            Util.showNotificationWindow("You don't have permission to change level in online mode");
+            return;
+        }
         isPaused = false;
 
         // Stop and restart the game loop
@@ -254,6 +258,10 @@ public class BombermanGame {
     // Update your restartGame method to support the pause menu
     public void restartGame() {
         // Resume game if paused
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE ) {
+            Util.showNotificationWindow("You can't restart the game in online mode");
+            return;
+        }
         isPaused = false;
 
         // Stop and restart the game loop

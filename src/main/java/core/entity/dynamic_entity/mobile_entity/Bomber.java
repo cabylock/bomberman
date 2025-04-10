@@ -5,20 +5,34 @@ import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
 import core.entity.dynamic_entity.static_entity.Bomb;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class Bomber extends MobileEntity {
 
-   private int speed = 25; 
-   protected int flameSize = 1;
-   protected int typePlayer;
-   
+   private int speed = 25;
+   private int flameSize = 1;
+   private int typePlayer;
+   private String playerName; // Store player's name
+
+   private int initialX;
+   private int initialY;
 
    protected int bombCountMax = 1;
-   
+
    protected boolean flamePass = false;
 
-   public Bomber(int x, int y, int imageId, int typePlayer) {
+   // public Bomber(int x, int y, int imageId, int typePlayer) {
+   //    this(x, y, imageId, typePlayer, "Player " + (typePlayer == Setting.BOMBER2 ? "2" : "1"));
+   // }
+
+   public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
       super(x, y, imageId);
+      this.initialX = x;
+      this.initialY = y;
+      this.playerName = playerName;
       // Image arrays for animation
       this.typePlayer = typePlayer;
       if (typePlayer == Setting.BOMBER2) {
@@ -40,7 +54,7 @@ public class Bomber extends MobileEntity {
       imageIds[Setting.DEAD][0] = Sprite.PLAYER_DEAD1;
       imageIds[Setting.DEAD][1] = Sprite.PLAYER_DEAD2;
       imageIds[Setting.DEAD][2] = Sprite.PLAYER_DEAD3;
-      imageIds[Setting.ANIMATION_NULL][0] = Sprite.PLAYER_RIGHT;   
+      imageIds[Setting.ANIMATION_NULL][0] = Sprite.PLAYER_RIGHT;
       imageIds[Setting.ANIMATION_NULL][1] = Sprite.ANIMATION_NULL;
       imageIds[Setting.ANIMATION_NULL][2] = Sprite.ANIMATION_NULL;
    }
@@ -48,6 +62,34 @@ public class Bomber extends MobileEntity {
    @Override
    public void update(double deltaTime) {
       updateAnimation(deltaTime);
+   }
+
+   @Override
+   public void render(GraphicsContext gc) {
+      super.render(gc);
+      // Render player name above character
+      if (playerName != null && !playerName.isEmpty()) {
+         // Save current graphics context state
+         gc.save();
+
+         // Set text properties
+         gc.setFill(Color.WHITE);
+         gc.setStroke(Color.BLACK);
+         gc.setLineWidth(1.5);
+         gc.setFont(new Font("Varela Round", 14));
+         gc.setTextAlign(TextAlignment.CENTER);
+
+         // Position is centered above player
+         double textX = x + Sprite.SCALED_SIZE / 2;
+         double textY = y - 10; // 10 pixels above player
+
+         // Draw text with outline for better visibility
+         gc.strokeText(playerName, textX, textY);
+         gc.fillText(playerName, textX, textY);
+
+         // Restore graphics context
+         gc.restore();
+      }
    }
 
    public void control(String command, double deltaTime) {
@@ -65,7 +107,6 @@ public class Bomber extends MobileEntity {
          moving = false;
       }
    }
-   
 
    private void placeBomb() {
 
@@ -113,11 +154,23 @@ public class Bomber extends MobileEntity {
 
    }
 
+   public void resetBomber() {
+      x = initialX;
+      y = initialY;
+      bombCountMax = 1;
+      speed = 25;
+      flameSize = 1;
+      isInvincible = false;
+      invincibleTime = 0;
+
+   }
+
    public boolean isFlamePass() {
       return flamePass;
    }
+
    public void updateInvincible() {
-   
+
       if (isInvincible) {
          invincibleTime--;
          if (invincibleTime <= 0) {
@@ -129,6 +182,14 @@ public class Bomber extends MobileEntity {
    @Override
    public void remove() {
       GameControl.removeEntity(this);
+   }
+
+   public String getPlayerName() {
+      return playerName;
+   }
+
+   public void setPlayerName(String playerName) {
+      this.playerName = playerName;
    }
 
 }

@@ -195,7 +195,10 @@ public class GameControl {
    }
 
    public static void clear() {
-      bomberEntities.clear();
+      bomberEntities.forEach((id, bomber) -> {
+         bomber.resetBomber();
+      });
+
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
