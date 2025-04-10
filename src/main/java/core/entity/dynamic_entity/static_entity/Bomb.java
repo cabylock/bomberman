@@ -6,13 +6,13 @@ import core.system.game.GameControl;
 
 public class Bomb extends StaticEntity {
 
-    protected float timeAlive = 3.0f; // 3 seconds before explosion
-    protected float animationTimer = 0;
+    private transient float timeAlive = 3.0f; // 3 seconds before explosion
+    
 
-    private final int DEFAULT_IMAGE = 0;
-    private int flameSize;
-    private Flame[][] flameSegments;
-    private int ownerId;
+    private transient final int DEFAULT_IMAGE = 0;
+    private transient int flameSize;
+    private transient Flame[][] flameSegments;
+    private transient int ownerId;
 
     // Directional constants
     protected final int[] DX = { 0, -1, 1, 0, 0 };
@@ -32,15 +32,13 @@ public class Bomb extends StaticEntity {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         timeAlive -= deltaTime;
         if (timeAlive <= 0) {
             explode();
         }
         updateAnimation(deltaTime);
     }
-
-
 
     public void explode() {
 
@@ -71,7 +69,7 @@ public class Bomb extends StaticEntity {
     }
 
     @Override
-    public void updateAnimation(double deltaTime) {
+    public void updateAnimation(float deltaTime) {
         animationTimer += deltaTime;
 
         // Change animation frame approximately every 0.33 seconds
@@ -82,6 +80,5 @@ public class Bomb extends StaticEntity {
 
         imageId = imageIds[DEFAULT_IMAGE][animationStep];
     }
-
 
 }

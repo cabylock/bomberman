@@ -6,7 +6,7 @@ public class Grass extends BackgroundEntity {
    }
 
    @Override
-   public void update(double deltaTime) {
+   public void update(float deltaTime) {
       // No specific update logic for Grass
    }
 

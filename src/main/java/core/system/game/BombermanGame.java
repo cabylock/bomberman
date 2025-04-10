@@ -39,7 +39,7 @@ public class BombermanGame {
     private Stage stage;
 
     private long lastUpdateTime = 0;
-    private double deltaTime = 0.0; // Time between frames in seconds
+    private float deltaTime = 0; // Time between frames in seconds
 
     // UI elements for status bar
     private Text healthText;
@@ -72,6 +72,16 @@ public class BombermanGame {
     // Then update your createGameScene method:
     public void createGameScene(Stage stage) {
         this.stage = stage;
+
+        // Add close request handler to ensure clean shutdown
+        stage.setOnCloseRequest(e -> {
+            if (gameLoop != null) {
+                gameLoop.stop();
+                gameLoop = null;
+            }
+            GameControl.stop();
+            input.clear();
+        });
 
         // Create Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * GameControl.getWidth(), Sprite.SCALED_SIZE * GameControl.getHeight());
@@ -113,17 +123,22 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.show();
 
-        GameControl.start(Setting.GAME_MODE);
+        if(GameControl.start(Setting.GAME_MODE) == false) {
+            
+            returnToMenu();
+            return; 
+        }
+
 
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 // Calculate delta time in seconds (from nanoseconds)
                 if (lastUpdateTime > 0) {
-                    deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
+                    deltaTime = (float) ((now - lastUpdateTime) / 1_000_000_000.0);
                     // Cap delta time to prevent huge jumps after lag
                     if (deltaTime > 0.08)
-                        deltaTime = 0.08;
+                        deltaTime = 0.08f;
                 }
 
                 render();
@@ -239,7 +254,7 @@ public class BombermanGame {
 
     public void nextLevel() {
         // Resume game if paused
-        if( Setting.GAME_MODE == Setting.CLIENT_MODE ) {
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
             Util.showNotificationWindow("You don't have permission to change level in online mode");
             return;
         }
@@ -258,7 +273,7 @@ public class BombermanGame {
     // Update your restartGame method to support the pause menu
     public void restartGame() {
         // Resume game if paused
-        if (Setting.GAME_MODE == Setting.CLIENT_MODE ) {
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
             Util.showNotificationWindow("You can't restart the game in online mode");
             return;
         }

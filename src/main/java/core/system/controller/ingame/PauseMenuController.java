@@ -1,6 +1,7 @@
 package core.system.controller.ingame;
 
 import core.system.game.BombermanGame;
+import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -20,6 +21,9 @@ public class PauseMenuController {
    private Button restartButton;
 
    @FXML
+   private Button nextLevelButton;
+
+   @FXML
    private Button menuButton;
 
    @FXML
@@ -30,6 +34,19 @@ public class PauseMenuController {
 
    public void setGame(BombermanGame game) {
       this.game = game;
+
+      // Hide restart and next level buttons in client mode
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+         if (restartButton != null) {
+            restartButton.setVisible(false);
+            restartButton.setManaged(false); // Remove from layout
+         }
+
+         if (nextLevelButton != null) {
+            nextLevelButton.setVisible(false);
+            nextLevelButton.setManaged(false); // Remove from layout
+         }
+      }
    }
 
    public void setOverlay(StackPane overlay) {
@@ -46,7 +63,6 @@ public class PauseMenuController {
 
    @FXML
    private void handleKeyPress(KeyEvent event) {
-
       if (event.getCode() == KeyCode.ESCAPE) {
          handleResume();
          event.consume();

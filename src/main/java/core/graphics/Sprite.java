@@ -53,6 +53,7 @@ public class Sprite {
 	public static final int BALLOOM_RIGHT2 = 23;
 	public static final int BALLOOM_RIGHT3 = 24;
 	public static final int BALLOOM_DEAD = 25;
+	
 
 	// Enemies - Oneal
 	public static final int ONEAL_LEFT1 = 26;

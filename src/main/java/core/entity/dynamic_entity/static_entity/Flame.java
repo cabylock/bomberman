@@ -13,18 +13,18 @@ import core.system.game.GameControl;
 public class Flame extends StaticEntity {
    // Animation constants
 
-   protected int length; // Length of the flame
-   protected float timeAlive = 1.0f; // 1 second lifetime
-   protected float animationTimer = 0;
+  
+   private transient float timeAlive = 1.0f; // 1 second lifetime
+   
 
-   protected final int CENTER = 0;
-   protected final int HORIZONTAL = 1;
-   protected final int VERTICAL = 2;
-   protected final int LEFT_END = 3;
-   protected final int RIGHT_END = 4;
-   protected final int UP_END = 5;
-   protected final int DOWN_END = 6;
-   protected int flameType;
+   private transient final int CENTER = 0;
+   private transient final int HORIZONTAL = 1;
+   private transient final int VERTICAL = 2;
+   private transient final int LEFT_END = 3;
+   private transient final int RIGHT_END = 4;
+   private transient final int UP_END = 5;
+   private transient final int DOWN_END = 6;
+   private transient int flameType;
 
    public Flame(int x, int y, int imageId, int flameType) {
       super(x, y, imageId);
@@ -131,7 +131,7 @@ public class Flame extends StaticEntity {
    }
 
    @Override
-   public void update(double deltaTime) {
+   public void update(float deltaTime) {
       timeAlive -= deltaTime;
       if (timeAlive <= 0) {
          remove();
@@ -140,10 +140,8 @@ public class Flame extends StaticEntity {
       updateAnimation(deltaTime);
    }
 
-   
-
    @Override
-   public void updateAnimation(double deltaTime) {
+   public void updateAnimation(float deltaTime) {
       animationTimer += deltaTime;
 
       // Change animation frame every 0.33 seconds (3 frames per second)
@@ -154,7 +152,6 @@ public class Flame extends StaticEntity {
 
       imageId = imageIds[flameType][animationStep];
    }
-
 
    public void remove() {
       GameControl.removeEntity(this);

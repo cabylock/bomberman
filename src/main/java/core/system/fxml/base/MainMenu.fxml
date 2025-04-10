@@ -36,8 +36,8 @@
                
                <Button text="Exit Game" 
            onAction="#exit"
-           prefWidth="100"
-           prefHeight="30"/>
+           prefWidth="300"
+           prefHeight="60"/>
                
         
                

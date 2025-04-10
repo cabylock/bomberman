@@ -125,12 +125,12 @@ public class MapEntity {
                Oneal oneal = new Oneal(j, i, Sprite.ONEAL_LEFT1);
                GameControl.addEntity(oneal);
             } else if (c == 'b') {
-               ItemEntity BombItem = new BombAddItem(j, i, Sprite.POWERUP_BOMBS);
+               ItemEntity BombItem = new BombUpItem(j, i, Sprite.POWERUP_BOMBS);
                GameControl.addEntity(BombItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'f') {
-               ItemEntity FlameItem = new FlameAddItem(j, i, Sprite.POWERUP_FLAMES);
+               ItemEntity FlameItem = new FlameUpItem(j, i, Sprite.POWERUP_FLAMES);
                GameControl.addEntity(FlameItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
@@ -153,6 +153,12 @@ public class MapEntity {
             } else if (c == 'h') {
                ItemEntity HeartItem = new HealthUpItem(j, i, Sprite.POWERUP_HEALTH_UP);
                GameControl.addEntity(HeartItem);
+               StaticEntity brick = new Brick(j, i, Sprite.BRICK);
+               GameControl.addEntity(brick);
+            }
+            else if(c == 'w'){
+               ItemEntity WallPassItem = new WallPassItem(j, i, Sprite.POWERUP_WALL_PASS);
+               GameControl.addEntity(WallPassItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             }

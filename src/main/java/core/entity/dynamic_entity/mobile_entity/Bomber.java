@@ -12,20 +12,21 @@ import javafx.scene.text.TextAlignment;
 
 public class Bomber extends MobileEntity {
 
-   private int speed = 25;
-   private int flameSize = 1;
-   private int typePlayer;
+   private transient int speed = 25;
+   private transient int flameSize = 1;
+   private transient int typePlayer;
    private String playerName; // Store player's name
 
-   private int initialX;
-   private int initialY;
+   private transient int initialX;
+   private transient int initialY;
 
-   protected int bombCountMax = 1;
+   protected transient int bombCountMax = 1;
 
-   protected boolean flamePass = false;
+   protected transient static final int ITEM_DURATION = 5; // 10 giây * 60 frames/giây
 
    // public Bomber(int x, int y, int imageId, int typePlayer) {
-   //    this(x, y, imageId, typePlayer, "Player " + (typePlayer == Setting.BOMBER2 ? "2" : "1"));
+   // this(x, y, imageId, typePlayer, "Player " + (typePlayer == Setting.BOMBER2 ?
+   // "2" : "1"));
    // }
 
    public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
@@ -54,14 +55,16 @@ public class Bomber extends MobileEntity {
       imageIds[Setting.DEAD][0] = Sprite.PLAYER_DEAD1;
       imageIds[Setting.DEAD][1] = Sprite.PLAYER_DEAD2;
       imageIds[Setting.DEAD][2] = Sprite.PLAYER_DEAD3;
-      imageIds[Setting.ANIMATION_NULL][0] = Sprite.PLAYER_RIGHT;
-      imageIds[Setting.ANIMATION_NULL][1] = Sprite.ANIMATION_NULL;
+      imageIds[Setting.ANIMATION_NULL][0] = Sprite.ANIMATION_NULL;
+      imageIds[Setting.ANIMATION_NULL][1] = Sprite.PLAYER_DOWN;
       imageIds[Setting.ANIMATION_NULL][2] = Sprite.ANIMATION_NULL;
    }
 
    @Override
-   public void update(double deltaTime) {
+   public void update(float deltaTime) {
       updateAnimation(deltaTime);
+      updateItem(deltaTime);
+      updateInvincible(deltaTime);
    }
 
    @Override
@@ -80,8 +83,8 @@ public class Bomber extends MobileEntity {
          gc.setTextAlign(TextAlignment.CENTER);
 
          // Position is centered above player
-         double textX = x + Sprite.SCALED_SIZE / 2;
-         double textY = y - 10; // 10 pixels above player
+         float textX = x + Sprite.SCALED_SIZE / 2;
+         float textY = y - 10; // 10 pixels above player
 
          // Draw text with outline for better visibility
          gc.strokeText(playerName, textX, textY);
@@ -92,7 +95,7 @@ public class Bomber extends MobileEntity {
       }
    }
 
-   public void control(String command, double deltaTime) {
+   public void control(String command, float deltaTime) {
       if (command.equals(Setting.MOVE_DOWN)) {
          move(Setting.DOWN_MOVING, speed, deltaTime);
       } else if (command.equals(Setting.MOVE_UP)) {
@@ -110,7 +113,7 @@ public class Bomber extends MobileEntity {
 
    private void placeBomb() {
 
-      BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][4]);
+      BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.BOMB_PLACE]);
       if (bombCountMax == 0) {
 
          return;
@@ -125,33 +128,106 @@ public class Bomber extends MobileEntity {
 
    }
 
+   public void updateItem(float deltaTime) {
+      if (flamePassTime > 0) {
+         flamePassTime -= deltaTime;
+         if (flamePassTime <= 0) {
+            flamePass = false;
+         }
+      }
+      if (bombPassTime > 0) {
+         bombPassTime -= deltaTime;
+         if (bombPassTime <= 0) {
+            bombPass = false;
+         }
+      }
+      if (speedUpTime > 0) {
+         speedUpTime -= deltaTime;
+         if (speedUpTime <= 0) {
+            speed = 25;
+            speedUp = false;
+         }
+      }
+      if (flameUpTime > 0) {
+         flameUpTime -= deltaTime;
+         if (flameUpTime <= 0) {
+            flameSize = 1;
+            flameUp = false;
+         }
+      }
+      if (bombUpTime > 0) {
+         bombUpTime -= deltaTime;
+         if (bombUpTime <= 0) {
+            bombCountMax = 1;
+            bombUp = false;
+         }
+      }
+      if (wallPassTime > 0) {
+         wallPassTime -= deltaTime;
+         if (wallPassTime <= 0) {
+            wallPass = false;
+         }
+      }
+
+   }
+
    public void setFlamePass(boolean flamePass) {
       this.flamePass = flamePass;
+      if (flamePass) {
+         flamePassTime = ITEM_DURATION;
+      }
    }
 
-   public void increaseSpeed() {
-      speed++;
+   public void setBombPass(boolean bombPass) {
+      this.bombPass = bombPass;
+      if (bombPass) {
+         bombPassTime = ITEM_DURATION;
+      }
    }
 
-   public void increaseFlameSize() {
-      flameSize++;
+   public void setSpeedUp(boolean speedUp) {
+      this.speedUp = speedUp;
+      if (speedUp) {
+         speed = 30;
+      }
+      speedUpTime = ITEM_DURATION;
    }
 
-   public void increaseBomb() {
-      bombCountMax++;
+   public void setFlameUp(boolean flameUp) {
+      this.flameUp = flameUp;
+      if (flameUp) {
+         flameSize = 2;
+         flameUpTime = ITEM_DURATION;
+      }
+   }
+
+   public void setBombUp(boolean bombUp) {
+      this.bombUp = bombUp;
+      if (bombUp) {
+         bombCountMax = 2;
+         bombUpTime = ITEM_DURATION;
+      }
+   }
+
+   public void setWallPass(boolean wallPass) {
+      this.wallPass = wallPass;
+      if (wallPass) {
+         wallPassTime = ITEM_DURATION;
+      }
    }
 
    public void bombExplode() {
-      bombCountMax++;
+      if (bombCountMax < 2) {
+         bombCountMax++;
+      }
    }
 
    public void increaseHealth() {
       health++;
    }
 
-   public void setBombPass(boolean bombpass) {
-      this.bombpass = bombpass;
-
+   public void setName(String name) {
+      this.playerName = name;
    }
 
    public void resetBomber() {
@@ -167,16 +243,6 @@ public class Bomber extends MobileEntity {
 
    public boolean isFlamePass() {
       return flamePass;
-   }
-
-   public void updateInvincible() {
-
-      if (isInvincible) {
-         invincibleTime--;
-         if (invincibleTime <= 0) {
-            isInvincible = false;
-         }
-      }
    }
 
    @Override

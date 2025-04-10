@@ -13,8 +13,8 @@ import java.util.Random;
 
 public class Util {
 
-   public static int toGrid(double  x) {
-      return (int)((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
+   public static int toGrid(float x) {
+      return (int) ((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
    }
 
    public static int randomDirection() {
@@ -41,7 +41,6 @@ public class Util {
       Random random = new Random();
       return random.nextInt(max - min + 1) + min;
    }
-
 
    /**
     * Generate a random map with custom dimensions

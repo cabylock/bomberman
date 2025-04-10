@@ -5,10 +5,10 @@ import core.system.setting.Setting;
 
 public class Oneal extends EnemyEntity {
 
-      private int speed = 20;
+      private transient int speed = 20;
+
       public Oneal(int x, int y, int imageId) {
             super(x, y, imageId);
-            
 
             imageIds = new int[4][3];
             imageIds[Setting.UP_MOVING][0] = Sprite.ONEAL_LEFT1;
@@ -23,10 +23,11 @@ public class Oneal extends EnemyEntity {
             imageIds[Setting.RIGHT_MOVING][0] = Sprite.ONEAL_RIGHT1;
             imageIds[Setting.RIGHT_MOVING][1] = Sprite.ONEAL_RIGHT2;
             imageIds[Setting.RIGHT_MOVING][2] = Sprite.ONEAL_RIGHT3;
+
       }
 
       @Override
-      public void update(double deltaTime) {
+      public void update(float deltaTime) {
             defaultMove(deltaTime);
             EnemyCollision();
             updateAnimation(deltaTime);

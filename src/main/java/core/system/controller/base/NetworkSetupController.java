@@ -20,6 +20,9 @@ public class NetworkSetupController {
    @FXML
    private TextField clientPortField;
 
+   @FXML
+   private TextField playerNameField;
+
    private Stage stage;
    private String mapName;
    private int mapType;
@@ -38,6 +41,13 @@ public class NetworkSetupController {
       try {
          int port = Integer.parseInt(hostPortField.getText());
          Setting.SERVER_PORT = port;
+
+         // Save player name
+         String playerName = playerNameField.getText().trim();
+         if (!playerName.isEmpty()) {
+            Setting.PLAYER_NAME = playerName;
+         }
+
          startNetworkGame(Setting.SERVER_MODE);
       } catch (NumberFormatException e) {
          showError("Invalid port number. Please enter a valid port.");
@@ -52,7 +62,13 @@ public class NetworkSetupController {
 
          Setting.SERVER_ADDRESS = ipAddress;
          Setting.SERVER_PORT = port;
-         
+
+         // Save player name
+         String playerName = playerNameField.getText().trim();
+         if (!playerName.isEmpty()) {
+            Setting.PLAYER_NAME = playerName;
+         }
+
          startNetworkGame(Setting.CLIENT_MODE);
       } catch (NumberFormatException e) {
          showError("Invalid port number. Please enter a valid port.");
@@ -67,7 +83,7 @@ public class NetworkSetupController {
       Setting.GAME_MODE = networkMode;
       game.createGameScene(stage);
       // Create game scene
-      
+
    }
 
    @FXML

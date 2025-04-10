@@ -1,4 +1,3 @@
-
 package core.system.network;
 
 import java.net.Socket;
@@ -13,6 +12,7 @@ import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
+import core.util.Util;
 
 public class GameClient extends Thread {
 
@@ -25,11 +25,11 @@ public class GameClient extends Thread {
    private final int RETRY_DELAY = 2000; // in milliseconds
    private int receiveRetries = 5;
 
-
    public GameClient(String serverAddress, int serverPort) {
       this.serverAddress = serverAddress;
       this.serverPort = serverPort;
 
+      Runtime.getRuntime().addShutdownHook(new Thread(this::disconnect));
    }
 
    public boolean connect() {
@@ -40,12 +40,12 @@ public class GameClient extends Thread {
             out = new ObjectOutputStream(serverSocket.getOutputStream());
             in = new ObjectInputStream(serverSocket.getInputStream());
             System.out.println("Connected to server at " + serverAddress + ":" + serverPort);
-            
+
             receiveGameState();
             start();
             return true; // Exit the loop if connection is successful
          } catch (IOException e) {
-            System.err.println("Error, Retry connect to server: " + retries + 1 + " time(s) " + e.getMessage());
+            System.out.println("Connection failed. Retrying... (" + (retries + 1) + "/" + MAX_RETRIES + ")");
             retries++;
             if (retries < MAX_RETRIES) {
                try {
@@ -57,7 +57,10 @@ public class GameClient extends Thread {
                System.err.println("Out of time. Exiting...");
             }
          }
+
       }
+      Util.showNotificationWindow(
+            "Cannot connect to server: " + serverAddress + ":" + serverPort + "Return to main menu");
       return false;
 
    }
@@ -75,7 +78,7 @@ public class GameClient extends Thread {
 
    @Override
    public void run() {
-
+      sendPlayerName(Setting.PLAYER_NAME);
       while (isAlive()) {
          try {
             if (serverSocket == null || serverSocket.isClosed()) {
@@ -92,7 +95,7 @@ public class GameClient extends Thread {
 
    // In GameClient.java
 
-   public void sendCommand(String command, int id ) {
+   public void sendCommand(String command, int id) {
       try {
          out.writeUTF(Setting.NETWORK_BOMBER_ENTITIES);
          out.writeUTF(command);
@@ -102,13 +105,23 @@ public class GameClient extends Thread {
          System.err.println("Error sending Bomber entities: " + e.getMessage());
       }
    }
- 
+
+   public void sendPlayerName(String name) {
+      try {
+         out.writeUTF("PLAYER_NAME");
+         out.writeUTF(name);
+         out.writeInt(Setting.ID);
+         out.flush();
+      } catch (IOException e) {
+         System.err.println("Error sending player name: " + e.getMessage());
+      }
+   }
 
    public void receiveGameState() {
       try {
          String message = in.readUTF();
          if ("ID".equals(message)) {
-            int id  = in.readInt();
+            int id = in.readInt();
             Setting.ID = id;
 
          } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
@@ -120,7 +133,7 @@ public class GameClient extends Thread {
             Object obj = in.readObject();
             List<EnemyEntity> enemies = (List<EnemyEntity>) obj;
             GameControl.setEnemyEntities(enemies);
-         } else if(Setting.NETWORK_STATIC_ENTITIES.equals(message)) {
+         } else if (Setting.NETWORK_STATIC_ENTITIES.equals(message)) {
             Object obj = in.readObject();
             List<StaticEntity> staticEntities = (List<StaticEntity>) obj;
             GameControl.setStaticEntities(staticEntities);
@@ -133,7 +146,6 @@ public class GameClient extends Thread {
             List<BackgroundEntity> backgroundEntities = (List<BackgroundEntity>) obj;
             GameControl.setBackgroundEntities(backgroundEntities);
          }
-
 
       } catch (IOException e) {
          System.err.println("Error receiving object: " + e.getMessage());
@@ -149,8 +161,6 @@ public class GameClient extends Thread {
       }
 
    }
-
- 
 
    // Bomber bomber = new Bomber(0, 3, 0, 1);
    // client.sendData(List.of(bomber),"BOMBER");
