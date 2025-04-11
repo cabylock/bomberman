@@ -224,9 +224,10 @@ public class GameServer extends Thread {
                System.out.println("Received message from " + clientName + ": " + message);
 
             } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
+               float deltaTime = in.readFloat();
                String command = in.readUTF();
                int id = in.readInt();
-               GameControl.getBomberEntitiesMap().get(id).control(command, GameControl.getDeltaTime());
+               GameControl.getBomberEntitiesMap().get(id).control(command, deltaTime);
 
             }
             else if("PLAYER_NAME".equals(message)) {

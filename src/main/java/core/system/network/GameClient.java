@@ -98,6 +98,7 @@ public class GameClient extends Thread {
    public void sendCommand(String command, int id) {
       try {
          out.writeUTF(Setting.NETWORK_BOMBER_ENTITIES);
+         out.writeFloat(GameControl.getDeltaTime());
          out.writeUTF(command);
          out.writeInt(id);
          out.flush();

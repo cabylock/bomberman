@@ -1,5 +1,8 @@
 package core.system.controller.base;
 
+import java.net.InetAddress;
+import javafx.scene.control.Label;
+
 import core.system.game.BombermanGame;
 import core.system.setting.Setting;
 import javafx.fxml.FXML;
@@ -18,6 +21,9 @@ public class NetworkSetupController {
    private TextField ipAddressField;
 
    @FXML
+   private Label myIpAddressField;
+
+   @FXML
    private TextField clientPortField;
 
    @FXML
@@ -34,6 +40,19 @@ public class NetworkSetupController {
    public void setMap(String mapName, int mapType) {
       this.mapName = mapName;
       this.mapType = mapType;
+   }
+
+   @FXML
+   public void initialize() {
+     try{
+         String localIp = InetAddress.getLocalHost().getHostAddress();
+         myIpAddressField.setText(localIp);
+         playerNameField.setText(localIp);
+      } catch (Exception e) {
+         e.printStackTrace();
+         showError("Unable to retrieve local IP address.");
+      }
+     
    }
 
    @FXML

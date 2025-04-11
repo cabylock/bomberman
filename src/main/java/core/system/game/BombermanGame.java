@@ -30,6 +30,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import java.util.Set;
 import java.util.HashSet;
+import javafx.scene.image.Image;
 
 public class BombermanGame {
 
@@ -74,7 +75,7 @@ public class BombermanGame {
         this.stage = stage;
 
         // Add close request handler to ensure clean shutdown
-        stage.setOnCloseRequest(e -> {
+        stage.setOnCloseRequest(_ -> {
             if (gameLoop != null) {
                 gameLoop.stop();
                 gameLoop = null;
@@ -85,6 +86,7 @@ public class BombermanGame {
 
         // Create Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * GameControl.getWidth(), Sprite.SCALED_SIZE * GameControl.getHeight());
+        
         gc = canvas.getGraphicsContext2D();
 
         // Create status bar
@@ -93,6 +95,7 @@ public class BombermanGame {
         // Create game content container
         VBox gameContent = new VBox(5);
         gameContent.getChildren().addAll(statusBar, canvas);
+       
 
         // Create a StackPane for overlays
         gameRoot = new StackPane();
@@ -100,6 +103,7 @@ public class BombermanGame {
 
         // Create scene
         Scene scene = new Scene(gameRoot);
+        
 
         scene.setOnKeyPressed(e -> {
             input.add(e.getCode());
@@ -121,6 +125,10 @@ public class BombermanGame {
 
         // Add scene to stage
         stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.setTitle("Bomberman Game");
+        stage.getIcons().add(new Image("/textures/classic.png"));
+        stage.setResizable(false);
         stage.show();
 
         if(GameControl.start(Setting.GAME_MODE) == false) {

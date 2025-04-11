@@ -207,7 +207,7 @@ public class GameControl {
    }
 
    public static void clear() {
-      bomberEntities.forEach((id, bomber) -> {
+      bomberEntities.forEach((_, bomber) -> {
          bomber.resetBomber();
       });
 

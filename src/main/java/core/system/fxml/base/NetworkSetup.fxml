@@ -28,6 +28,11 @@
         <TextField fx:id="playerNameField" text="Player" prefWidth="200"/>
     </HBox>
 
+    <HBox alignment="CENTER" spacing="10">
+        <Label text="Your IP Address:" style="-fx-font-size: 18px;"/>
+        <Label fx:id ="myIpAddressField" text= "localhost" style="-fx-font-size: 18px; -fx-text-fill: grey;"/>
+    </HBox>
+
     <HBox alignment="CENTER" spacing="50">
         <VBox alignment="CENTER" spacing="15" styleClass="network-card">
             <padding>
