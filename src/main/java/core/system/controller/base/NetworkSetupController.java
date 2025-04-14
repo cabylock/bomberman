@@ -1,5 +1,8 @@
 package core.system.controller.base;
 
+import java.net.InetAddress;
+import javafx.scene.control.Label;
+
 import core.system.game.BombermanGame;
 import core.system.setting.Setting;
 import javafx.fxml.FXML;
@@ -18,7 +21,13 @@ public class NetworkSetupController {
    private TextField ipAddressField;
 
    @FXML
+   private Label myIpAddressField;
+
+   @FXML
    private TextField clientPortField;
+
+   @FXML
+   private TextField playerNameField;
 
    private Stage stage;
    private String mapName;
@@ -34,10 +43,30 @@ public class NetworkSetupController {
    }
 
    @FXML
+   public void initialize() {
+     try{
+         String localIp = InetAddress.getLocalHost().getHostAddress();
+         myIpAddressField.setText(localIp);
+         playerNameField.setText(localIp);
+      } catch (Exception e) {
+         e.printStackTrace();
+         showError("Unable to retrieve local IP address.");
+      }
+     
+   }
+
+   @FXML
    private void hostGame() {
       try {
          int port = Integer.parseInt(hostPortField.getText());
          Setting.SERVER_PORT = port;
+
+         // Save player name
+         String playerName = playerNameField.getText().trim();
+         if (!playerName.isEmpty()) {
+            Setting.PLAYER_NAME = playerName;
+         }
+
          startNetworkGame(Setting.SERVER_MODE);
       } catch (NumberFormatException e) {
          showError("Invalid port number. Please enter a valid port.");
@@ -52,7 +81,13 @@ public class NetworkSetupController {
 
          Setting.SERVER_ADDRESS = ipAddress;
          Setting.SERVER_PORT = port;
-         
+
+         // Save player name
+         String playerName = playerNameField.getText().trim();
+         if (!playerName.isEmpty()) {
+            Setting.PLAYER_NAME = playerName;
+         }
+
          startNetworkGame(Setting.CLIENT_MODE);
       } catch (NumberFormatException e) {
          showError("Invalid port number. Please enter a valid port.");
@@ -67,7 +102,7 @@ public class NetworkSetupController {
       Setting.GAME_MODE = networkMode;
       game.createGameScene(stage);
       // Create game scene
-      
+
    }
 
    @FXML

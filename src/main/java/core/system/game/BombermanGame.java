@@ -30,6 +30,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import java.util.Set;
 import java.util.HashSet;
+import javafx.scene.image.Image;
 
 public class BombermanGame {
 
@@ -39,7 +40,7 @@ public class BombermanGame {
     private Stage stage;
 
     private long lastUpdateTime = 0;
-    private double deltaTime = 0.0; // Time between frames in seconds
+    private float deltaTime = 0; // Time between frames in seconds
 
     // UI elements for status bar
     private Text healthText;
@@ -51,10 +52,6 @@ public class BombermanGame {
     private AnimationTimer gameLoop;
     private static StackPane gameRoot;
     private boolean isPaused = false;
-
-
-
-
 
     // for default or custom map
     public BombermanGame(String mapName, int mapType) {
@@ -77,8 +74,19 @@ public class BombermanGame {
     public void createGameScene(Stage stage) {
         this.stage = stage;
 
+        // Add close request handler to ensure clean shutdown
+        stage.setOnCloseRequest(_ -> {
+            if (gameLoop != null) {
+                gameLoop.stop();
+                gameLoop = null;
+            }
+            GameControl.stop();
+            input.clear();
+        });
+
         // Create Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * GameControl.getWidth(), Sprite.SCALED_SIZE * GameControl.getHeight());
+        
         gc = canvas.getGraphicsContext2D();
 
         // Create status bar
@@ -87,6 +95,7 @@ public class BombermanGame {
         // Create game content container
         VBox gameContent = new VBox(5);
         gameContent.getChildren().addAll(statusBar, canvas);
+       
 
         // Create a StackPane for overlays
         gameRoot = new StackPane();
@@ -94,6 +103,7 @@ public class BombermanGame {
 
         // Create scene
         Scene scene = new Scene(gameRoot);
+        
 
         scene.setOnKeyPressed(e -> {
             input.add(e.getCode());
@@ -115,19 +125,28 @@ public class BombermanGame {
 
         // Add scene to stage
         stage.setScene(scene);
+        stage.centerOnScreen();
+        stage.setTitle("Bomberman Game");
+        stage.getIcons().add(new Image("/textures/classic.png"));
+        stage.setResizable(false);
         stage.show();
 
-        GameControl.start(Setting.GAME_MODE);
+        if(GameControl.start(Setting.GAME_MODE) == false) {
+            
+            returnToMenu();
+            return; 
+        }
+
 
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 // Calculate delta time in seconds (from nanoseconds)
                 if (lastUpdateTime > 0) {
-                    deltaTime = (now - lastUpdateTime) / 1_000_000_000.0;
+                    deltaTime = (float) ((now - lastUpdateTime) / 1_000_000_000.0);
                     // Cap delta time to prevent huge jumps after lag
                     if (deltaTime > 0.08)
-                        deltaTime = 0.08;
+                        deltaTime = 0.08f;
                 }
 
                 render();
@@ -243,6 +262,10 @@ public class BombermanGame {
 
     public void nextLevel() {
         // Resume game if paused
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+            Util.showNotificationWindow("You don't have permission to change level in online mode");
+            return;
+        }
         isPaused = false;
 
         // Stop and restart the game loop
@@ -258,6 +281,10 @@ public class BombermanGame {
     // Update your restartGame method to support the pause menu
     public void restartGame() {
         // Resume game if paused
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+            Util.showNotificationWindow("You can't restart the game in online mode");
+            return;
+        }
         isPaused = false;
 
         // Stop and restart the game loop

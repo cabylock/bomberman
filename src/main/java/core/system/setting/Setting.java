@@ -14,20 +14,19 @@ public class Setting {
 
       public static final int CUSTOM_MAP = 1;
 
-
-      public static  int GAME_MODE = 2;
+      public static int GAME_MODE = 2;
       public static final int SERVER_MODE = 0;
       public static final int CLIENT_MODE = 1;
       public static final int SINGLE_MODE = 2;
       public static final int MULTI_MODE = 3;
 
-      
+      public static String PLAYER_NAME = "Player";
 
       public static int PLAYER_NUM = 1;
       public static String SERVER_ADDRESS = "localhost";
       public static int SERVER_PORT = 2005;
-      public static int ID= Util.uuid();
-      
+      public static int ID = Util.uuid();
+
       public static String NETWORK_STATIC_ENTITIES = "STATIC";
       public static String NETWORK_ENEMY_ENTITIES = "ENEMY";
       public static String NETWORK_ITEM_ENTITIES = "ITEM";

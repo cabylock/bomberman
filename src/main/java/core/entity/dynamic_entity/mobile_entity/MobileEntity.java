@@ -11,44 +11,46 @@ import core.system.game.GameControl;
 import core.system.setting.Setting;
 
 public class MobileEntity extends DynamicEntity {
-   protected boolean moving = false;
-   protected boolean flamePass = false;
-   protected boolean bombPass = false;
-   protected boolean speedUp = false;
-   protected boolean flameUp = false;
-   protected boolean bombUp = false;
-   protected boolean wallPass = false;
+   
+   protected transient boolean moving = false;
+   protected transient boolean flamePass = false;
+   protected transient boolean bombPass = false;
+   protected transient boolean speedUp = false;
+   protected transient boolean flameUp = false;
+   protected transient boolean bombUp = false;
+   protected transient boolean wallPass = false;
 
-   protected int flamePassTime = 0;
-   protected int bombPassTime = 0;
-   protected int speedUpTime = 0;
-   protected int flameUpTime = 0;
-   protected int bombUpTime = 0;
-   protected int wallPassTime = 0;
+   protected transient float flamePassTime = 0;
+   protected transient float bombPassTime = 0;
+   protected transient float speedUpTime = 0;
+   protected transient float flameUpTime = 0;
+   protected transient float bombUpTime = 0;
+   protected transient float wallPassTime = 0;
 
-   protected int health = 1;
-   protected boolean isInvincible = false;
-   protected int invincibleTime = 180; // 180 frames = 1 giây
+   protected transient int health = 1;
+   protected transient boolean isInvincible = false;
+   protected transient int invincibleTime = 180; // 180 frames = 1 giây
 
-   protected int direction = Setting.DOWN_MOVING;
+   protected transient int direction = Setting.DOWN_MOVING;
 
-   protected final int ALIGN_TOLERANCE = 16;
+   protected transient final int ALIGN_TOLERANCE = 16;
 
-   protected float animationTimer = 0;
-   protected float deadAnimationTimer = 0;
-   protected final float ANIMATION_TIME = 0.05f; // Animation frame time in seconds
-   protected final float DEAD_ANIMATION_TIME = 0.5f; // Dead animation frame time
+   protected transient float invincibleTimer = 0;
+   protected transient float deadAnimationTimer = 0;
+   protected transient final float INVINCIBLE_ANIMATION_TIME = 0.1f; // Invincible animation frame time
+   protected transient final float ANIMATION_TIME = 0.05f; // Animation frame time in seconds
+   protected transient final float DEAD_ANIMATION_TIME = 0.5f; // Dead animation frame time
 
    public MobileEntity(int x, int y, int imageId) {
       super(x, y, imageId);
    }
 
    @Override
-   public void update(double deltaTime) {
-     
+   public void update(float deltaTime) {
+
    }
 
-   protected boolean move(int direction, int baseSpeed, double deltaTime) {
+   protected boolean move(int direction, int baseSpeed, float deltaTime) {
       if (health <= 0) {
          return false;
       }
@@ -57,10 +59,10 @@ public class MobileEntity extends DynamicEntity {
       moving = true;
 
       // Calculate actual movement distance based on delta time
-      double speed = baseSpeed * deltaTime * 10; // Remove the (int) cast to allow fractional movement
+      float speed = baseSpeed * deltaTime * 10; // Remove the (int) cast to allow fractional movement
 
-      double deltaX = 0;
-      double deltaY = 0;
+      float deltaX = 0;
+      float deltaY = 0;
 
       switch (direction) {
          case Setting.RIGHT_MOVING:
@@ -79,8 +81,8 @@ public class MobileEntity extends DynamicEntity {
             break;
       }
 
-      double nextX = x + deltaX;
-      double nextY = y + deltaY;
+      float nextX = x + deltaX;
+      float nextY = y + deltaY;
 
       if (moveCollision(nextX, nextY)) {
          if (Math.abs(deltaX) > 0 && Math.abs(nextY - this.getYTile() * Sprite.SCALED_SIZE) < ALIGN_TOLERANCE) {
@@ -106,7 +108,7 @@ public class MobileEntity extends DynamicEntity {
       }
    }
 
-   protected boolean moveCollision(double nextX, double nextY) {
+   protected boolean moveCollision(float nextX, float nextY) {
       for (StaticEntity entity : GameControl.getStaticEntities()) {
          if (entity instanceof Bomb) {
             if (checkCollision(this.x, this.y, entity.getX(), entity.getY())) {
@@ -121,7 +123,7 @@ public class MobileEntity extends DynamicEntity {
             }
          } else if (entity instanceof Brick) {
             if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-               if(this.wallPass){
+               if (this.wallPass) {
                   return false;
                }
                return true;
@@ -134,7 +136,7 @@ public class MobileEntity extends DynamicEntity {
             continue;
          }
          if (checkCollision(nextX, nextY, bg.getX(), bg.getY())) {
-            if( this.wallPass){
+            if (this.wallPass) {
                return false;
             }
             return true;
@@ -143,25 +145,26 @@ public class MobileEntity extends DynamicEntity {
       return false;
    }
 
-   protected boolean checkCollision(double x1, double y1, double x2, double y2) {
+   protected boolean checkCollision(float x1, float y1, float x2, float y2) {
       int size = Sprite.SCALED_SIZE;
       return (x1 + size > x2 && x1 < x2 + size
             && y1 + size > y2 && y1 < y2 + size);
 
    }
 
-   public void updateInvincible() {
-
+   public void updateInvincible(float deltaTime) {
       if (isInvincible) {
-         invincibleTime--;
-         if (invincibleTime <= 0) {
+         invincibleTimer += deltaTime;
+         if (invincibleTimer >= invincibleTime) {
             isInvincible = false;
+            invincibleTimer = 0;
          }
       }
+
    }
 
    @Override
-   protected void updateAnimation(double deltaTime) {
+   protected void updateAnimation(float deltaTime) {
       if (health <= 0) {
          deadAnimationTimer += deltaTime;
          if (deadAnimationTimer >= DEAD_ANIMATION_TIME) {
@@ -172,13 +175,15 @@ public class MobileEntity extends DynamicEntity {
                return;
             }
             deadAnimationTimer = 0;
-         } else if (isInvincible) {
-            if (animationDelay >= ANIMATION_TIME) {
-               animationStep = (animationStep + 1) % 3;
-               animationDelay = 0;
-            }
-
          }
+
+      } else if (isInvincible) {
+         invincibleTimer += deltaTime;
+         if (invincibleTimer >= INVINCIBLE_ANIMATION_TIME) {
+            animationStep = (animationStep + 1) % 3;
+            invincibleTimer = 0;
+         }
+
       } else if (moving) {
          animationTimer += deltaTime;
          if (animationTimer >= ANIMATION_TIME) {
@@ -201,7 +206,7 @@ public class MobileEntity extends DynamicEntity {
          if (this.health <= 0) {
             this.dead();
          } else {
-            
+
             isInvincible = true;
             invincibleTime = 180;
             direction = Setting.ANIMATION_NULL;

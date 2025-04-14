@@ -20,4 +20,4 @@ copy:
 	cp -r /media/cabylock/file/source_code/server/bomberman/ /media/cabylock/file/source_code/client/
 
 
-
+# // change icon, add sound system, modify sprite. 

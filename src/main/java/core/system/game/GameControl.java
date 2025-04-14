@@ -23,7 +23,7 @@ public class GameControl {
    private static int level;
    private static int gameMode;
 
-   private static double deltaTime;
+   private static float deltaTime;
 
    private static GameServer server;
    private static GameClient client;
@@ -34,49 +34,62 @@ public class GameControl {
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
-   public static void InitializeServer() {
+   public static boolean InitializeServer() {
       server = new GameServer();
       server.startServer(Setting.SERVER_PORT);
-
+      if (!server.isRunning) {
+         
+         return false;
+      }
+      return true;
    }
 
-   public static void InitializeClient() {
+   public static boolean InitializeClient() {
       clear();
       client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
       if (!client.connect()) {
-         Util.showNotificationWindow("Cannot connect to server");
-         return;
+         
+         return false;
       }
+      return true;
 
    }
 
-   public static void start(int gameMode) {
+   public static boolean start(int gameMode) {
       GameControl.gameMode = gameMode;
-
+      bomberEntities.get(Setting.ID).setName(Setting.PLAYER_NAME);
       if (gameMode == Setting.SERVER_MODE) {
-         InitializeServer();
+         return InitializeServer();
 
       } else if (gameMode == Setting.CLIENT_MODE) {
-         InitializeClient();
+         return InitializeClient();
       } else if (gameMode == Setting.SINGLE_MODE) {
-
+         return true;
       } else if (gameMode == Setting.MULTI_MODE) {
-
+         return true;
       }
+      return true;
 
    }
 
    public static void stop() {
-      if (gameMode == Setting.SERVER_MODE) {
+      if (gameMode == Setting.SERVER_MODE && server != null) {
          server.stopServer();
-      } else if (gameMode == Setting.CLIENT_MODE) {
+         server = null;
+      } else if (gameMode == Setting.CLIENT_MODE && client != null) {
          client.disconnect();
+         client = null;
       }
       gameMode = Setting.SINGLE_MODE;
 
+      // Ensure all collections are cleared
+      clear();
+
+      // Force garbage collection to clean up resources
+      System.gc();
    }
 
-   public static void update(double deltaTime) {
+   public static void update(float deltaTime) {
       GameControl.deltaTime = deltaTime;
       handleInput(deltaTime);
 
@@ -102,7 +115,7 @@ public class GameControl {
       }
    }
 
-   public static void handleInput(double deltaTime) {
+   public static void handleInput(float deltaTime) {
       // First player (always present)
       handlePlayerInput(Setting.BOMBER1, Setting.ID, deltaTime);
 
@@ -112,7 +125,7 @@ public class GameControl {
       }
    }
 
-   private static void handlePlayerInput(int playerType, int playerId, double deltaTime) {
+   private static void handlePlayerInput(int playerType, int playerId, float deltaTime) {
       // Check if player entity exists
       if (!bomberEntities.containsKey(playerId)) {
          return;
@@ -142,8 +155,7 @@ public class GameControl {
       }
    }
 
-   public static double getDeltaTime()
-   {
+   public static float getDeltaTime() {
       return deltaTime;
    }
 
@@ -195,7 +207,10 @@ public class GameControl {
    }
 
    public static void clear() {
-      bomberEntities.clear();
+      bomberEntities.forEach((_, bomber) -> {
+         bomber.resetBomber();
+      });
+
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
@@ -220,25 +235,28 @@ public class GameControl {
    }
 
    public static void setBomberEntities(List<Bomber> entities) {
+      
+      bomberEntities.clear();
+      
       for (Bomber bomber : entities) {
          bomberEntities.put(bomber.getId(), bomber);
       }
    }
 
    public static void setStaticEntities(List<StaticEntity> entities) {
-      staticEntities = entities;
+      staticEntities = new CopyOnWriteArrayList<>(entities);
    }
 
    public static void setEnemyEntities(List<EnemyEntity> entities) {
-      enemyEntities = entities;
+      enemyEntities = new CopyOnWriteArrayList<>(entities);
    }
 
    public static void setBackgroundEntities(List<BackgroundEntity> entities) {
-      backgroundEntities = entities;
+      backgroundEntities = new CopyOnWriteArrayList<>(entities);
    }
 
    public static void setItemEntities(List<ItemEntity> entities) {
-      itemEntities = entities;
+      itemEntities = new CopyOnWriteArrayList<>(entities);
    }
 
    public static void removeEntity(Entity entity) {

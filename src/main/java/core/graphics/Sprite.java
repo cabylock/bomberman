@@ -2,6 +2,8 @@ package core.graphics;
 
 import javafx.scene.image.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)
@@ -17,7 +19,7 @@ public class Sprite {
 	protected int _realWidth;
 	protected int _realHeight;
 	private SpriteSheet _sheet;
-	public static final Sprite[] sprites = new Sprite[100];
+	private static final Map<Integer, Sprite> spriteCache = new HashMap<>();
 	private Image cachedImage = null;
 
 	// Sprite IDs - Tổ chức theo nhóm để dễ quản lý
@@ -140,124 +142,324 @@ public class Sprite {
 	public static final int POWERUP_WALL_PASS = 93;
 	public static final int ANIMATION_NULL = 94;
 
-	static {
-		// Terrain
-		sprites[GRASS] = new Sprite(DEFAULT_SIZE, "grass.png");
-		sprites[BRICK] = new Sprite(DEFAULT_SIZE, "brick.png");
-		sprites[WALL] = new Sprite(DEFAULT_SIZE, "wall.png");
-		sprites[PORTAL] = new Sprite(DEFAULT_SIZE, "portal.png");
+	/**
+	 * Gets a sprite by its ID, loading it only if needed
+	 */
+	public static Sprite getSprite(int id) {
+		if (!spriteCache.containsKey(id)) {
+			loadSprite(id);
+		}
+		return spriteCache.get(id);
+	}
 
-		// Player sprites
-		sprites[PLAYER_UP] = new Sprite(DEFAULT_SIZE, "player_up.png");
-		sprites[PLAYER_DOWN] = new Sprite(DEFAULT_SIZE, "player_down.png");
-		sprites[PLAYER_LEFT] = new Sprite(DEFAULT_SIZE, "player_left.png");
-		sprites[PLAYER_RIGHT] = new Sprite(DEFAULT_SIZE, "player_right.png");
-		sprites[PLAYER_UP_1] = new Sprite(DEFAULT_SIZE, "player_up_1.png");
-		sprites[PLAYER_UP_2] = new Sprite(DEFAULT_SIZE, "player_up_2.png");
-		sprites[PLAYER_DOWN_1] = new Sprite(DEFAULT_SIZE, "player_down_1.png");
-		sprites[PLAYER_DOWN_2] = new Sprite(DEFAULT_SIZE, "player_down_2.png");
-		sprites[PLAYER_LEFT_1] = new Sprite(DEFAULT_SIZE, "player_left_1.png");
-		sprites[PLAYER_LEFT_2] = new Sprite(DEFAULT_SIZE, "player_left_2.png");
-		sprites[PLAYER_RIGHT_1] = new Sprite(DEFAULT_SIZE, "player_right_1.png");
-		sprites[PLAYER_RIGHT_2] = new Sprite(DEFAULT_SIZE, "player_right_2.png");
-		sprites[PLAYER_DEAD1] = new Sprite(DEFAULT_SIZE, "player_dead1.png");
-		sprites[PLAYER_DEAD2] = new Sprite(DEFAULT_SIZE, "player_dead2.png");
-		sprites[PLAYER_DEAD3] = new Sprite(DEFAULT_SIZE, "player_dead3.png");
+	/**
+	 * Load a specific sprite into the cache
+	 */
+	private static void loadSprite(int id) {
+		Sprite sprite = null;
 
-		// Balloom sprites
-		sprites[BALLOOM_LEFT1] = new Sprite(DEFAULT_SIZE, "balloom_left1.png");
-		sprites[BALLOOM_LEFT2] = new Sprite(DEFAULT_SIZE, "balloom_left2.png");
-		sprites[BALLOOM_LEFT3] = new Sprite(DEFAULT_SIZE, "balloom_left3.png");
-		sprites[BALLOOM_RIGHT1] = new Sprite(DEFAULT_SIZE, "balloom_right1.png");
-		sprites[BALLOOM_RIGHT2] = new Sprite(DEFAULT_SIZE, "balloom_right2.png");
-		sprites[BALLOOM_RIGHT3] = new Sprite(DEFAULT_SIZE, "balloom_right3.png");
-		sprites[BALLOOM_DEAD] = new Sprite(DEFAULT_SIZE, "balloom_dead.png");
+		switch (id) {
+			case GRASS:
+				sprite = new Sprite(DEFAULT_SIZE, "grass.png");
+				break;
+			case BRICK:
+				sprite = new Sprite(DEFAULT_SIZE, "brick.png");
+				break;
+			case WALL:
+				sprite = new Sprite(DEFAULT_SIZE, "wall.png");
+				break;
+			case PORTAL:
+				sprite = new Sprite(DEFAULT_SIZE, "portal.png");
+				break;
+			// Player sprites
+			case PLAYER_UP:
+				sprite = new Sprite(DEFAULT_SIZE, "player_up.png");
+				break;
+			case PLAYER_DOWN:
+				sprite = new Sprite(DEFAULT_SIZE, "player_down.png");
+				break;
+			case PLAYER_LEFT:
+				sprite = new Sprite(DEFAULT_SIZE, "player_left.png");
+				break;
+			case PLAYER_RIGHT:
+				sprite = new Sprite(DEFAULT_SIZE, "player_right.png");
+				break;
+			case PLAYER_UP_1:
+				sprite = new Sprite(DEFAULT_SIZE, "player_up_1.png");
+				break;
+			case PLAYER_UP_2:
+				sprite = new Sprite(DEFAULT_SIZE, "player_up_2.png");
+				break;
+			case PLAYER_DOWN_1:
+				sprite = new Sprite(DEFAULT_SIZE, "player_down_1.png");
+				break;
+			case PLAYER_DOWN_2:
+				sprite = new Sprite(DEFAULT_SIZE, "player_down_2.png");
+				break;
+			case PLAYER_LEFT_1:
+				sprite = new Sprite(DEFAULT_SIZE, "player_left_1.png");
+				break;
+			case PLAYER_LEFT_2:
+				sprite = new Sprite(DEFAULT_SIZE, "player_left_2.png");
+				break;
+			case PLAYER_RIGHT_1:
+				sprite = new Sprite(DEFAULT_SIZE, "player_right_1.png");
+				break;
+			case PLAYER_RIGHT_2:
+				sprite = new Sprite(DEFAULT_SIZE, "player_right_2.png");
+				break;
+			case PLAYER_DEAD1:
+				sprite = new Sprite(DEFAULT_SIZE, "player_dead1.png");
+				break;
+			case PLAYER_DEAD2:
+				sprite = new Sprite(DEFAULT_SIZE, "player_dead2.png");
+				break;
+			case PLAYER_DEAD3:
+				sprite = new Sprite(DEFAULT_SIZE, "player_dead3.png");
+				break;
+			// Balloom sprites
+			case BALLOOM_LEFT1:
+				sprite = new Sprite(DEFAULT_SIZE, "balloom_left1.png");
+				break;
+			case BALLOOM_LEFT2:
+				sprite = new Sprite(DEFAULT_SIZE, "balloom_left2.png");
+				break;
+			case BALLOOM_LEFT3:
+				sprite = new Sprite(DEFAULT_SIZE, "balloom_left3.png");
+				break;
+			case BALLOOM_RIGHT1:
+				sprite = new Sprite(DEFAULT_SIZE, "balloom_right1.png");
+				break;
+			case BALLOOM_RIGHT2:
+				sprite = new Sprite(DEFAULT_SIZE, "balloom_right2.png");
+				break;
+			case BALLOOM_RIGHT3:
+				sprite = new Sprite(DEFAULT_SIZE, "balloom_right3.png");
+				break;
+			case BALLOOM_DEAD:
+				sprite = new Sprite(DEFAULT_SIZE, "balloom_dead.png");
+				break;
+			// Oneal sprites
+			case ONEAL_LEFT1:
+				sprite = new Sprite(DEFAULT_SIZE, "oneal_left1.png");
+				break;
+			case ONEAL_LEFT2:
+				sprite = new Sprite(DEFAULT_SIZE, "oneal_left2.png");
+				break;
+			case ONEAL_LEFT3:
+				sprite = new Sprite(DEFAULT_SIZE, "oneal_left3.png");
+				break;
+			case ONEAL_RIGHT1:
+				sprite = new Sprite(DEFAULT_SIZE, "oneal_right1.png");
+				break;
+			case ONEAL_RIGHT2:
+				sprite = new Sprite(DEFAULT_SIZE, "oneal_right2.png");
+				break;
+			case ONEAL_RIGHT3:
+				sprite = new Sprite(DEFAULT_SIZE, "oneal_right3.png");
+				break;
+			case ONEAL_DEAD:
+				sprite = new Sprite(DEFAULT_SIZE, "oneal_dead.png");
+				break;
+			// Doll sprites
+			case DOLL_LEFT1:
+				sprite = new Sprite(DEFAULT_SIZE, "doll_left1.png");
+				break;
+			case DOLL_LEFT2:
+				sprite = new Sprite(DEFAULT_SIZE, "doll_left2.png");
+				break;
+			case DOLL_LEFT3:
+				sprite = new Sprite(DEFAULT_SIZE, "doll_left3.png");
+				break;
+			case DOLL_RIGHT1:
+				sprite = new Sprite(DEFAULT_SIZE, "doll_right1.png");
+				break;
+			case DOLL_RIGHT2:
+				sprite = new Sprite(DEFAULT_SIZE, "doll_right2.png");
+				break;
+			case DOLL_RIGHT3:
+				sprite = new Sprite(DEFAULT_SIZE, "doll_right3.png");
+				break;
+			case DOLL_DEAD:
+				sprite = new Sprite(DEFAULT_SIZE, "doll_dead.png");
+				break;
+			// Minvo sprites
+			case MINVO_LEFT1:
+				sprite = new Sprite(DEFAULT_SIZE, "minvo_left1.png");
+				break;
+			case MINVO_LEFT2:
+				sprite = new Sprite(DEFAULT_SIZE, "minvo_left2.png");
+				break;
+			case MINVO_LEFT3:
+				sprite = new Sprite(DEFAULT_SIZE, "minvo_left3.png");
+				break;
+			case MINVO_RIGHT1:
+				sprite = new Sprite(DEFAULT_SIZE, "minvo_right1.png");
+				break;
+			case MINVO_RIGHT2:
+				sprite = new Sprite(DEFAULT_SIZE, "minvo_right2.png");
+				break;
+			case MINVO_RIGHT3:
+				sprite = new Sprite(DEFAULT_SIZE, "minvo_right3.png");
+				break;
+			case MINVO_DEAD:
+				sprite = new Sprite(DEFAULT_SIZE, "minvo_dead.png");
+				break;
+			// Kondoria sprites
+			case KONDORIA_LEFT1:
+				sprite = new Sprite(DEFAULT_SIZE, "kondoria_left1.png");
+				break;
+			case KONDORIA_LEFT2:
+				sprite = new Sprite(DEFAULT_SIZE, "kondoria_left2.png");
+				break;
+			case KONDORIA_LEFT3:
+				sprite = new Sprite(DEFAULT_SIZE, "kondoria_left3.png");
+				break;
+			case KONDORIA_RIGHT1:
+				sprite = new Sprite(DEFAULT_SIZE, "kondoria_right1.png");
+				break;
+			case KONDORIA_RIGHT2:
+				sprite = new Sprite(DEFAULT_SIZE, "kondoria_right2.png");
+				break;
+			case KONDORIA_RIGHT3:
+				sprite = new Sprite(DEFAULT_SIZE, "kondoria_right3.png");
+				break;
+			case KONDORIA_DEAD:
+				sprite = new Sprite(DEFAULT_SIZE, "kondoria_dead.png");
+				break;
+			// Mob dead sprites
+			case MOB_DEAD1:
+				sprite = new Sprite(DEFAULT_SIZE, "mob_dead1.png");
+				break;
+			case MOB_DEAD2:
+				sprite = new Sprite(DEFAULT_SIZE, "mob_dead2.png");
+				break;
+			case MOB_DEAD3:
+				sprite = new Sprite(DEFAULT_SIZE, "mob_dead3.png");
+				break;
+			// Bomb sprites
+			case BOMB:
+				sprite = new Sprite(DEFAULT_SIZE, "bomb.png");
+				break;
+			case BOMB_1:
+				sprite = new Sprite(DEFAULT_SIZE, "bomb_1.png");
+				break;
+			case BOMB_2:
+				sprite = new Sprite(DEFAULT_SIZE, "bomb_2.png");
+				break;
+			case BOMB_EXPLODED:
+				sprite = new Sprite(DEFAULT_SIZE, "bomb_exploded.png");
+				break;
+			case BOMB_EXPLODED1:
+				sprite = new Sprite(DEFAULT_SIZE, "bomb_exploded1.png");
+				break;
+			case BOMB_EXPLODED2:
+				sprite = new Sprite(DEFAULT_SIZE, "bomb_exploded2.png");
+				break;
+			// Explosion sprites
+			case EXPLOSION_VERTICAL:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical.png");
+				break;
+			case EXPLOSION_VERTICAL1:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical1.png");
+				break;
+			case EXPLOSION_VERTICAL2:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical2.png");
+				break;
+			case EXPLOSION_HORIZONTAL:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal.png");
+				break;
+			case EXPLOSION_HORIZONTAL1:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal1.png");
+				break;
+			case EXPLOSION_HORIZONTAL2:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal2.png");
+				break;
+			case EXPLOSION_HORIZONTAL_LEFT_LAST:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last.png");
+				break;
+			case EXPLOSION_HORIZONTAL_LEFT_LAST1:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last1.png");
+				break;
+			case EXPLOSION_HORIZONTAL_LEFT_LAST2:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last2.png");
+				break;
+			case EXPLOSION_HORIZONTAL_RIGHT_LAST:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last.png");
+				break;
+			case EXPLOSION_HORIZONTAL_RIGHT_LAST1:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last1.png");
+				break;
+			case EXPLOSION_HORIZONTAL_RIGHT_LAST2:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last2.png");
+				break;
+			case EXPLOSION_VERTICAL_TOP_LAST:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last.png");
+				break;
+			case EXPLOSION_VERTICAL_TOP_LAST1:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last1.png");
+				break;
+			case EXPLOSION_VERTICAL_TOP_LAST2:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last2.png");
+				break;
+			case EXPLOSION_VERTICAL_DOWN_LAST:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last.png");
+				break;
+			case EXPLOSION_VERTICAL_DOWN_LAST1:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last1.png");
+				break;
+			case EXPLOSION_VERTICAL_DOWN_LAST2:
+				sprite = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last2.png");
+				break;
+			// Brick explosion sprites
+			case BRICK_EXPLODED:
+				sprite = new Sprite(DEFAULT_SIZE, "brick_exploded.png");
+				break;
+			case BRICK_EXPLODED1:
+				sprite = new Sprite(DEFAULT_SIZE, "brick_exploded1.png");
+				break;
+			case BRICK_EXPLODED2:
+				sprite = new Sprite(DEFAULT_SIZE, "brick_exploded2.png");
+				break;
+			// Powerup sprites
+			case POWERUP_BOMBS:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_bombs.png");
+				break;
+			case POWERUP_FLAMES:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_flames.png");
+				break;
+			case POWERUP_SPEED:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_speed.png");
+				break;
+			case POWERUP_WALLPASS:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_wallpass.png");
+				break;
+			case POWERUP_BOMB_PASS:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_bombpass.png");
+				break;
+			case POWERUP_FLAME_PASS:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_flamepass.png");
+				break;
+			case POWERUP_DETONATOR_PASS:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_detonator.png");
+				break;
+			case POWERUP_SPEED_PASS:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_speed.png");
+				break;
+			case POWERUP_WALL_PASS:
+				sprite = new Sprite(DEFAULT_SIZE, "powerup_wallpass.png");
+				break;
+			case ANIMATION_NULL:
+				sprite = new Sprite(DEFAULT_SIZE, "animation_null.png");
+				break;
+			default:
+				// Return a default/error sprite or null
+				sprite = new Sprite(DEFAULT_SIZE, 0xFFFF0000); // Red square as error indicator
+		}
 
-		// Oneal sprites
-		sprites[ONEAL_LEFT1] = new Sprite(DEFAULT_SIZE, "oneal_left1.png");
-		sprites[ONEAL_LEFT2] = new Sprite(DEFAULT_SIZE, "oneal_left2.png");
-		sprites[ONEAL_LEFT3] = new Sprite(DEFAULT_SIZE, "oneal_left3.png");
-		sprites[ONEAL_RIGHT1] = new Sprite(DEFAULT_SIZE, "oneal_right1.png");
-		sprites[ONEAL_RIGHT2] = new Sprite(DEFAULT_SIZE, "oneal_right2.png");
-		sprites[ONEAL_RIGHT3] = new Sprite(DEFAULT_SIZE, "oneal_right3.png");
-		sprites[ONEAL_DEAD] = new Sprite(DEFAULT_SIZE, "oneal_dead.png");
-
-		// Doll sprites
-		sprites[DOLL_LEFT1] = new Sprite(DEFAULT_SIZE, "doll_left1.png");
-		sprites[DOLL_LEFT2] = new Sprite(DEFAULT_SIZE, "doll_left2.png");
-		sprites[DOLL_LEFT3] = new Sprite(DEFAULT_SIZE, "doll_left3.png");
-		sprites[DOLL_RIGHT1] = new Sprite(DEFAULT_SIZE, "doll_right1.png");
-		sprites[DOLL_RIGHT2] = new Sprite(DEFAULT_SIZE, "doll_right2.png");
-		sprites[DOLL_RIGHT3] = new Sprite(DEFAULT_SIZE, "doll_right3.png");
-		sprites[DOLL_DEAD] = new Sprite(DEFAULT_SIZE, "doll_dead.png");
-
-		// Minvo sprites
-		sprites[MINVO_LEFT1] = new Sprite(DEFAULT_SIZE, "minvo_left1.png");
-		sprites[MINVO_LEFT2] = new Sprite(DEFAULT_SIZE, "minvo_left2.png");
-		sprites[MINVO_LEFT3] = new Sprite(DEFAULT_SIZE, "minvo_left3.png");
-		sprites[MINVO_RIGHT1] = new Sprite(DEFAULT_SIZE, "minvo_right1.png");
-		sprites[MINVO_RIGHT2] = new Sprite(DEFAULT_SIZE, "minvo_right2.png");
-		sprites[MINVO_RIGHT3] = new Sprite(DEFAULT_SIZE, "minvo_right3.png");
-		sprites[MINVO_DEAD] = new Sprite(DEFAULT_SIZE, "minvo_dead.png");
-
-		// Kondoria sprites
-		sprites[KONDORIA_LEFT1] = new Sprite(DEFAULT_SIZE, "kondoria_left1.png");
-		sprites[KONDORIA_LEFT2] = new Sprite(DEFAULT_SIZE, "kondoria_left2.png");
-		sprites[KONDORIA_LEFT3] = new Sprite(DEFAULT_SIZE, "kondoria_left3.png");
-		sprites[KONDORIA_RIGHT1] = new Sprite(DEFAULT_SIZE, "kondoria_right1.png");
-		sprites[KONDORIA_RIGHT2] = new Sprite(DEFAULT_SIZE, "kondoria_right2.png");
-		sprites[KONDORIA_RIGHT3] = new Sprite(DEFAULT_SIZE, "kondoria_right3.png");
-		sprites[KONDORIA_DEAD] = new Sprite(DEFAULT_SIZE, "kondoria_dead.png");
-
-		// Mob dead sprites
-		sprites[MOB_DEAD1] = new Sprite(DEFAULT_SIZE, "mob_dead1.png");
-		sprites[MOB_DEAD2] = new Sprite(DEFAULT_SIZE, "mob_dead2.png");
-		sprites[MOB_DEAD3] = new Sprite(DEFAULT_SIZE, "mob_dead3.png");
-
-		// Bomb sprites
-		sprites[BOMB] = new Sprite(DEFAULT_SIZE, "bomb.png");
-		sprites[BOMB_1] = new Sprite(DEFAULT_SIZE, "bomb_1.png");
-		sprites[BOMB_2] = new Sprite(DEFAULT_SIZE, "bomb_2.png");
-		sprites[BOMB_EXPLODED] = new Sprite(DEFAULT_SIZE, "bomb_exploded.png");
-		sprites[BOMB_EXPLODED1] = new Sprite(DEFAULT_SIZE, "bomb_exploded1.png");
-		sprites[BOMB_EXPLODED2] = new Sprite(DEFAULT_SIZE, "bomb_exploded2.png");
-
-		// Explosion sprites
-		sprites[EXPLOSION_VERTICAL] = new Sprite(DEFAULT_SIZE, "explosion_vertical.png");
-		sprites[EXPLOSION_VERTICAL1] = new Sprite(DEFAULT_SIZE, "explosion_vertical1.png");
-		sprites[EXPLOSION_VERTICAL2] = new Sprite(DEFAULT_SIZE, "explosion_vertical2.png");
-		sprites[EXPLOSION_HORIZONTAL] = new Sprite(DEFAULT_SIZE, "explosion_horizontal.png");
-		sprites[EXPLOSION_HORIZONTAL1] = new Sprite(DEFAULT_SIZE, "explosion_horizontal1.png");
-		sprites[EXPLOSION_HORIZONTAL2] = new Sprite(DEFAULT_SIZE, "explosion_horizontal2.png");
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last.png");
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last1.png");
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last2.png");
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last.png");
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last1.png");
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last2.png");
-		sprites[EXPLOSION_VERTICAL_TOP_LAST] = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last.png");
-		sprites[EXPLOSION_VERTICAL_TOP_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last1.png");
-		sprites[EXPLOSION_VERTICAL_TOP_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last2.png");
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST] = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last.png");
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last1.png");
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last2.png");
-
-		// Brick explosion sprites
-		sprites[BRICK_EXPLODED] = new Sprite(DEFAULT_SIZE, "brick_exploded.png");
-		sprites[BRICK_EXPLODED1] = new Sprite(DEFAULT_SIZE, "brick_exploded1.png");
-		sprites[BRICK_EXPLODED2] = new Sprite(DEFAULT_SIZE, "brick_exploded2.png");
-
-		// Powerup sprites
-		sprites[POWERUP_BOMBS] = new Sprite(DEFAULT_SIZE, "powerup_bombs.png");
-		sprites[POWERUP_FLAMES] = new Sprite(DEFAULT_SIZE, "powerup_flames.png");
-		sprites[POWERUP_SPEED] = new Sprite(DEFAULT_SIZE, "powerup_speed.png");
-		sprites[POWERUP_WALLPASS] = new Sprite(DEFAULT_SIZE, "powerup_wallpass.png");
-		sprites[POWERUP_BOMB_PASS] = new Sprite(DEFAULT_SIZE, "powerup_bombpass.png");
-		sprites[POWERUP_FLAME_PASS] = new Sprite(DEFAULT_SIZE, "powerup_flamepass.png");
-		sprites[POWERUP_DETONATOR_PASS] = new Sprite(DEFAULT_SIZE, "powerup_detonator.png");
-		sprites[POWERUP_SPEED_PASS] = new Sprite(DEFAULT_SIZE, "powerup_speed.png");
-		sprites[POWERUP_WALL_PASS] = new Sprite(DEFAULT_SIZE, "powerup_wallpass.png");
-		sprites[ANIMATION_NULL] = new Sprite(DEFAULT_SIZE, "animation_null.png");
+		if (sprite != null) {
+			spriteCache.put(id, sprite);
+		}
 	}
 
 	public Sprite(int size, int x, int y, SpriteSheet sheet, int rw, int rh) {

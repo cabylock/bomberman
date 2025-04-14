@@ -25,12 +25,11 @@ public class MapGenerator {
       width = width % 2 == 0 ? width + 1 : width;
 
       // Validate player count
-     
 
       // Calculate densities based on level
-      double enemyDensity = Math.min(0.5 + (level * 1), 3.0);
-      double brickDensity = Math.min(0.5 + (level * 0.01), 0.6);
-      double itemDensity = Math.max(0.5 - (level * 0.02), 0.3);
+      float enemyDensity = (float) Math.min(0.5 + (level * 1), 3.0);
+      float brickDensity = (float) Math.min(0.5 + (level * 0.01), 0.6);
+      float itemDensity = (float) Math.max(0.5 - (level * 0.02), 0.3);
 
       char[][] map = new char[height][width];
 
@@ -57,7 +56,7 @@ public class MapGenerator {
             map[y][x] = '#';
          }
       }
-      int playerCount = 2; 
+      int playerCount = 2;
       // Create potential spawn points for players
       List<int[]> spawnPoints = generatePlayerSpawnPoints(height, width, playerCount);
 
@@ -88,7 +87,7 @@ public class MapGenerator {
                continue;
             }
 
-            if (random.nextDouble() < brickDensity) {
+            if (random.nextFloat() < brickDensity) {
                map[y][x] = '*';
             }
          }
@@ -107,7 +106,7 @@ public class MapGenerator {
       }
 
       // Add items under bricks
-      String[] items = { "b", "f", "s","m","h","o","w" };
+      String[] items = { "b", "f", "s", "m", "h", "o", "w" };
       int totalBricks = countCharacter(map, '*');
       int itemCount = (int) (totalBricks * itemDensity);
       int itemsPlaced = 0;
@@ -134,8 +133,8 @@ public class MapGenerator {
 
          if (map[y][x] == ' ' && !safeZone[y][x]) {
             // Higher levels get more Oneals (type 2)
-            double onealsRatio = Math.min(0.3 + (level * 0.05), 0.8);
-            char enemyType = random.nextDouble() < onealsRatio ? '2' : '1';
+            float onealsRatio = (float) Math.min(0.3 + (level * 0.05), 0.8);
+            char enemyType = random.nextFloat() < onealsRatio ? '2' : '1';
             map[y][x] = enemyType;
             enemiesPlaced++;
          }
@@ -158,9 +157,8 @@ public class MapGenerator {
             { height - 2, width - 2 } // Bottom-right
       };
 
-      //randomly generate spawn points for players
+      // randomly generate spawn points for players
       for (int i = 0; i < playerCount; i++) {
-         
 
          spawnPoints.add(corners[i]);
       }

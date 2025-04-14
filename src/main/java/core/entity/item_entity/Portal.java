@@ -9,10 +9,10 @@ public class Portal extends ItemEntity {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         for (Bomber bomber : GameControl.getBomberEntities()) {
             if (checkCollision(bomber.getX(), bomber.getY(), getX(), getY())) {
-                if(GameControl.getEnemyEntities().size() == 0){
+                if (GameControl.getEnemyEntities().size() == 0) {
                     GameControl.nextLevel();
                 }
             }

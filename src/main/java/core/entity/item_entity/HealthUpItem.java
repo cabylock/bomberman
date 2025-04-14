@@ -9,7 +9,7 @@ public class HealthUpItem extends ItemEntity {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         for (Bomber bomber : GameControl.getBomberEntities()) {
             if (checkCollision(bomber.getX(), bomber.getY(), this.getX(), this.getY())) {
                 bomber.increaseHealth();

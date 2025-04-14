@@ -113,10 +113,10 @@ public class MapEntity {
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'p') {
-               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER1);
+               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER1, "Player 1");
                GameControl.addEntity(player);
             } else if (c == 'q' && Setting.PLAYER_NUM == 2) {
-               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER2);
+               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER2, "Player 2");
                GameControl.addEntity(player);
             } else if (c == '1') {
                EnemyEntity balloon = new Balloom(j, i, Sprite.BALLOOM_LEFT1);

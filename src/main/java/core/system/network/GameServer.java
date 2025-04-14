@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 
@@ -15,19 +14,31 @@ import core.util.Util;
 public class GameServer extends Thread {
 
    private ServerSocket serverSocket;
-   private int port;
    private static List<ClientHandler> clients = new CopyOnWriteArrayList<>();
-   private boolean isRunning = true;
+   public boolean isRunning = true;
 
    // Add this constant for maximum clients
    private static final int MAX_CLIENTS = 4;
-    
 
-   public void startServer(int port) {
-      this.port = port;
-      this.start();
-      System.out.println("Server started on port " + port);
+   public boolean startServer(int port) {
+     
 
+      // Add shutdown hook to ensure clean shutdown
+      Runtime.getRuntime().addShutdownHook(new Thread(this::stopServer));
+
+      try {
+         // Create the server socket synchronously to catch binding issues immediately
+         this.serverSocket = new ServerSocket(port);
+         this.isRunning = true;
+         this.start(); // Start the thread after successful socket creation
+         System.out.println("Server started on port " + port);
+         return true;
+      } catch (IOException e) {
+         System.err.println("Failed to start server: " + e.getMessage());
+         this.isRunning = false;
+         Util.showNotificationWindow("Cannot start server: " + e.getMessage());
+         return false;
+      }
    }
 
    public void broadcastGameState() {
@@ -35,7 +46,6 @@ public class GameServer extends Thread {
       // Broadcast entity data to all clients
 
       broadcastData(GameControl.getBomberEntities(), Setting.NETWORK_BOMBER_ENTITIES);
-      
       broadcastData(GameControl.getEnemyEntities(), Setting.NETWORK_ENEMY_ENTITIES);
       broadcastData(GameControl.getStaticEntities(), Setting.NETWORK_STATIC_ENTITIES);
       broadcastData(GameControl.getItemEntities(), Setting.NETWORK_ITEM_ENTITIES);
@@ -44,8 +54,7 @@ public class GameServer extends Thread {
    @Override
    public void run() {
       try {
-         serverSocket = new ServerSocket(port);
-
+         // Server socket is already created in startServer
          while (isRunning) {
             Socket clientSocket = serverSocket.accept();
 
@@ -64,31 +73,47 @@ public class GameServer extends Thread {
                ClientHandler clientHandler = new ClientHandler(clientSocket);
                clientHandler.start();
                clients.add(clientHandler);
-               
+
                System.out.println("Client connected: " + clientHandler.clientName +
                      " (" + clients.size() + "/" + MAX_CLIENTS + ")");
             }
          }
       } catch (IOException e) {
-         System.err.println("Error starting server: " + e.getMessage());
+         this.isRunning = false;
+         interrupt();
       }
    }
 
    public void stopServer() {
+      if (!isRunning) {
+         return; // Prevent multiple calls
+      }
+
       isRunning = false;
+      System.out.println("Shutting down server...");
 
       try {
+         // First notify all clients
          for (ClientHandler client : clients) {
-            client.sendMessage("Server is shutting down.");
-            client.disconnect();
-            client.interrupt();
-            client.clientSocket.close();
+            try {
+               client.sendMessage("Server is shutting down.");
+               client.disconnect();
+            } catch (Exception e) {
+               // Just log and continue with next client
+               System.err.println("Error disconnecting client: " + e.getMessage());
+            }
          }
 
-         serverSocket.close();
+         // Clear client list
          clients.clear();
-         System.out.println("Server stopped.");
 
+         // Finally close server socket
+         if (serverSocket != null && !serverSocket.isClosed()) {
+            serverSocket.close();
+            System.out.println("Server socket closed.");
+         }
+
+         System.out.println("Server stopped successfully.");
       } catch (IOException e) {
          System.err.println("Error stopping server: " + e.getMessage());
       }
@@ -112,6 +137,7 @@ public class GameServer extends Thread {
       private volatile boolean isRunning = true;
       private int receiveRetries = 5;
 
+      private int id; 
       private ObjectOutputStream out;
       private String clientName;
       private int clientPort;
@@ -133,10 +159,10 @@ public class GameServer extends Thread {
 
       @Override
       public void run() {
-         int newId = Util.uuid();
-         sendCommand("ID", newId);
-         Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1);
-         clientBomber.setId(newId);
+         id = Util.uuid();
+         sendCommand("ID", id);
+         Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1, clientName);
+         clientBomber.setId(id);
          GameControl.addEntity(clientBomber);
 
          sendData(GameControl.getBackgroundEntities(), Setting.NETWORK_BACKGROUND_ENTITIES);
@@ -158,18 +184,33 @@ public class GameServer extends Thread {
 
       public void disconnect() {
          isRunning = false;
+
          try {
+            // First close streams
+            if (out != null) {
+               try {
+                  out.close();
+               } catch (Exception e) {
+                  /* ignore */ }
+            }
+
+            if (in != null) {
+               try {
+                  in.close();
+               } catch (Exception e) {
+                  /* ignore */ }
+            }
+
+            // Then close socket
+            GameControl.removeEntity(GameControl.getBomberEntities().get(id));
             if (clientSocket != null && !clientSocket.isClosed()) {
                clientSocket.close();
-               in.close();
-               out.close();
-
                System.out.println("Client " + clientName + " disconnected.");
-
             }
          } catch (IOException e) {
             System.err.println("Error disconnecting client: " + e.getMessage());
          } finally {
+            // Always remove from client list
             clients.remove(this);
          }
       }
@@ -183,11 +224,18 @@ public class GameServer extends Thread {
                System.out.println("Received message from " + clientName + ": " + message);
 
             } else if (Setting.NETWORK_BOMBER_ENTITIES.equals(message)) {
+               float deltaTime = in.readFloat();
                String command = in.readUTF();
                int id = in.readInt();
-               GameControl.getBomberEntitiesMap().get(id).control(command,GameControl.getDeltaTime());
+               GameControl.getBomberEntitiesMap().get(id).control(command, deltaTime);
 
             }
+            else if("PLAYER_NAME".equals(message)) {
+               String name = in.readUTF();
+               int id = in.readInt();
+               GameControl.getBomberEntitiesMap().get(id).setName(name);
+            }
+            
 
          } catch (IOException e) {
             System.err.println("Error receive " + clientName + ": " + e.getMessage());

@@ -7,26 +7,25 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 
 public class EnemyEntity extends MobileEntity {
 
-    
-    protected int speed = 20; // Increased default speed
-    protected double moveTimer = 0;
-    protected double directionChangeTimer = 0;
-    protected double movementFrequencyTime = 0.01f;
+    protected transient int speed = 20; // Increased default speed
+    protected transient float moveTimer = 0;
+    protected transient float directionChangeTimer = 0;
+    protected transient float movementFrequencyTime = 0.01f;
 
     public EnemyEntity(int x, int y, int imageId) {
         super(x, y, imageId);
-        
+
         // Initialize with random direction
         direction = Util.randomDirection();
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         defaultMove(deltaTime);
         updateAnimation(deltaTime);
     }
 
-    protected void defaultMove(double deltaTime) {
+    protected void defaultMove(float deltaTime) {
         // Update movement timer
         moveTimer += deltaTime;
         directionChangeTimer += deltaTime;

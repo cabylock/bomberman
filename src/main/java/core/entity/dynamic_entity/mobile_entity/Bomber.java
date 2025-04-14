@@ -5,19 +5,35 @@ import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
 import core.entity.dynamic_entity.static_entity.Bomb;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class Bomber extends MobileEntity {
 
-   private int speed = 25;
-   protected int flameSize = 1;
-   protected int typePlayer;
+   private transient int speed = 25;
+   private transient int flameSize = 1;
+   private transient int typePlayer;
+   private String playerName; // Store player's name
 
-   protected int bombCountMax = 1;
+   private transient int initialX;
+   private transient int initialY;
 
-   protected static final int ITEM_DURATION = 1200; // 10 giây * 60 frames/giây
+   protected transient int bombCountMax = 1;
 
-   public Bomber(int x, int y, int imageId, int typePlayer) {
+   protected transient static final int ITEM_DURATION = 5; // 10 giây * 60 frames/giây
+
+   // public Bomber(int x, int y, int imageId, int typePlayer) {
+   // this(x, y, imageId, typePlayer, "Player " + (typePlayer == Setting.BOMBER2 ?
+   // "2" : "1"));
+   // }
+
+   public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
       super(x, y, imageId);
+      this.initialX = x;
+      this.initialY = y;
+      this.playerName = playerName;
       // Image arrays for animation
       this.typePlayer = typePlayer;
       if (typePlayer == Setting.BOMBER2) {
@@ -45,13 +61,41 @@ public class Bomber extends MobileEntity {
    }
 
    @Override
-   public void update(double deltaTime) {
+   public void update(float deltaTime) {
       updateAnimation(deltaTime);
-      updateItem();
-      updateInvincible();
+      updateItem(deltaTime);
+      updateInvincible(deltaTime);
    }
 
-   public void control(String command, double deltaTime) {
+   @Override
+   public void render(GraphicsContext gc) {
+      super.render(gc);
+      // Render player name above character
+      if (playerName != null && !playerName.isEmpty()) {
+         // Save current graphics context state
+         gc.save();
+
+         // Set text properties
+         gc.setFill(Color.WHITE);
+         gc.setStroke(Color.BLACK);
+         gc.setLineWidth(1.5);
+         gc.setFont(new Font("Varela Round", 14));
+         gc.setTextAlign(TextAlignment.CENTER);
+
+         // Position is centered above player
+         float textX = x + Sprite.SCALED_SIZE / 2;
+         float textY = y - 10; // 10 pixels above player
+
+         // Draw text with outline for better visibility
+         gc.strokeText(playerName, textX, textY);
+         gc.fillText(playerName, textX, textY);
+
+         // Restore graphics context
+         gc.restore();
+      }
+   }
+
+   public void control(String command, float deltaTime) {
       if (command.equals(Setting.MOVE_DOWN)) {
          move(Setting.DOWN_MOVING, speed, deltaTime);
       } else if (command.equals(Setting.MOVE_UP)) {
@@ -84,42 +128,42 @@ public class Bomber extends MobileEntity {
 
    }
 
-   public void updateItem() {
+   public void updateItem(float deltaTime) {
       if (flamePassTime > 0) {
-         flamePassTime--;
+         flamePassTime -= deltaTime;
          if (flamePassTime <= 0) {
             flamePass = false;
          }
       }
       if (bombPassTime > 0) {
-         bombPassTime--;
+         bombPassTime -= deltaTime;
          if (bombPassTime <= 0) {
             bombPass = false;
          }
       }
       if (speedUpTime > 0) {
-         speedUpTime--;
+         speedUpTime -= deltaTime;
          if (speedUpTime <= 0) {
-            speedUp = false;
             speed = 25;
+            speedUp = false;
          }
       }
       if (flameUpTime > 0) {
-         flameUpTime--;
+         flameUpTime -= deltaTime;
          if (flameUpTime <= 0) {
-            flameUp = false;
             flameSize = 1;
+            flameUp = false;
          }
       }
       if (bombUpTime > 0) {
-         bombUpTime--;
+         bombUpTime -= deltaTime;
          if (bombUpTime <= 0) {
-            bombUp = false;
             bombCountMax = 1;
+            bombUp = false;
          }
       }
       if (wallPassTime > 0) {
-         wallPassTime--;
+         wallPassTime -= deltaTime;
          if (wallPassTime <= 0) {
             wallPass = false;
          }
@@ -144,7 +188,7 @@ public class Bomber extends MobileEntity {
    public void setSpeedUp(boolean speedUp) {
       this.speedUp = speedUp;
       if (speedUp) {
-         speed = 40;
+         speed = 30;
       }
       speedUpTime = ITEM_DURATION;
    }
@@ -182,17 +226,36 @@ public class Bomber extends MobileEntity {
       health++;
    }
 
-   public boolean isFlamePass() {
-      return flamePass;
+   public void setName(String name) {
+      this.playerName = name;
    }
 
-   public boolean isBombPass() {
-      return bombPass;
+   public void resetBomber() {
+      x = initialX;
+      y = initialY;
+      bombCountMax = 1;
+      speed = 25;
+      flameSize = 1;
+      isInvincible = false;
+      invincibleTime = 0;
+
+   }
+
+   public boolean isFlamePass() {
+      return flamePass;
    }
 
    @Override
    public void remove() {
       GameControl.removeEntity(this);
+   }
+
+   public String getPlayerName() {
+      return playerName;
+   }
+
+   public void setPlayerName(String playerName) {
+      this.playerName = playerName;
    }
 
 }

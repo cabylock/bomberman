@@ -5,7 +5,7 @@ import core.system.setting.Setting;
 
 public class Balloom extends EnemyEntity {
 
-    private int speed = 20;
+    private transient int speed = 20;
 
     public Balloom(int x, int y, int imageId) {
         super(x, y, imageId);
@@ -29,7 +29,7 @@ public class Balloom extends EnemyEntity {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         defaultMove(deltaTime);
         EnemyCollision();
         updateAnimation(deltaTime);
