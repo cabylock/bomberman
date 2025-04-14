@@ -4,6 +4,8 @@ import javafx.scene.image.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)
