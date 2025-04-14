@@ -1,6 +1,7 @@
 package core.graphics;
 
 import javafx.scene.image.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)
@@ -51,7 +52,6 @@ public class Sprite {
 	public static final int BALLOOM_RIGHT2 = 23;
 	public static final int BALLOOM_RIGHT3 = 24;
 	public static final int BALLOOM_DEAD = 25;
-	
 
 	// Enemies - Oneal
 	public static final int ONEAL_LEFT1 = 26;
@@ -139,126 +139,125 @@ public class Sprite {
 	public static final int POWERUP_SPEED_PASS = 92;
 	public static final int POWERUP_WALL_PASS = 93;
 	public static final int ANIMATION_NULL = 94;
-	
 
 	static {
-		sprites[GRASS] = new Sprite(DEFAULT_SIZE, 6, 0, SpriteSheet.tiles, 16, 16);
-		sprites[BRICK] = new Sprite(DEFAULT_SIZE, 7, 0, SpriteSheet.tiles, 16, 16);
-		sprites[WALL] = new Sprite(DEFAULT_SIZE, 5, 0, SpriteSheet.tiles, 16, 16);
-		sprites[PORTAL] = new Sprite(DEFAULT_SIZE, 4, 0, SpriteSheet.tiles, 14, 14);
+		// Terrain
+		sprites[GRASS] = new Sprite(DEFAULT_SIZE, "grass.png");
+		sprites[BRICK] = new Sprite(DEFAULT_SIZE, "brick.png");
+		sprites[WALL] = new Sprite(DEFAULT_SIZE, "wall.png");
+		sprites[PORTAL] = new Sprite(DEFAULT_SIZE, "portal.png");
 
 		// Player sprites
-		sprites[PLAYER_UP] = new Sprite(DEFAULT_SIZE, 0, 0, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_DOWN] = new Sprite(DEFAULT_SIZE, 2, 0, SpriteSheet.tiles, 12, 15);
-		sprites[PLAYER_LEFT] = new Sprite(DEFAULT_SIZE, 3, 0, SpriteSheet.tiles, 10, 15);
-		sprites[PLAYER_RIGHT] = new Sprite(DEFAULT_SIZE, 1, 0, SpriteSheet.tiles, 10, 16);
-		sprites[PLAYER_UP_1] = new Sprite(DEFAULT_SIZE, 0, 1, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_UP_2] = new Sprite(DEFAULT_SIZE, 0, 2, SpriteSheet.tiles, 12, 15);
-		sprites[PLAYER_DOWN_1] = new Sprite(DEFAULT_SIZE, 2, 1, SpriteSheet.tiles, 12, 15);
-		sprites[PLAYER_DOWN_2] = new Sprite(DEFAULT_SIZE, 2, 2, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_LEFT_1] = new Sprite(DEFAULT_SIZE, 3, 1, SpriteSheet.tiles, 11, 16);
-		sprites[PLAYER_LEFT_2] = new Sprite(DEFAULT_SIZE, 3, 2, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_RIGHT_1] = new Sprite(DEFAULT_SIZE, 1, 1, SpriteSheet.tiles, 11, 16);
-		sprites[PLAYER_RIGHT_2] = new Sprite(DEFAULT_SIZE, 1, 2, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_DEAD1] = new Sprite(DEFAULT_SIZE, 4, 2, SpriteSheet.tiles, 14, 16);
-		sprites[PLAYER_DEAD2] = new Sprite(DEFAULT_SIZE, 5, 2, SpriteSheet.tiles, 13, 15);
-		sprites[PLAYER_DEAD3] = new Sprite(DEFAULT_SIZE, 6, 2, SpriteSheet.tiles, 16, 16);
+		sprites[PLAYER_UP] = new Sprite(DEFAULT_SIZE, "player_up.png");
+		sprites[PLAYER_DOWN] = new Sprite(DEFAULT_SIZE, "player_down.png");
+		sprites[PLAYER_LEFT] = new Sprite(DEFAULT_SIZE, "player_left.png");
+		sprites[PLAYER_RIGHT] = new Sprite(DEFAULT_SIZE, "player_right.png");
+		sprites[PLAYER_UP_1] = new Sprite(DEFAULT_SIZE, "player_up_1.png");
+		sprites[PLAYER_UP_2] = new Sprite(DEFAULT_SIZE, "player_up_2.png");
+		sprites[PLAYER_DOWN_1] = new Sprite(DEFAULT_SIZE, "player_down_1.png");
+		sprites[PLAYER_DOWN_2] = new Sprite(DEFAULT_SIZE, "player_down_2.png");
+		sprites[PLAYER_LEFT_1] = new Sprite(DEFAULT_SIZE, "player_left_1.png");
+		sprites[PLAYER_LEFT_2] = new Sprite(DEFAULT_SIZE, "player_left_2.png");
+		sprites[PLAYER_RIGHT_1] = new Sprite(DEFAULT_SIZE, "player_right_1.png");
+		sprites[PLAYER_RIGHT_2] = new Sprite(DEFAULT_SIZE, "player_right_2.png");
+		sprites[PLAYER_DEAD1] = new Sprite(DEFAULT_SIZE, "player_dead1.png");
+		sprites[PLAYER_DEAD2] = new Sprite(DEFAULT_SIZE, "player_dead2.png");
+		sprites[PLAYER_DEAD3] = new Sprite(DEFAULT_SIZE, "player_dead3.png");
 
 		// Balloom sprites
-		sprites[BALLOOM_LEFT1] = new Sprite(DEFAULT_SIZE, 9, 0, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_LEFT2] = new Sprite(DEFAULT_SIZE, 9, 1, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_LEFT3] = new Sprite(DEFAULT_SIZE, 9, 2, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_RIGHT1] = new Sprite(DEFAULT_SIZE, 10, 0, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_RIGHT2] = new Sprite(DEFAULT_SIZE, 10, 1, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_RIGHT3] = new Sprite(DEFAULT_SIZE, 10, 2, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_DEAD] = new Sprite(DEFAULT_SIZE, 9, 3, SpriteSheet.tiles, 16, 16);
+		sprites[BALLOOM_LEFT1] = new Sprite(DEFAULT_SIZE, "balloom_left1.png");
+		sprites[BALLOOM_LEFT2] = new Sprite(DEFAULT_SIZE, "balloom_left2.png");
+		sprites[BALLOOM_LEFT3] = new Sprite(DEFAULT_SIZE, "balloom_left3.png");
+		sprites[BALLOOM_RIGHT1] = new Sprite(DEFAULT_SIZE, "balloom_right1.png");
+		sprites[BALLOOM_RIGHT2] = new Sprite(DEFAULT_SIZE, "balloom_right2.png");
+		sprites[BALLOOM_RIGHT3] = new Sprite(DEFAULT_SIZE, "balloom_right3.png");
+		sprites[BALLOOM_DEAD] = new Sprite(DEFAULT_SIZE, "balloom_dead.png");
 
 		// Oneal sprites
-		sprites[ONEAL_LEFT1] = new Sprite(DEFAULT_SIZE, 11, 0, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_LEFT2] = new Sprite(DEFAULT_SIZE, 11, 1, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_LEFT3] = new Sprite(DEFAULT_SIZE, 11, 2, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_RIGHT1] = new Sprite(DEFAULT_SIZE, 12, 0, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_RIGHT2] = new Sprite(DEFAULT_SIZE, 12, 1, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_RIGHT3] = new Sprite(DEFAULT_SIZE, 12, 2, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_DEAD] = new Sprite(DEFAULT_SIZE, 11, 3, SpriteSheet.tiles, 16, 16);
+		sprites[ONEAL_LEFT1] = new Sprite(DEFAULT_SIZE, "oneal_left1.png");
+		sprites[ONEAL_LEFT2] = new Sprite(DEFAULT_SIZE, "oneal_left2.png");
+		sprites[ONEAL_LEFT3] = new Sprite(DEFAULT_SIZE, "oneal_left3.png");
+		sprites[ONEAL_RIGHT1] = new Sprite(DEFAULT_SIZE, "oneal_right1.png");
+		sprites[ONEAL_RIGHT2] = new Sprite(DEFAULT_SIZE, "oneal_right2.png");
+		sprites[ONEAL_RIGHT3] = new Sprite(DEFAULT_SIZE, "oneal_right3.png");
+		sprites[ONEAL_DEAD] = new Sprite(DEFAULT_SIZE, "oneal_dead.png");
 
 		// Doll sprites
-		sprites[DOLL_LEFT1] = new Sprite(DEFAULT_SIZE, 13, 0, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_LEFT2] = new Sprite(DEFAULT_SIZE, 13, 1, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_LEFT3] = new Sprite(DEFAULT_SIZE, 13, 2, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_RIGHT1] = new Sprite(DEFAULT_SIZE, 14, 0, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_RIGHT2] = new Sprite(DEFAULT_SIZE, 14, 1, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_RIGHT3] = new Sprite(DEFAULT_SIZE, 14, 2, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_DEAD] = new Sprite(DEFAULT_SIZE, 13, 3, SpriteSheet.tiles, 16, 16);
+		sprites[DOLL_LEFT1] = new Sprite(DEFAULT_SIZE, "doll_left1.png");
+		sprites[DOLL_LEFT2] = new Sprite(DEFAULT_SIZE, "doll_left2.png");
+		sprites[DOLL_LEFT3] = new Sprite(DEFAULT_SIZE, "doll_left3.png");
+		sprites[DOLL_RIGHT1] = new Sprite(DEFAULT_SIZE, "doll_right1.png");
+		sprites[DOLL_RIGHT2] = new Sprite(DEFAULT_SIZE, "doll_right2.png");
+		sprites[DOLL_RIGHT3] = new Sprite(DEFAULT_SIZE, "doll_right3.png");
+		sprites[DOLL_DEAD] = new Sprite(DEFAULT_SIZE, "doll_dead.png");
 
 		// Minvo sprites
-		sprites[MINVO_LEFT1] = new Sprite(DEFAULT_SIZE, 8, 5, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_LEFT2] = new Sprite(DEFAULT_SIZE, 8, 6, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_LEFT3] = new Sprite(DEFAULT_SIZE, 8, 7, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_RIGHT1] = new Sprite(DEFAULT_SIZE, 9, 5, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_RIGHT2] = new Sprite(DEFAULT_SIZE, 9, 6, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_RIGHT3] = new Sprite(DEFAULT_SIZE, 9, 7, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_DEAD] = new Sprite(DEFAULT_SIZE, 8, 8, SpriteSheet.tiles, 16, 16);
+		sprites[MINVO_LEFT1] = new Sprite(DEFAULT_SIZE, "minvo_left1.png");
+		sprites[MINVO_LEFT2] = new Sprite(DEFAULT_SIZE, "minvo_left2.png");
+		sprites[MINVO_LEFT3] = new Sprite(DEFAULT_SIZE, "minvo_left3.png");
+		sprites[MINVO_RIGHT1] = new Sprite(DEFAULT_SIZE, "minvo_right1.png");
+		sprites[MINVO_RIGHT2] = new Sprite(DEFAULT_SIZE, "minvo_right2.png");
+		sprites[MINVO_RIGHT3] = new Sprite(DEFAULT_SIZE, "minvo_right3.png");
+		sprites[MINVO_DEAD] = new Sprite(DEFAULT_SIZE, "minvo_dead.png");
 
 		// Kondoria sprites
-		sprites[KONDORIA_LEFT1] = new Sprite(DEFAULT_SIZE, 10, 5, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_LEFT2] = new Sprite(DEFAULT_SIZE, 10, 6, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_LEFT3] = new Sprite(DEFAULT_SIZE, 10, 7, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_RIGHT1] = new Sprite(DEFAULT_SIZE, 11, 5, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_RIGHT2] = new Sprite(DEFAULT_SIZE, 11, 6, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_RIGHT3] = new Sprite(DEFAULT_SIZE, 11, 7, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_DEAD] = new Sprite(DEFAULT_SIZE, 10, 8, SpriteSheet.tiles, 16, 16);
+		sprites[KONDORIA_LEFT1] = new Sprite(DEFAULT_SIZE, "kondoria_left1.png");
+		sprites[KONDORIA_LEFT2] = new Sprite(DEFAULT_SIZE, "kondoria_left2.png");
+		sprites[KONDORIA_LEFT3] = new Sprite(DEFAULT_SIZE, "kondoria_left3.png");
+		sprites[KONDORIA_RIGHT1] = new Sprite(DEFAULT_SIZE, "kondoria_right1.png");
+		sprites[KONDORIA_RIGHT2] = new Sprite(DEFAULT_SIZE, "kondoria_right2.png");
+		sprites[KONDORIA_RIGHT3] = new Sprite(DEFAULT_SIZE, "kondoria_right3.png");
+		sprites[KONDORIA_DEAD] = new Sprite(DEFAULT_SIZE, "kondoria_dead.png");
 
 		// Mob dead sprites
-		sprites[MOB_DEAD1] = new Sprite(DEFAULT_SIZE, 15, 0, SpriteSheet.tiles, 16, 16);
-		sprites[MOB_DEAD2] = new Sprite(DEFAULT_SIZE, 15, 1, SpriteSheet.tiles, 16, 16);
-		sprites[MOB_DEAD3] = new Sprite(DEFAULT_SIZE, 15, 2, SpriteSheet.tiles, 16, 16);
+		sprites[MOB_DEAD1] = new Sprite(DEFAULT_SIZE, "mob_dead1.png");
+		sprites[MOB_DEAD2] = new Sprite(DEFAULT_SIZE, "mob_dead2.png");
+		sprites[MOB_DEAD3] = new Sprite(DEFAULT_SIZE, "mob_dead3.png");
 
 		// Bomb sprites
-		sprites[BOMB] = new Sprite(DEFAULT_SIZE, 0, 3, SpriteSheet.tiles, 15, 15);
-		sprites[BOMB_1] = new Sprite(DEFAULT_SIZE, 1, 3, SpriteSheet.tiles, 13, 15);
-		sprites[BOMB_2] = new Sprite(DEFAULT_SIZE, 2, 3, SpriteSheet.tiles, 12, 14);
+		sprites[BOMB] = new Sprite(DEFAULT_SIZE, "bomb.png");
+		sprites[BOMB_1] = new Sprite(DEFAULT_SIZE, "bomb_1.png");
+		sprites[BOMB_2] = new Sprite(DEFAULT_SIZE, "bomb_2.png");
+		sprites[BOMB_EXPLODED] = new Sprite(DEFAULT_SIZE, "bomb_exploded.png");
+		sprites[BOMB_EXPLODED1] = new Sprite(DEFAULT_SIZE, "bomb_exploded1.png");
+		sprites[BOMB_EXPLODED2] = new Sprite(DEFAULT_SIZE, "bomb_exploded2.png");
 
 		// Explosion sprites
-		sprites[BOMB_EXPLODED] = new Sprite(DEFAULT_SIZE, 0, 4, SpriteSheet.tiles, 16, 16);
-		sprites[BOMB_EXPLODED1] = new Sprite(DEFAULT_SIZE, 0, 5, SpriteSheet.tiles, 16, 16);
-		sprites[BOMB_EXPLODED2] = new Sprite(DEFAULT_SIZE, 0, 6, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL] = new Sprite(DEFAULT_SIZE, 1, 5, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL1] = new Sprite(DEFAULT_SIZE, 2, 5, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL2] = new Sprite(DEFAULT_SIZE, 3, 5, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL] = new Sprite(DEFAULT_SIZE, 1, 7, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL1] = new Sprite(DEFAULT_SIZE, 1, 8, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL2] = new Sprite(DEFAULT_SIZE, 1, 9, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST] = new Sprite(DEFAULT_SIZE, 0, 7, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST1] = new Sprite(DEFAULT_SIZE, 0, 8, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST2] = new Sprite(DEFAULT_SIZE, 0, 9, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST] = new Sprite(DEFAULT_SIZE, 2, 7, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST1] = new Sprite(DEFAULT_SIZE, 2, 8, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST2] = new Sprite(DEFAULT_SIZE, 2, 9, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_TOP_LAST] = new Sprite(DEFAULT_SIZE, 1, 4, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_TOP_LAST1] = new Sprite(DEFAULT_SIZE, 2, 4, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_TOP_LAST2] = new Sprite(DEFAULT_SIZE, 3, 4, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST] = new Sprite(DEFAULT_SIZE, 1, 6, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST1] = new Sprite(DEFAULT_SIZE, 2, 6, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST2] = new Sprite(DEFAULT_SIZE, 3, 6, SpriteSheet.tiles, 16, 16);
+		sprites[EXPLOSION_VERTICAL] = new Sprite(DEFAULT_SIZE, "explosion_vertical.png");
+		sprites[EXPLOSION_VERTICAL1] = new Sprite(DEFAULT_SIZE, "explosion_vertical1.png");
+		sprites[EXPLOSION_VERTICAL2] = new Sprite(DEFAULT_SIZE, "explosion_vertical2.png");
+		sprites[EXPLOSION_HORIZONTAL] = new Sprite(DEFAULT_SIZE, "explosion_horizontal.png");
+		sprites[EXPLOSION_HORIZONTAL1] = new Sprite(DEFAULT_SIZE, "explosion_horizontal1.png");
+		sprites[EXPLOSION_HORIZONTAL2] = new Sprite(DEFAULT_SIZE, "explosion_horizontal2.png");
+		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last.png");
+		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last1.png");
+		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_left_last2.png");
+		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last.png");
+		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last1.png");
+		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_horizontal_right_last2.png");
+		sprites[EXPLOSION_VERTICAL_TOP_LAST] = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last.png");
+		sprites[EXPLOSION_VERTICAL_TOP_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last1.png");
+		sprites[EXPLOSION_VERTICAL_TOP_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_vertical_top_last2.png");
+		sprites[EXPLOSION_VERTICAL_DOWN_LAST] = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last.png");
+		sprites[EXPLOSION_VERTICAL_DOWN_LAST1] = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last1.png");
+		sprites[EXPLOSION_VERTICAL_DOWN_LAST2] = new Sprite(DEFAULT_SIZE, "explosion_vertical_down_last2.png");
 
 		// Brick explosion sprites
-		sprites[BRICK_EXPLODED] = new Sprite(DEFAULT_SIZE, 7, 1, SpriteSheet.tiles, 16, 16);
-		sprites[BRICK_EXPLODED1] = new Sprite(DEFAULT_SIZE, 7, 2, SpriteSheet.tiles, 16, 16);
-		sprites[BRICK_EXPLODED2] = new Sprite(DEFAULT_SIZE, 7, 3, SpriteSheet.tiles, 16, 16);
+		sprites[BRICK_EXPLODED] = new Sprite(DEFAULT_SIZE, "brick_exploded.png");
+		sprites[BRICK_EXPLODED1] = new Sprite(DEFAULT_SIZE, "brick_exploded1.png");
+		sprites[BRICK_EXPLODED2] = new Sprite(DEFAULT_SIZE, "brick_exploded2.png");
 
 		// Powerup sprites
-		sprites[POWERUP_BOMBS] = new Sprite(DEFAULT_SIZE, 0, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_FLAMES] = new Sprite(DEFAULT_SIZE, 1, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_SPEED] = new Sprite(DEFAULT_SIZE, 2, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_WALLPASS] = new Sprite(DEFAULT_SIZE, 3, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_HEALTH_UP] = new Sprite(DEFAULT_SIZE, 4, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_BOMB_PASS] = new Sprite(DEFAULT_SIZE, 5, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_FLAME_PASS] = new Sprite(DEFAULT_SIZE, 6, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_DETONATOR_PASS] = new Sprite(DEFAULT_SIZE, 7, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_SPEED_PASS] = new Sprite(DEFAULT_SIZE, 8, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_WALL_PASS] = new Sprite(DEFAULT_SIZE, 9, 10, SpriteSheet.tiles, 16, 16);
-		sprites[ANIMATION_NULL] = new Sprite(DEFAULT_SIZE, 11, 11, SpriteSheet.tiles, 16, 16);
+		sprites[POWERUP_BOMBS] = new Sprite(DEFAULT_SIZE, "powerup_bombs.png");
+		sprites[POWERUP_FLAMES] = new Sprite(DEFAULT_SIZE, "powerup_flames.png");
+		sprites[POWERUP_SPEED] = new Sprite(DEFAULT_SIZE, "powerup_speed.png");
+		sprites[POWERUP_WALLPASS] = new Sprite(DEFAULT_SIZE, "powerup_wallpass.png");
+		sprites[POWERUP_BOMB_PASS] = new Sprite(DEFAULT_SIZE, "powerup_bombpass.png");
+		sprites[POWERUP_FLAME_PASS] = new Sprite(DEFAULT_SIZE, "powerup_flamepass.png");
+		sprites[POWERUP_DETONATOR_PASS] = new Sprite(DEFAULT_SIZE, "powerup_detonator.png");
+		sprites[POWERUP_SPEED_PASS] = new Sprite(DEFAULT_SIZE, "powerup_speed.png");
+		sprites[POWERUP_WALL_PASS] = new Sprite(DEFAULT_SIZE, "powerup_wallpass.png");
+		sprites[ANIMATION_NULL] = new Sprite(DEFAULT_SIZE, "animation_null.png");
 	}
 
 	public Sprite(int size, int x, int y, SpriteSheet sheet, int rw, int rh) {
@@ -270,6 +269,17 @@ public class Sprite {
 		_realWidth = rw;
 		_realHeight = rh;
 		load();
+	}
+
+	public Sprite(int size, String filename) {
+		SIZE = size;
+		_pixels = new int[SIZE * SIZE];
+		BufferedImage image = SpriteManager.getSprite(filename);
+		if (image != null) {
+			_realWidth = image.getWidth();
+			_realHeight = image.getHeight();
+			image.getRGB(0, 0, _realWidth, _realHeight, _pixels, 0, _realWidth);
+		}
 	}
 
 	public Sprite(int size, int color) {
@@ -285,9 +295,11 @@ public class Sprite {
 	}
 
 	private void load() {
-		for (int y = 0; y < SIZE; y++) {
-			for (int x = 0; x < SIZE; x++) {
-				_pixels[x + y * SIZE] = _sheet._pixels[(x + _x) + (y + _y) * _sheet.SIZE];
+		if (_sheet != null) {
+			for (int y = 0; y < SIZE; y++) {
+				for (int x = 0; x < SIZE; x++) {
+					_pixels[x + y * SIZE] = _sheet._pixels[(x + _x) + (y + _y) * _sheet.SIZE];
+				}
 			}
 		}
 	}
