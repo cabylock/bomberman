@@ -7,7 +7,7 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 
 public class EnemyEntity extends MobileEntity {
 
-    protected transient int speed = 20; // Increased default speed
+    protected transient int speed = 10; // Increased default speed
     protected transient float moveTimer = 0;
     protected transient float directionChangeTimer = 0;
     protected transient float movementFrequencyTime = 0.01f;

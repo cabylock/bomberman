@@ -17,8 +17,8 @@ public class Bomber extends MobileEntity {
    private transient int typePlayer;
    private String playerName; // Store player's name
 
-   private  int initialX;
-   private  int initialY;
+   private int initialX;
+   private int initialY;
 
    protected transient int bombCountMax = 1;
 
@@ -31,8 +31,8 @@ public class Bomber extends MobileEntity {
 
    public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
       super(x, y, imageId);
-      this.initialX = x;
-      this.initialY = y;
+      this.initialX = x*Sprite.DEFAULT_SIZE;
+      this.initialY = y*Sprite.DEFAULT_SIZE;
       this.playerName = playerName;
       this.typePlayer = typePlayer;
       if (typePlayer == Setting.BOMBER2) {
@@ -81,7 +81,7 @@ public class Bomber extends MobileEntity {
          imageIds[Setting.DEAD][5] = Sprite.PLAYER2_DEAD_5;
          imageIds[Setting.DEAD][6] = Sprite.PLAYER2_DEAD_6;
          imageIds[Setting.DEAD][7] = Sprite.PLAYER2_DEAD_7;
-        
+
       }
       imageIds[Setting.ANIMATION_NULL][0] = Sprite.ANIMATION_NULL;
       imageIds[Setting.ANIMATION_NULL][1] = Sprite.ANIMATION_NULL;

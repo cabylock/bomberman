@@ -5,11 +5,11 @@ import core.system.setting.Setting;
 
 public class Balloom extends EnemyEntity {
 
-    private transient int speed = 20;
+
 
     public Balloom(int x, int y, int imageId) {
         super(x, y, imageId);
-
+        this.speed = 10;
         imageIds = new int[4][3];
         imageIds[Setting.UP_MOVING][0] = Sprite.BALLOOM_LEFT_0;
         imageIds[Setting.UP_MOVING][1] = Sprite.BALLOOM_LEFT_1;

@@ -32,6 +32,15 @@
         <Label text="Your IP Address:" style="-fx-font-size: 18px;"/>
         <Label fx:id ="myIpAddressField" text= "localhost" style="-fx-font-size: 18px; -fx-text-fill: grey;"/>
     </HBox>
+    
+    <!-- Connection status with ProgressIndicator -->
+    <StackPane>
+        <HBox fx:id="statusContainer" alignment="CENTER" spacing="15">
+            <ProgressIndicator fx:id="connectionProgress" visible="false" />
+            <Label fx:id="statusLabel" text="Ready to connect" 
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: green;"/>
+        </HBox>
+    </StackPane>
 
     <HBox alignment="CENTER" spacing="50">
         <VBox alignment="CENTER" spacing="15" styleClass="network-card">
@@ -44,7 +53,11 @@
                   style="-fx-font-size: 14px; -fx-text-fill: grey;"/>
             <HBox alignment="CENTER" spacing="10">
                 <Label text="Port:" style="-fx-font-size: 16px;"/>
-                <TextField fx:id="hostPortField" text="2005" prefWidth="80"/>
+                <TextField fx:id="hostPortField" text="2005" prefWidth="80">
+                    <tooltip>
+                        <Tooltip text="Enter a port number between 1024 and 65535" />
+                    </tooltip>
+                </TextField>
             </HBox>
             <Button text="Start Server" 
                    onAction="#hostGame"
@@ -67,7 +80,11 @@
             </HBox>
             <HBox alignment="CENTER" spacing="10">
                 <Label text="Port:" style="-fx-font-size: 16px;"/>
-                <TextField fx:id="clientPortField" text="2005" prefWidth="80"/>
+                <TextField fx:id="clientPortField" text="2005" prefWidth="80">
+                    <tooltip>
+                        <Tooltip text="Enter the port number of the server" />
+                    </tooltip>
+                </TextField>
             </HBox>
             <Button text="Join Server" 
                    onAction="#joinGame"

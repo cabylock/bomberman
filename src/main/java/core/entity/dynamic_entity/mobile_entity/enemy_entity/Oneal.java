@@ -5,11 +5,11 @@ import core.system.setting.Setting;
 
 public class Oneal extends EnemyEntity {
 
-      private transient int speed = 20;
+
 
       public Oneal(int x, int y, int imageId) {
             super(x, y, imageId);
-
+            this.speed = 10;
             imageIds = new int[4][3];
             imageIds[Setting.UP_MOVING][0] = Sprite.ONEAL_LEFT_0;
             imageIds[Setting.UP_MOVING][1] = Sprite.ONEAL_LEFT_1;

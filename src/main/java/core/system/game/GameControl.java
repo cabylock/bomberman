@@ -34,42 +34,16 @@ public class GameControl {
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<BackgroundEntity>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<ItemEntity>();
 
-   public static boolean InitializeServer() {
-      server = new GameServer();
-      server.startServer(Setting.SERVER_PORT);
-      if (!server.isRunning) {
-         
-         return false;
-      }
-      return true;
-   }
-
-   public static boolean InitializeClient() {
-      clear();
-      client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-      if (!client.connect()) {
-         
-         return false;
-      }
-      return true;
-
-   }
-
    public static boolean start(int gameMode) {
       GameControl.gameMode = gameMode;
-      bomberEntities.get(Setting.ID).setName(Setting.PLAYER_NAME);
-      if (gameMode == Setting.SERVER_MODE) {
-         return InitializeServer();
 
-      } else if (gameMode == Setting.CLIENT_MODE) {
-         return InitializeClient();
-      } else if (gameMode == Setting.SINGLE_MODE) {
-         return true;
-      } else if (gameMode == Setting.MULTI_MODE) {
-         return true;
+
+      if (!bomberEntities.isEmpty() && bomberEntities.containsKey(Setting.ID)) {
+         bomberEntities.get(Setting.ID).setName(Setting.PLAYER_NAME);
       }
-      return true;
 
+ 
+      return true;
    }
 
    public static void stop() {
@@ -87,6 +61,16 @@ public class GameControl {
 
       // Force garbage collection to clean up resources
       System.gc();
+   }
+
+   // Add this setter
+   public static void setServer(GameServer s) {
+      server = s;
+   }
+
+   // Add this setter
+   public static void setClient(GameClient c) {
+      client = c;
    }
 
    public static void update(float deltaTime) {
@@ -110,7 +94,8 @@ public class GameControl {
          entity.update(deltaTime);
       }
 
-      if (gameMode == Setting.SERVER_MODE) {
+      // Fix: Only call broadcastGameState if server is not null
+      if (gameMode == Setting.SERVER_MODE && server != null) {
          server.broadcastGameState();
       }
    }
@@ -131,7 +116,7 @@ public class GameControl {
          return;
       }
 
-      String command = Setting.STOP;
+      String command = "NULL";
 
       // Check each possible input in order of priority
       if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.UP_MOVING])) {
@@ -151,7 +136,10 @@ public class GameControl {
          // Direct control for local or server modes
          bomberEntities.get(playerId).control(command, deltaTime);
       } else {
-         client.sendCommand(command, playerId);
+         // Fix: Only send command if client is not null
+         if (client != null) {
+            client.sendCommand(command, playerId);
+         }
       }
    }
 
@@ -188,9 +176,8 @@ public class GameControl {
    }
 
    public static void nextLevel() {
-
       if (mapType == Setting.CUSTOM_MAP) {
-         Util.showNotificationWindow("Please select another map or move to default map");
+         Util.logInfo("Please select another map or move to default map");
          return;
       }
       if (level == Setting.MAX_LEVEL) {
@@ -235,9 +222,9 @@ public class GameControl {
    }
 
    public static void setBomberEntities(List<Bomber> entities) {
-      
+
       bomberEntities.clear();
-      
+
       for (Bomber bomber : entities) {
          bomberEntities.put(bomber.getId(), bomber);
       }

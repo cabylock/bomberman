@@ -4,8 +4,6 @@ import javafx.scene.image.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)
@@ -15,7 +13,6 @@ public class Sprite {
 	public static final int DEFAULT_SIZE = 48;
 
 	public final int SIZE;
-	private int _x, _y;
 	public int[] _pixels;
 	protected int _realWidth;
 	protected int _realHeight;
@@ -604,16 +601,6 @@ public class Sprite {
 	private void setColor(int color) {
 		for (int i = 0; i < _pixels.length; i++) {
 			_pixels[i] = color;
-		}
-	}
-
-	private void load() {
-		if (_sheet != null) {
-			for (int y = 0; y < SIZE; y++) {
-				for (int x = 0; x < SIZE; x++) {
-					_pixels[x + y * SIZE] = _sheet._pixels[(x + _x) + (y + _y) * _sheet.SIZE];
-				}
-			}
 		}
 	}
 
