@@ -11,7 +11,7 @@ import core.system.game.GameControl;
 import core.system.setting.Setting;
 
 public class MobileEntity extends DynamicEntity {
-   
+
    protected transient boolean moving = false;
    protected transient boolean flamePass = false;
    protected transient boolean bombPass = false;
@@ -39,7 +39,7 @@ public class MobileEntity extends DynamicEntity {
    protected transient float deadAnimationTimer = 0;
    protected transient final float INVINCIBLE_ANIMATION_TIME = 0.1f; // Invincible animation frame time
    protected transient final float ANIMATION_TIME = 0.05f; // Animation frame time in seconds
-   protected transient final float DEAD_ANIMATION_TIME = 0.5f; // Dead animation frame time
+   protected transient final float DEAD_ANIMATION_TIME = 0.3f; // Dead animation frame time
 
    public MobileEntity(int x, int y, int imageId) {
       super(x, y, imageId);
@@ -85,16 +85,16 @@ public class MobileEntity extends DynamicEntity {
       float nextY = y + deltaY;
 
       if (moveCollision(nextX, nextY)) {
-         if (Math.abs(deltaX) > 0 && Math.abs(nextY - this.getYTile() * Sprite.SCALED_SIZE) < ALIGN_TOLERANCE) {
-            if (!moveCollision(nextX, this.getYTile() * Sprite.SCALED_SIZE)) {
+         if (Math.abs(deltaX) > 0 && Math.abs(nextY - this.getYTile() * Sprite.DEFAULT_SIZE) < ALIGN_TOLERANCE) {
+            if (!moveCollision(nextX, this.getYTile() * Sprite.DEFAULT_SIZE)) {
                x = nextX;
-               y = this.getYTile() * Sprite.SCALED_SIZE;
+               y = this.getYTile() * Sprite.DEFAULT_SIZE;
                return true;
             }
             return false;
-         } else if (Math.abs(deltaY) > 0 && Math.abs(nextX - this.getXTile() * Sprite.SCALED_SIZE) < ALIGN_TOLERANCE) {
-            if (!moveCollision(this.getXTile() * Sprite.SCALED_SIZE, nextY)) {
-               x = this.getXTile() * Sprite.SCALED_SIZE;
+         } else if (Math.abs(deltaY) > 0 && Math.abs(nextX - this.getXTile() * Sprite.DEFAULT_SIZE) < ALIGN_TOLERANCE) {
+            if (!moveCollision(this.getXTile() * Sprite.DEFAULT_SIZE, nextY)) {
+               x = this.getXTile() * Sprite.DEFAULT_SIZE;
                y = nextY;
                return true;
             }
@@ -146,7 +146,7 @@ public class MobileEntity extends DynamicEntity {
    }
 
    protected boolean checkCollision(float x1, float y1, float x2, float y2) {
-      int size = Sprite.SCALED_SIZE;
+      int size = Sprite.DEFAULT_SIZE;
       return (x1 + size > x2 && x1 < x2 + size
             && y1 + size > y2 && y1 < y2 + size);
 
@@ -168,7 +168,7 @@ public class MobileEntity extends DynamicEntity {
       if (health <= 0) {
          deadAnimationTimer += deltaTime;
          if (deadAnimationTimer >= DEAD_ANIMATION_TIME) {
-            if (animationStep < 2) {
+            if (animationStep < 7) {
                animationStep++;
             } else {
                this.remove();

@@ -8,7 +8,6 @@ import core.graphics.*;
 import core.system.setting.Setting;
 import core.util.Util;
 
-
 public abstract class Entity implements Serializable {
    private static final long serialVersionUID = 1L;
    protected int id;
@@ -18,8 +17,8 @@ public abstract class Entity implements Serializable {
    protected int imageId;
 
    public Entity(int xUnit, int yUnit, int imageId) {
-      this.x = xUnit * Sprite.SCALED_SIZE;
-      this.y = yUnit * Sprite.SCALED_SIZE;
+      this.x = xUnit * Sprite.DEFAULT_SIZE;
+      this.y = yUnit * Sprite.DEFAULT_SIZE;
       this.imageId = imageId;
       this.id = Setting.ID;
 

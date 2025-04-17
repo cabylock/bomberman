@@ -25,7 +25,7 @@ public class Bomb extends StaticEntity {
         this.flameSegments = new Flame[5][flameSize + 1];
         imageIds = new int[1][3];
 
-        imageIds[DEFAULT_IMAGE][0] = Sprite.BOMB;
+        imageIds[DEFAULT_IMAGE][0] = Sprite.BOMB_0;
         imageIds[DEFAULT_IMAGE][1] = Sprite.BOMB_1;
         imageIds[DEFAULT_IMAGE][2] = Sprite.BOMB_2;
 
@@ -56,7 +56,7 @@ public class Bomb extends StaticEntity {
                 int flameType = i == 0 ? 0 : j == flameSize ? i + 2 : (i + 1) / 2;
 
                 flameSegments[i][j] = new Flame(getXTile() + DX[i] * j, getYTile() + DY[i] * j,
-                        Sprite.EXPLOSION_HORIZONTAL, flameType);
+                        Sprite.EXPLOSION_HORIZONTAL_0, flameType);
                 if (flameSegments[i][j].flamecollision()) {
                     break;
                 }

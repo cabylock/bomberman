@@ -85,8 +85,9 @@ public class BombermanGame {
         });
 
         // Create Canvas
-        canvas = new Canvas(Sprite.SCALED_SIZE * GameControl.getWidth(), Sprite.SCALED_SIZE * GameControl.getHeight());
-        
+        canvas = new Canvas(Sprite.DEFAULT_SIZE * GameControl.getWidth(),
+                Sprite.DEFAULT_SIZE * GameControl.getHeight());
+
         gc = canvas.getGraphicsContext2D();
 
         // Create status bar
@@ -95,7 +96,6 @@ public class BombermanGame {
         // Create game content container
         VBox gameContent = new VBox(5);
         gameContent.getChildren().addAll(statusBar, canvas);
-       
 
         // Create a StackPane for overlays
         gameRoot = new StackPane();
@@ -103,7 +103,6 @@ public class BombermanGame {
 
         // Create scene
         Scene scene = new Scene(gameRoot);
-        
 
         scene.setOnKeyPressed(e -> {
             input.add(e.getCode());
@@ -127,16 +126,15 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.setTitle("Bomberman Game");
-        stage.getIcons().add(new Image("/textures/classic.png"));
+        stage.getIcons().add(new Image("/textures/icon.jpg"));
         stage.setResizable(false);
         stage.show();
 
-        if(GameControl.start(Setting.GAME_MODE) == false) {
-            
-            returnToMenu();
-            return; 
-        }
+        if (GameControl.start(Setting.GAME_MODE) == false) {
 
+            returnToMenu();
+            return;
+        }
 
         gameLoop = new AnimationTimer() {
             @Override

@@ -14,7 +14,7 @@ import java.util.Random;
 public class Util {
 
    public static int toGrid(float x) {
-      return (int) ((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
+      return (int) ((x + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE);
    }
 
    public static int randomDirection() {

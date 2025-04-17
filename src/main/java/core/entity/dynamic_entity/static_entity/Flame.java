@@ -31,45 +31,45 @@ public class Flame extends StaticEntity {
       imageIds = new int[7][3];
       // Center flame
       if (flameType == CENTER) {
-         imageIds[CENTER][0] = Sprite.BOMB_EXPLODED;
-         imageIds[CENTER][1] = Sprite.BOMB_EXPLODED1;
-         imageIds[CENTER][2] = Sprite.BOMB_EXPLODED2;
+         imageIds[CENTER][0] = Sprite.BOMB_EXPLODED_0;
+         imageIds[CENTER][1] = Sprite.BOMB_EXPLODED_1;
+         imageIds[CENTER][2] = Sprite.BOMB_EXPLODED_2;
       }
       // Horizontal flame
       if (flameType == HORIZONTAL) {
-         imageIds[HORIZONTAL][0] = Sprite.EXPLOSION_HORIZONTAL;
-         imageIds[HORIZONTAL][1] = Sprite.EXPLOSION_HORIZONTAL1;
-         imageIds[HORIZONTAL][2] = Sprite.EXPLOSION_HORIZONTAL2;
+         imageIds[HORIZONTAL][0] = Sprite.EXPLOSION_HORIZONTAL_0;
+         imageIds[HORIZONTAL][1] = Sprite.EXPLOSION_HORIZONTAL_1;
+         imageIds[HORIZONTAL][2] = Sprite.EXPLOSION_HORIZONTAL_2;
       }
       // Vertical flame
       if (flameType == VERTICAL) {
-         imageIds[VERTICAL][0] = Sprite.EXPLOSION_VERTICAL;
-         imageIds[VERTICAL][1] = Sprite.EXPLOSION_VERTICAL1;
-         imageIds[VERTICAL][2] = Sprite.EXPLOSION_VERTICAL2;
+         imageIds[VERTICAL][0] = Sprite.EXPLOSION_VERTICAL_0;
+         imageIds[VERTICAL][1] = Sprite.EXPLOSION_VERTICAL_1;
+         imageIds[VERTICAL][2] = Sprite.EXPLOSION_VERTICAL_2;
       }
       // Left end flame
       if (flameType == LEFT_END) {
-         imageIds[LEFT_END][0] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST;
-         imageIds[LEFT_END][1] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST1;
-         imageIds[LEFT_END][2] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST2;
+         imageIds[LEFT_END][0] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST_0;
+         imageIds[LEFT_END][1] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST_1;
+         imageIds[LEFT_END][2] = Sprite.EXPLOSION_HORIZONTAL_LEFT_LAST_2;
       }
       // Right end flame
       if (flameType == RIGHT_END) {
-         imageIds[RIGHT_END][0] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST;
-         imageIds[RIGHT_END][1] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST1;
-         imageIds[RIGHT_END][2] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST2;
+         imageIds[RIGHT_END][0] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST_0;
+         imageIds[RIGHT_END][1] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST_1;
+         imageIds[RIGHT_END][2] = Sprite.EXPLOSION_HORIZONTAL_RIGHT_LAST_2;
       }
       // Up end flame
       if (flameType == UP_END) {
-         imageIds[UP_END][0] = Sprite.EXPLOSION_VERTICAL_TOP_LAST;
-         imageIds[UP_END][1] = Sprite.EXPLOSION_VERTICAL_TOP_LAST1;
-         imageIds[UP_END][2] = Sprite.EXPLOSION_VERTICAL_TOP_LAST2;
+         imageIds[UP_END][0] = Sprite.EXPLOSION_VERTICAL_TOP_LAST_0;
+         imageIds[UP_END][1] = Sprite.EXPLOSION_VERTICAL_TOP_LAST_1;
+         imageIds[UP_END][2] = Sprite.EXPLOSION_VERTICAL_TOP_LAST_2;
       }
       // Down end flame
       if (flameType == DOWN_END) {
-         imageIds[DOWN_END][0] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST;
-         imageIds[DOWN_END][1] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST1;
-         imageIds[DOWN_END][2] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST2;
+         imageIds[DOWN_END][0] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST_0;
+         imageIds[DOWN_END][1] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST_1;
+         imageIds[DOWN_END][2] = Sprite.EXPLOSION_VERTICAL_DOWN_LAST_2;
       }
 
       this.flameType = flameType;

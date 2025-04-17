@@ -20,7 +20,7 @@ public class ItemEntity extends Entity {
     }
 
     protected boolean checkCollision(float x1, float y1, float x2, float y2) {
-        int size = Sprite.SCALED_SIZE;
+        int size = Sprite.DEFAULT_SIZE;
         return (x1 + size > x2 && x1 < x2 + size
                 && y1 + size > y2 && y1 < y2 + size);
     }

@@ -11,15 +11,15 @@ public class SpriteManager {
     private static final Map<String, BufferedImage> sprites = new HashMap<>();
     private static final String SPRITE_PATH = "/sprites/";
 
-    public static BufferedImage getSprite(String filename) {
+    public static BufferedImage getImage(String filename) {
         // Kiểm tra xem sprite đã được load chưa
         if (!sprites.containsKey(filename)) {
-            loadSprite(filename);
+            loadImage(filename);
         }
         return sprites.get(filename);
     }
 
-    private static void loadSprite(String filename) {
+    private static void loadImage(String filename) {
         try {
             URL url = SpriteManager.class.getResource(SPRITE_PATH + filename);
             if (url != null) {

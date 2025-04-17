@@ -113,16 +113,16 @@ public class MapEntity {
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'p') {
-               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER1, "Player 1");
+               Bomber player = new Bomber(j, i, Sprite.PLAYER1_RIGHT_0, Setting.BOMBER1, "Player 1");
                GameControl.addEntity(player);
             } else if (c == 'q' && Setting.PLAYER_NUM == 2) {
-               Bomber player = new Bomber(j, i, Sprite.PLAYER_RIGHT, Setting.BOMBER2, "Player 2");
+               Bomber player = new Bomber(j, i, Sprite.PLAYER2_RIGHT_0, Setting.BOMBER2, "Player 2");
                GameControl.addEntity(player);
             } else if (c == '1') {
-               EnemyEntity balloon = new Balloom(j, i, Sprite.BALLOOM_LEFT1);
+               EnemyEntity balloon = new Balloom(j, i, Sprite.BALLOOM_LEFT_0);
                GameControl.addEntity(balloon);
             } else if (c == '2') {
-               Oneal oneal = new Oneal(j, i, Sprite.ONEAL_LEFT1);
+               Oneal oneal = new Oneal(j, i, Sprite.ONEAL_LEFT_0);
                GameControl.addEntity(oneal);
             } else if (c == 'b') {
                ItemEntity BombItem = new BombUpItem(j, i, Sprite.POWERUP_BOMBS);
@@ -155,8 +155,7 @@ public class MapEntity {
                GameControl.addEntity(HeartItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
-            }
-            else if(c == 'w'){
+            } else if (c == 'w') {
                ItemEntity WallPassItem = new WallPassItem(j, i, Sprite.POWERUP_WALL_PASS);
                GameControl.addEntity(WallPassItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);

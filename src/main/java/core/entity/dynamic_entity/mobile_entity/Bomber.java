@@ -34,29 +34,57 @@ public class Bomber extends MobileEntity {
       this.initialX = x;
       this.initialY = y;
       this.playerName = playerName;
-      // Image arrays for animation
       this.typePlayer = typePlayer;
       if (typePlayer == Setting.BOMBER2) {
          id++;
       }
-      imageIds = new int[6][3];
-      imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER_RIGHT;
-      imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER_RIGHT_1;
-      imageIds[Setting.RIGHT_MOVING][2] = Sprite.PLAYER_RIGHT_2;
-      imageIds[Setting.LEFT_MOVING][0] = Sprite.PLAYER_LEFT;
-      imageIds[Setting.LEFT_MOVING][1] = Sprite.PLAYER_LEFT_1;
-      imageIds[Setting.LEFT_MOVING][2] = Sprite.PLAYER_LEFT_2;
-      imageIds[Setting.UP_MOVING][0] = Sprite.PLAYER_UP;
-      imageIds[Setting.UP_MOVING][1] = Sprite.PLAYER_UP_1;
-      imageIds[Setting.UP_MOVING][2] = Sprite.PLAYER_UP_2;
-      imageIds[Setting.DOWN_MOVING][0] = Sprite.PLAYER_DOWN;
-      imageIds[Setting.DOWN_MOVING][1] = Sprite.PLAYER_DOWN_1;
-      imageIds[Setting.DOWN_MOVING][2] = Sprite.PLAYER_DOWN_2;
-      imageIds[Setting.DEAD][0] = Sprite.PLAYER_DEAD1;
-      imageIds[Setting.DEAD][1] = Sprite.PLAYER_DEAD2;
-      imageIds[Setting.DEAD][2] = Sprite.PLAYER_DEAD3;
+      imageIds = new int[6][8];
+      if (typePlayer == Setting.BOMBER1) {
+         imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER1_RIGHT_0;
+         imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER1_RIGHT_1;
+         imageIds[Setting.RIGHT_MOVING][2] = Sprite.PLAYER1_RIGHT_2;
+         imageIds[Setting.LEFT_MOVING][0] = Sprite.PLAYER1_LEFT_0;
+         imageIds[Setting.LEFT_MOVING][1] = Sprite.PLAYER1_LEFT_1;
+         imageIds[Setting.LEFT_MOVING][2] = Sprite.PLAYER1_LEFT_2;
+         imageIds[Setting.UP_MOVING][0] = Sprite.PLAYER1_UP_0;
+         imageIds[Setting.UP_MOVING][1] = Sprite.PLAYER1_UP_1;
+         imageIds[Setting.UP_MOVING][2] = Sprite.PLAYER1_UP_2;
+         imageIds[Setting.DOWN_MOVING][0] = Sprite.PLAYER1_DOWN_0;
+         imageIds[Setting.DOWN_MOVING][1] = Sprite.PLAYER1_DOWN_1;
+         imageIds[Setting.DOWN_MOVING][2] = Sprite.PLAYER1_DOWN_2;
+         imageIds[Setting.DEAD][0] = Sprite.PLAYER1_DEAD_0;
+         imageIds[Setting.DEAD][1] = Sprite.PLAYER1_DEAD_1;
+         imageIds[Setting.DEAD][2] = Sprite.PLAYER1_DEAD_2;
+         imageIds[Setting.DEAD][3] = Sprite.PLAYER1_DEAD_3;
+         imageIds[Setting.DEAD][4] = Sprite.PLAYER1_DEAD_4;
+         imageIds[Setting.DEAD][5] = Sprite.PLAYER1_DEAD_5;
+         imageIds[Setting.DEAD][6] = Sprite.PLAYER1_DEAD_6;
+         imageIds[Setting.DEAD][7] = Sprite.PLAYER1_DEAD_7;
+      } else {
+         imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER2_RIGHT_0;
+         imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER2_RIGHT_1;
+         imageIds[Setting.RIGHT_MOVING][2] = Sprite.PLAYER2_RIGHT_2;
+         imageIds[Setting.LEFT_MOVING][0] = Sprite.PLAYER2_LEFT_0;
+         imageIds[Setting.LEFT_MOVING][1] = Sprite.PLAYER2_LEFT_1;
+         imageIds[Setting.LEFT_MOVING][2] = Sprite.PLAYER2_LEFT_2;
+         imageIds[Setting.UP_MOVING][0] = Sprite.PLAYER2_UP_0;
+         imageIds[Setting.UP_MOVING][1] = Sprite.PLAYER2_UP_1;
+         imageIds[Setting.UP_MOVING][2] = Sprite.PLAYER2_UP_2;
+         imageIds[Setting.DOWN_MOVING][0] = Sprite.PLAYER2_DOWN_0;
+         imageIds[Setting.DOWN_MOVING][1] = Sprite.PLAYER2_DOWN_1;
+         imageIds[Setting.DOWN_MOVING][2] = Sprite.PLAYER2_DOWN_2;
+         imageIds[Setting.DEAD][0] = Sprite.PLAYER2_DEAD_0;
+         imageIds[Setting.DEAD][1] = Sprite.PLAYER2_DEAD_1;
+         imageIds[Setting.DEAD][2] = Sprite.PLAYER2_DEAD_2;
+         imageIds[Setting.DEAD][3] = Sprite.PLAYER2_DEAD_3;
+         imageIds[Setting.DEAD][4] = Sprite.PLAYER2_DEAD_4;
+         imageIds[Setting.DEAD][5] = Sprite.PLAYER2_DEAD_5;
+         imageIds[Setting.DEAD][6] = Sprite.PLAYER2_DEAD_6;
+         imageIds[Setting.DEAD][7] = Sprite.PLAYER2_DEAD_7;
+        
+      }
       imageIds[Setting.ANIMATION_NULL][0] = Sprite.ANIMATION_NULL;
-      imageIds[Setting.ANIMATION_NULL][1] = Sprite.PLAYER_DOWN;
+      imageIds[Setting.ANIMATION_NULL][1] = Sprite.ANIMATION_NULL;
       imageIds[Setting.ANIMATION_NULL][2] = Sprite.ANIMATION_NULL;
    }
 
@@ -83,7 +111,7 @@ public class Bomber extends MobileEntity {
          gc.setTextAlign(TextAlignment.CENTER);
 
          // Position is centered above player
-         float textX = x + Sprite.SCALED_SIZE / 2;
+         float textX = x + Sprite.DEFAULT_SIZE / 2;
          float textY = y - 10; // 10 pixels above player
 
          // Draw text with outline for better visibility
@@ -122,7 +150,7 @@ public class Bomber extends MobileEntity {
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
-      Bomb newBomb = new Bomb(bombX, bombY, Sprite.BOMB, flameSize, id);
+      Bomb newBomb = new Bomb(bombX, bombY, Sprite.BOMB_0, flameSize, id);
       GameControl.addEntity(newBomb);
       bombCountMax--;
 
