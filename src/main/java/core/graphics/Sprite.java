@@ -499,13 +499,13 @@ public class Sprite {
 				break;
 			
 			case EXPLOSION_HORIZONTAL_RIGHT_LAST_0:
-				sprite = new Sprite("explosion_horizontal_right_last0.png");
+				sprite = new Sprite("explosion_horizontal_right_last_0.png");
 				break;
 			case EXPLOSION_HORIZONTAL_RIGHT_LAST_1:
-				sprite = new Sprite("explosion_horizontal_right_last1.png");
+				sprite = new Sprite("explosion_horizontal_right_last_1.png");
 				break;
 			case EXPLOSION_HORIZONTAL_RIGHT_LAST_2:
-				sprite = new Sprite("explosion_horizontal_right_last2.png");
+				sprite = new Sprite("explosion_horizontal_right_last_2.png");
 				break;
 		
 			case EXPLOSION_VERTICAL_TOP_LAST_0:
