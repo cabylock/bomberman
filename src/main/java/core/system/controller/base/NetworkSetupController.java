@@ -44,15 +44,37 @@ public class NetworkSetupController {
 
    @FXML
    public void initialize() {
-     try{
-         String localIp = InetAddress.getLocalHost().getHostAddress();
+      try {
+         String localIp = getLocalIpAddress();
          myIpAddressField.setText(localIp);
+         
          playerNameField.setText(localIp);
       } catch (Exception e) {
          e.printStackTrace();
          showError("Unable to retrieve local IP address.");
       }
-     
+   }
+
+   // Helper method to get the real LAN IP address (works on Linux and Windows)
+   private String getLocalIpAddress() {
+      try {
+         java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
+         while (interfaces.hasMoreElements()) {
+            java.net.NetworkInterface iface = interfaces.nextElement();
+            if (!iface.isUp() || iface.isLoopback() || iface.isVirtual()) continue;
+            java.util.Enumeration<java.net.InetAddress> addresses = iface.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+               java.net.InetAddress addr = addresses.nextElement();
+               if (addr instanceof java.net.Inet4Address && !addr.isLoopbackAddress()) {
+                  return addr.getHostAddress();
+               }
+            }
+         }
+         // fallback
+         return java.net.InetAddress.getLocalHost().getHostAddress();
+      } catch (Exception e) {
+         return "127.0.0.1";
+      }
    }
 
    @FXML

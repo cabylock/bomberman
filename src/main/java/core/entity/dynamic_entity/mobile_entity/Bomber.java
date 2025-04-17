@@ -17,8 +17,8 @@ public class Bomber extends MobileEntity {
    private transient int typePlayer;
    private String playerName; // Store player's name
 
-   private transient int initialX;
-   private transient int initialY;
+   private  int initialX;
+   private  int initialY;
 
    protected transient int bombCountMax = 1;
 

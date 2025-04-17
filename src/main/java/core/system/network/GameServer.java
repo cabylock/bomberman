@@ -21,7 +21,6 @@ public class GameServer extends Thread {
    private static final int MAX_CLIENTS = 4;
 
    public boolean startServer(int port) {
-     
 
       // Add shutdown hook to ensure clean shutdown
       Runtime.getRuntime().addShutdownHook(new Thread(this::stopServer));
@@ -113,6 +112,9 @@ public class GameServer extends Thread {
             System.out.println("Server socket closed.");
          }
 
+         // Interrupt the server thread to unblock accept()
+         this.interrupt();
+
          System.out.println("Server stopped successfully.");
       } catch (IOException e) {
          System.err.println("Error stopping server: " + e.getMessage());
@@ -137,7 +139,7 @@ public class GameServer extends Thread {
       private volatile boolean isRunning = true;
       private int receiveRetries = 5;
 
-      private int id; 
+      private int id;
       private ObjectOutputStream out;
       private String clientName;
       private int clientPort;
@@ -202,7 +204,11 @@ public class GameServer extends Thread {
             }
 
             // Then close socket
-            GameControl.removeEntity(GameControl.getBomberEntities().get(id));
+            Bomber clientBomber = GameControl.getBomberEntitiesMap().get(id);
+            if (clientBomber != null)
+            {
+               GameControl.removeEntity(clientBomber);
+            }
             if (clientSocket != null && !clientSocket.isClosed()) {
                clientSocket.close();
                System.out.println("Client " + clientName + " disconnected.");
@@ -229,13 +235,11 @@ public class GameServer extends Thread {
                int id = in.readInt();
                GameControl.getBomberEntitiesMap().get(id).control(command, deltaTime);
 
-            }
-            else if("PLAYER_NAME".equals(message)) {
+            } else if ("PLAYER_NAME".equals(message)) {
                String name = in.readUTF();
                int id = in.readInt();
                GameControl.getBomberEntitiesMap().get(id).setName(name);
             }
-            
 
          } catch (IOException e) {
             System.err.println("Error receive " + clientName + ": " + e.getMessage());

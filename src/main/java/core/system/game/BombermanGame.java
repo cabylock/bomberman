@@ -11,6 +11,7 @@ import core.util.Util;
 import javafx.scene.input.KeyCode;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -82,6 +83,7 @@ public class BombermanGame {
             }
             GameControl.stop();
             input.clear();
+            Platform.exit();
         });
 
         // Create Canvas
