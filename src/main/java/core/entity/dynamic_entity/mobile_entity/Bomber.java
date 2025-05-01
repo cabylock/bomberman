@@ -17,8 +17,8 @@ public class Bomber extends MobileEntity {
    private transient int typePlayer;
    private String playerName; // Store player's name
 
-   private  int initialX;
-   private  int initialY;
+   private int initialX;
+   private int initialY;
 
    protected transient int bombCountMax = 1;
 
@@ -81,7 +81,7 @@ public class Bomber extends MobileEntity {
          imageIds[Setting.DEAD][5] = Sprite.PLAYER2_DEAD_5;
          imageIds[Setting.DEAD][6] = Sprite.PLAYER2_DEAD_6;
          imageIds[Setting.DEAD][7] = Sprite.PLAYER2_DEAD_7;
-        
+
       }
       imageIds[Setting.ANIMATION_NULL][0] = Sprite.ANIMATION_NULL;
       imageIds[Setting.ANIMATION_NULL][1] = Sprite.ANIMATION_NULL;
@@ -140,20 +140,19 @@ public class Bomber extends MobileEntity {
    }
 
    private void placeBomb() {
-
       BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.BOMB_PLACE]);
       if (bombCountMax == 0) {
-
          return;
       }
 
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
-      Bomb newBomb = new Bomb(bombX, bombY, Sprite.BOMB_0, flameSize, id);
+      // Sử dụng sprite bomb phù hợp với loại player
+      int bombSprite = (typePlayer == Setting.BOMBER1) ? Sprite.PLAYER1_BOMB_0 : Sprite.PLAYER2_BOMB_0;
+      Bomb newBomb = new Bomb(bombX, bombY, bombSprite, flameSize, id);
       GameControl.addEntity(newBomb);
       bombCountMax--;
-
    }
 
    public void updateItem(float deltaTime) {

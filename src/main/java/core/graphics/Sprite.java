@@ -126,53 +126,56 @@ public class Sprite {
 
 	// Bombs
 	
-	public static final int BOMB_0 = 82;
-	public static final int BOMB_1 = 83;
-	public static final int BOMB_2 = 84;
-	public static final int BOMB_EXPLODED_0 = 85;
-	public static final int BOMB_EXPLODED_1 = 86;
-	public static final int BOMB_EXPLODED_2 = 87;
+	public static final int PLAYER1_BOMB_0 = 82;
+	public static final int PLAYER1_BOMB_1 = 83;
+	public static final int PLAYER1_BOMB_2 = 84;
+	public static final int PLAYER2_BOMB_0 = 85;
+	public static final int PLAYER2_BOMB_1 = 86;
+	public static final int PLAYER2_BOMB_2 = 87;
+	public static final int BOMB_EXPLODED_0 = 88;
+	public static final int BOMB_EXPLODED_1 = 89;
+	public static final int BOMB_EXPLODED_2 = 90;
 
 	// Explosions
-	public static final int EXPLOSION_VERTICAL_0 = 88;
-	public static final int EXPLOSION_VERTICAL_1 = 89;
-	public static final int EXPLOSION_VERTICAL_2 = 90;
-	public static final int EXPLOSION_HORIZONTAL_0 = 91;
-	public static final int EXPLOSION_HORIZONTAL_1 = 92;
-	public static final int EXPLOSION_HORIZONTAL_2 = 93;
-	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_0 = 94;
-	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_1 = 95;
-	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_2 = 96;
+	public static final int EXPLOSION_VERTICAL_0 = 91;
+	public static final int EXPLOSION_VERTICAL_1 = 92;
+	public static final int EXPLOSION_VERTICAL_2 = 93;
+	public static final int EXPLOSION_HORIZONTAL_0 = 94;
+	public static final int EXPLOSION_HORIZONTAL_1 = 95;
+	public static final int EXPLOSION_HORIZONTAL_2 = 96;
+	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_0 = 97;
+	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_1 = 98;
+	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_2 = 99;
 
-	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_0 = 97;
-	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_1 = 98;
-	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_2 = 99;
+	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_0 = 100;
+	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_1 = 101;
+	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_2 = 102;
 	
-	public static final int EXPLOSION_VERTICAL_TOP_LAST_0 = 100;
-	public static final int EXPLOSION_VERTICAL_TOP_LAST_1 = 101;
-	public static final int EXPLOSION_VERTICAL_TOP_LAST_2 = 102;
-	public static final int EXPLOSION_VERTICAL_DOWN_LAST_0 = 103;
-	public static final int EXPLOSION_VERTICAL_DOWN_LAST_1 = 104;
-	public static final int EXPLOSION_VERTICAL_DOWN_LAST_2 = 105;
+	public static final int EXPLOSION_VERTICAL_TOP_LAST_0 = 103;
+	public static final int EXPLOSION_VERTICAL_TOP_LAST_1 = 104;
+	public static final int EXPLOSION_VERTICAL_TOP_LAST_2 = 105;
+	public static final int EXPLOSION_VERTICAL_DOWN_LAST_0 = 106;
+	public static final int EXPLOSION_VERTICAL_DOWN_LAST_1 = 107;
+	public static final int EXPLOSION_VERTICAL_DOWN_LAST_2 = 108;
 
 	// Brick explosions
 
-	public static final int BRICK_EXPLODED_0 = 106;
-	public static final int BRICK_EXPLODED_1 = 107;
-	public static final int BRICK_EXPLODED_2 = 108;
+	public static final int BRICK_EXPLODED_0 = 109;
+	public static final int BRICK_EXPLODED_1 = 110;
+	public static final int BRICK_EXPLODED_2 = 111;
 
 	// Powerups
-	public static final int POWERUP_BOMBS = 109;
-	public static final int POWERUP_FLAMES = 110;
-	public static final int POWERUP_SPEED = 111;
-	public static final int POWERUP_WALLPASS = 112;
-	public static final int POWERUP_HEALTH_UP = 113;
-	public static final int POWERUP_BOMB_PASS = 114;
-	public static final int POWERUP_FLAME_PASS = 115;
-	public static final int POWERUP_DETONATOR_PASS = 116;
-	public static final int POWERUP_SPEED_PASS = 117;
-	public static final int POWERUP_WALL_PASS = 118;
-	public static final int ANIMATION_NULL = 119;
+	public static final int POWERUP_BOMBS = 112;
+	public static final int POWERUP_FLAMES = 113;
+	public static final int POWERUP_SPEED = 114;
+	public static final int POWERUP_WALLPASS = 115;
+	public static final int POWERUP_HEALTH_UP = 116;
+	public static final int POWERUP_BOMB_PASS = 117;
+	public static final int POWERUP_FLAME_PASS = 118;
+	public static final int POWERUP_DETONATOR_PASS = 119;
+	public static final int POWERUP_SPEED_PASS = 120;
+	public static final int POWERUP_WALL_PASS = 121;
+	public static final int ANIMATION_NULL = 122;
 
 	/**
 	 * Gets a sprite by its ID, loading it only if needed
@@ -447,85 +450,95 @@ public class Sprite {
 				break;
 			// Bomb sprites
 			
-			case BOMB_0:
-				sprite = new Sprite("bomb_0.png");
+			case PLAYER1_BOMB_0:
+				sprite = new Sprite("player1_bomb_0.png");
 				break;
-			case BOMB_1:
-				sprite = new Sprite("bomb_1.png");
+			case PLAYER1_BOMB_1:
+				sprite = new Sprite("player1_bomb_1.png");
 				break;
-			case BOMB_2:
-				sprite = new Sprite("bomb_2.png");
+			case PLAYER1_BOMB_2:
+				sprite = new Sprite("player1_bomb_2.png");
 				break;
 			
+			case PLAYER2_BOMB_0:
+				sprite = new Sprite("player2_bomb_0.png");
+				break;
+			case PLAYER2_BOMB_1:
+				sprite = new Sprite("player2_bomb_1.png");
+				break;
+			case PLAYER2_BOMB_2:
+				sprite = new Sprite("player2_bomb_2.png");
+				break;
 			case BOMB_EXPLODED_0:
-				sprite = new Sprite("bomb_exploded_0.png");
+				sprite = new Sprite("bomb_exploded_00.png");
 				break;
 			case BOMB_EXPLODED_1:
-				sprite = new Sprite("bomb_exploded_1.png");
+				sprite = new Sprite("bomb_exploded_01.png");
 				break;
 			case BOMB_EXPLODED_2:
-				sprite = new Sprite("bomb_exploded_2.png");
+				sprite = new Sprite("bomb_exploded_02.png");
 				break;
+				
 			// Explosion sprites
 			
 			case EXPLOSION_VERTICAL_0:
-				sprite = new Sprite("explosion_vertical_0.png");
+				sprite = new Sprite("explosion_vertical_00.png");
 				break;
 			case EXPLOSION_VERTICAL_1:
-				sprite = new Sprite("explosion_vertical_1.png");
+				sprite = new Sprite("explosion_vertical_01.png");
 				break;
 			case EXPLOSION_VERTICAL_2:
-				sprite = new Sprite("explosion_vertical_2.png");
+				sprite = new Sprite("explosion_vertical_02.png");
 				break;
 			
 			case EXPLOSION_HORIZONTAL_0:
-				sprite = new Sprite("explosion_horizontal_0.png");
+				sprite = new Sprite("explosion_horizontal_00.png");
 				break;
 			case EXPLOSION_HORIZONTAL_1:
-				sprite = new Sprite("explosion_horizontal_1.png");
+				sprite = new Sprite("explosion_horizontal_01.png");
 				break;
 			case EXPLOSION_HORIZONTAL_2:
-				sprite = new Sprite("explosion_horizontal_2.png");
+				sprite = new Sprite("explosion_horizontal_02.png");
 				break;	
 			
 			case EXPLOSION_HORIZONTAL_LEFT_LAST_0:
-				sprite = new Sprite("explosion_horizontal_left_last_0.png");
+				sprite = new Sprite("explosion_horizontal_left_last_00.png");
 				break;
 			case EXPLOSION_HORIZONTAL_LEFT_LAST_1:
-				sprite = new Sprite("explosion_horizontal_left_last_1.png");
+				sprite = new Sprite("explosion_horizontal_left_last_01.png");
 				break;
 			case EXPLOSION_HORIZONTAL_LEFT_LAST_2:
-				sprite = new Sprite("explosion_horizontal_left_last_2.png");
+				sprite = new Sprite("explosion_horizontal_left_last_02.png");
 				break;
 			
 			case EXPLOSION_HORIZONTAL_RIGHT_LAST_0:
-				sprite = new Sprite("explosion_horizontal_right_last_0.png");
+				sprite = new Sprite("explosion_horizontal_right_last_00.png");
 				break;
 			case EXPLOSION_HORIZONTAL_RIGHT_LAST_1:
-				sprite = new Sprite("explosion_horizontal_right_last_1.png");
+				sprite = new Sprite("explosion_horizontal_right_last_01.png");
 				break;
 			case EXPLOSION_HORIZONTAL_RIGHT_LAST_2:
-				sprite = new Sprite("explosion_horizontal_right_last_2.png");
+				sprite = new Sprite("explosion_horizontal_right_last_02.png");
 				break;
 		
 			case EXPLOSION_VERTICAL_TOP_LAST_0:
-				sprite = new Sprite("explosion_vertical_top_last_0.png");
+				sprite = new Sprite("explosion_vertical_top_last_00.png");
 				break;
 			case EXPLOSION_VERTICAL_TOP_LAST_1:
-				sprite = new Sprite("explosion_vertical_top_last_1.png");
+				sprite = new Sprite("explosion_vertical_top_last_01.png");
 				break;
 			case EXPLOSION_VERTICAL_TOP_LAST_2:
-				sprite = new Sprite("explosion_vertical_top_last_2.png");
+				sprite = new Sprite("explosion_vertical_top_last_02.png");
 				break;
 			
 			case EXPLOSION_VERTICAL_DOWN_LAST_0:
-				sprite = new Sprite("explosion_vertical_down_last_0.png");
+				sprite = new Sprite("explosion_vertical_down_last_00.png");
 				break;
 			case EXPLOSION_VERTICAL_DOWN_LAST_1:
-				sprite = new Sprite("explosion_vertical_down_last_1.png");
+				sprite = new Sprite("explosion_vertical_down_last_01.png");
 				break;
 			case EXPLOSION_VERTICAL_DOWN_LAST_2:
-				sprite = new Sprite("explosion_vertical_down_last_2.png");
+				sprite = new Sprite("explosion_vertical_down_last_02.png");
 				break;
 			// Brick explosion sprites
 			
