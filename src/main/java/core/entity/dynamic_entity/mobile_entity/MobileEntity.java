@@ -19,6 +19,7 @@ public class MobileEntity extends DynamicEntity {
    protected transient boolean flameUp = false;
    protected transient boolean bombUp = false;
    protected transient boolean wallPass = false;
+   protected boolean dying = false;
 
    protected transient float flamePassTime = 0;
    protected transient float bombPassTime = 0;
@@ -45,11 +46,7 @@ public class MobileEntity extends DynamicEntity {
       super(x, y, imageId);
    }
 
-   @Override
-   public void update(float deltaTime) {
-
-   }
-
+ 
    protected boolean move(int direction, int baseSpeed, float deltaTime) {
       if (health <= 0) {
          return false;
@@ -58,8 +55,8 @@ public class MobileEntity extends DynamicEntity {
       this.direction = direction;
       moving = true;
 
-      // Calculate actual movement distance based on delta time
-      float speed = baseSpeed * deltaTime * 10; // Remove the (int) cast to allow fractional movement
+      // Calculate actual movement distance
+      float speed = baseSpeed * deltaTime * 10;
 
       float deltaX = 0;
       float deltaY = 0;
@@ -84,21 +81,25 @@ public class MobileEntity extends DynamicEntity {
       float nextX = x + deltaX;
       float nextY = y + deltaY;
 
+      // Enhanced collision check for pathfinding
       if (moveCollision(nextX, nextY)) {
-         if (Math.abs(deltaX) > 0 && Math.abs(nextY - this.getYTile() * Sprite.DEFAULT_SIZE) < ALIGN_TOLERANCE) {
-            if (!moveCollision(nextX, this.getYTile() * Sprite.DEFAULT_SIZE)) {
+         // If we have a collision, try to align with the grid for smoother navigation
+         if (Math.abs(deltaX) > 0) {
+            // When moving horizontally, try to align vertically
+            float alignedY = Math.round(y / Sprite.DEFAULT_SIZE) * Sprite.DEFAULT_SIZE;
+            if (!moveCollision(nextX, alignedY)) {
                x = nextX;
-               y = this.getYTile() * Sprite.DEFAULT_SIZE;
+               y = alignedY;
                return true;
             }
-            return false;
-         } else if (Math.abs(deltaY) > 0 && Math.abs(nextX - this.getXTile() * Sprite.DEFAULT_SIZE) < ALIGN_TOLERANCE) {
-            if (!moveCollision(this.getXTile() * Sprite.DEFAULT_SIZE, nextY)) {
-               x = this.getXTile() * Sprite.DEFAULT_SIZE;
+         } else if (Math.abs(deltaY) > 0) {
+            // When moving vertically, try to align horizontally
+            float alignedX = Math.round(x / Sprite.DEFAULT_SIZE) * Sprite.DEFAULT_SIZE;
+            if (!moveCollision(alignedX, nextY)) {
+               x = alignedX;
                y = nextY;
                return true;
             }
-            return false;
          }
          return false;
       } else {
@@ -107,7 +108,6 @@ public class MobileEntity extends DynamicEntity {
          return true;
       }
    }
-
    protected boolean moveCollision(float nextX, float nextY) {
       for (StaticEntity entity : GameControl.getStaticEntities()) {
          if (entity instanceof Bomb) {
@@ -165,29 +165,41 @@ public class MobileEntity extends DynamicEntity {
 
    @Override
    protected void updateAnimation(float deltaTime) {
-      if (health <= 0) {
+      // 1) DEAD state
+      if (dying) {
          deadAnimationTimer += deltaTime;
          if (deadAnimationTimer >= DEAD_ANIMATION_TIME) {
-            if (animationStep < 7) {
+            int maxDead = imageIds[Setting.DEAD].length - 1;
+            if (animationStep < maxDead) {
                animationStep++;
             } else {
-               this.remove();
+               remove();
                return;
             }
             deadAnimationTimer = 0;
          }
+         imageId = imageIds[Setting.DEAD][animationStep];
+         return;
+      }
 
-      } else if (isInvincible) {
+      // 2) INVINCIBLE state (Bomber có, Enemy không)
+      if (isInvincible) {
          invincibleTimer += deltaTime;
          if (invincibleTimer >= INVINCIBLE_ANIMATION_TIME) {
-            animationStep = (animationStep + 1) % 3;
+            int invFrames = imageIds[direction].length;
+            animationStep = (animationStep + 1) % invFrames;
             invincibleTimer = 0;
          }
+         imageId = imageIds[direction][animationStep];
+         return;
+      }
 
-      } else if (moving) {
+      // 3) ALIVE state: move vs idle
+      int frames = imageIds[direction].length; // 3 dành cho Bomber, 4 cho Enemy
+      if (moving) {
          animationTimer += deltaTime;
          if (animationTimer >= ANIMATION_TIME) {
-            animationStep = (animationStep + 1) % 3;
+            animationStep = (animationStep + 1) % frames;
             animationTimer = 0;
          }
       } else {
@@ -216,9 +228,11 @@ public class MobileEntity extends DynamicEntity {
    }
 
    public void dead() {
-
+      dying = true;
       direction = Setting.DEAD;
       moving = false;
+      animationStep = 0; 
+      deadAnimationTimer = 0; 
    }
 
    public boolean isInvincible() {

@@ -106,7 +106,7 @@ public class Flame extends StaticEntity {
       }
       for (EnemyEntity entity : GameControl.getEnemyEntities()) {
          if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
-            entity.remove();
+            entity.decreaseHealth();;
             return false;
          }
       }

@@ -5,33 +5,33 @@ import core.system.setting.Setting;
 
 public class Balloom extends EnemyEntity {
 
-    private transient int speed = 20;
-
     public Balloom(int x, int y, int imageId) {
         super(x, y, imageId);
 
-        imageIds = new int[4][3];
-        imageIds[Setting.UP_MOVING][0] = Sprite.BALLOOM_LEFT_0;
-        imageIds[Setting.UP_MOVING][1] = Sprite.BALLOOM_LEFT_1;
-        imageIds[Setting.UP_MOVING][2] = Sprite.BALLOOM_LEFT_2;
+        imageIds = new int[5][]; // UP, DOWN, LEFT, RIGHT, DEAD
 
-        imageIds[Setting.DOWN_MOVING][0] = Sprite.BALLOOM_RIGHT_0;
-        imageIds[Setting.DOWN_MOVING][1] = Sprite.BALLOOM_RIGHT_1;
-        imageIds[Setting.DOWN_MOVING][2] = Sprite.BALLOOM_RIGHT_2;
-
-        imageIds[Setting.LEFT_MOVING][0] = Sprite.BALLOOM_LEFT_0;
-        imageIds[Setting.LEFT_MOVING][1] = Sprite.BALLOOM_LEFT_1;
-        imageIds[Setting.LEFT_MOVING][2] = Sprite.BALLOOM_LEFT_2;
-
-        imageIds[Setting.RIGHT_MOVING][0] = Sprite.BALLOOM_RIGHT_0;
-        imageIds[Setting.RIGHT_MOVING][1] = Sprite.BALLOOM_RIGHT_1;
-        imageIds[Setting.RIGHT_MOVING][2] = Sprite.BALLOOM_RIGHT_2;
+        imageIds[Setting.UP_MOVING] = new int[] {
+                Sprite.BALLOOM_LEFT_0, Sprite.BALLOOM_LEFT_1, Sprite.BALLOOM_LEFT_2, Sprite.BALLOOM_LEFT_3
+        };
+        imageIds[Setting.DOWN_MOVING] = new int[] {
+                Sprite.BALLOOM_RIGHT_0, Sprite.BALLOOM_RIGHT_1, Sprite.BALLOOM_RIGHT_2, Sprite.BALLOOM_RIGHT_3
+        };
+        imageIds[Setting.LEFT_MOVING] = new int[] {
+                Sprite.BALLOOM_LEFT_0, Sprite.BALLOOM_LEFT_1, Sprite.BALLOOM_LEFT_2, Sprite.BALLOOM_LEFT_3
+        };
+        imageIds[Setting.RIGHT_MOVING] = new int[] {
+                Sprite.BALLOOM_RIGHT_0, Sprite.BALLOOM_RIGHT_1, Sprite.BALLOOM_RIGHT_2, Sprite.BALLOOM_RIGHT_3
+        };
+        imageIds[Setting.DEAD] = new int[] {
+                Sprite.BALLOOM_DEAD_0, Sprite.BALLOOM_DEAD_1, Sprite.BALLOOM_DEAD_2, Sprite.BALLOOM_DEAD_3,
+                Sprite.BALLOOM_DEAD_4
+        };
     }
 
     @Override
     public void update(float deltaTime) {
         defaultMove(deltaTime);
-        EnemyCollision();
+        enemyCollision();
         updateAnimation(deltaTime);
     }
 }

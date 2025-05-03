@@ -38,54 +38,50 @@ public class Bomber extends MobileEntity {
       if (typePlayer == Setting.BOMBER2) {
          id++;
       }
-      imageIds = new int[6][8];
-      if (typePlayer == Setting.BOMBER1) {
-         imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER1_RIGHT_0;
-         imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER1_RIGHT_1;
-         imageIds[Setting.RIGHT_MOVING][2] = Sprite.PLAYER1_RIGHT_2;
-         imageIds[Setting.LEFT_MOVING][0] = Sprite.PLAYER1_LEFT_0;
-         imageIds[Setting.LEFT_MOVING][1] = Sprite.PLAYER1_LEFT_1;
-         imageIds[Setting.LEFT_MOVING][2] = Sprite.PLAYER1_LEFT_2;
-         imageIds[Setting.UP_MOVING][0] = Sprite.PLAYER1_UP_0;
-         imageIds[Setting.UP_MOVING][1] = Sprite.PLAYER1_UP_1;
-         imageIds[Setting.UP_MOVING][2] = Sprite.PLAYER1_UP_2;
-         imageIds[Setting.DOWN_MOVING][0] = Sprite.PLAYER1_DOWN_0;
-         imageIds[Setting.DOWN_MOVING][1] = Sprite.PLAYER1_DOWN_1;
-         imageIds[Setting.DOWN_MOVING][2] = Sprite.PLAYER1_DOWN_2;
-         imageIds[Setting.DEAD][0] = Sprite.PLAYER1_DEAD_0;
-         imageIds[Setting.DEAD][1] = Sprite.PLAYER1_DEAD_1;
-         imageIds[Setting.DEAD][2] = Sprite.PLAYER1_DEAD_2;
-         imageIds[Setting.DEAD][3] = Sprite.PLAYER1_DEAD_3;
-         imageIds[Setting.DEAD][4] = Sprite.PLAYER1_DEAD_4;
-         imageIds[Setting.DEAD][5] = Sprite.PLAYER1_DEAD_5;
-         imageIds[Setting.DEAD][6] = Sprite.PLAYER1_DEAD_6;
-         imageIds[Setting.DEAD][7] = Sprite.PLAYER1_DEAD_7;
-      } else {
-         imageIds[Setting.RIGHT_MOVING][0] = Sprite.PLAYER2_RIGHT_0;
-         imageIds[Setting.RIGHT_MOVING][1] = Sprite.PLAYER2_RIGHT_1;
-         imageIds[Setting.RIGHT_MOVING][2] = Sprite.PLAYER2_RIGHT_2;
-         imageIds[Setting.LEFT_MOVING][0] = Sprite.PLAYER2_LEFT_0;
-         imageIds[Setting.LEFT_MOVING][1] = Sprite.PLAYER2_LEFT_1;
-         imageIds[Setting.LEFT_MOVING][2] = Sprite.PLAYER2_LEFT_2;
-         imageIds[Setting.UP_MOVING][0] = Sprite.PLAYER2_UP_0;
-         imageIds[Setting.UP_MOVING][1] = Sprite.PLAYER2_UP_1;
-         imageIds[Setting.UP_MOVING][2] = Sprite.PLAYER2_UP_2;
-         imageIds[Setting.DOWN_MOVING][0] = Sprite.PLAYER2_DOWN_0;
-         imageIds[Setting.DOWN_MOVING][1] = Sprite.PLAYER2_DOWN_1;
-         imageIds[Setting.DOWN_MOVING][2] = Sprite.PLAYER2_DOWN_2;
-         imageIds[Setting.DEAD][0] = Sprite.PLAYER2_DEAD_0;
-         imageIds[Setting.DEAD][1] = Sprite.PLAYER2_DEAD_1;
-         imageIds[Setting.DEAD][2] = Sprite.PLAYER2_DEAD_2;
-         imageIds[Setting.DEAD][3] = Sprite.PLAYER2_DEAD_3;
-         imageIds[Setting.DEAD][4] = Sprite.PLAYER2_DEAD_4;
-         imageIds[Setting.DEAD][5] = Sprite.PLAYER2_DEAD_5;
-         imageIds[Setting.DEAD][6] = Sprite.PLAYER2_DEAD_6;
-         imageIds[Setting.DEAD][7] = Sprite.PLAYER2_DEAD_7;
+      imageIds = new int[6][]; // 0 → UP, 1 → DOWN, 2 → LEFT, 3 → RIGHT, 4 → DEAD, 5 → ANIMATION_NULL
 
+      if (typePlayer == Setting.BOMBER1) {
+         imageIds[Setting.RIGHT_MOVING] = new int[] {
+               Sprite.PLAYER1_RIGHT_0, Sprite.PLAYER1_RIGHT_1, Sprite.PLAYER1_RIGHT_2
+         };
+         imageIds[Setting.LEFT_MOVING] = new int[] {
+               Sprite.PLAYER1_LEFT_0, Sprite.PLAYER1_LEFT_1, Sprite.PLAYER1_LEFT_2
+         };
+         imageIds[Setting.UP_MOVING] = new int[] {
+               Sprite.PLAYER1_UP_0, Sprite.PLAYER1_UP_1, Sprite.PLAYER1_UP_2
+         };
+         imageIds[Setting.DOWN_MOVING] = new int[] {
+               Sprite.PLAYER1_DOWN_0, Sprite.PLAYER1_DOWN_1, Sprite.PLAYER1_DOWN_2
+         };
+         imageIds[Setting.DEAD] = new int[] {
+               Sprite.PLAYER1_DEAD_0, Sprite.PLAYER1_DEAD_1, Sprite.PLAYER1_DEAD_2,
+               Sprite.PLAYER1_DEAD_3, Sprite.PLAYER1_DEAD_4, Sprite.PLAYER1_DEAD_5,
+               Sprite.PLAYER1_DEAD_6, Sprite.PLAYER1_DEAD_7
+         };
+      } else {
+         imageIds[Setting.RIGHT_MOVING] = new int[] {
+               Sprite.PLAYER2_RIGHT_0, Sprite.PLAYER2_RIGHT_1, Sprite.PLAYER2_RIGHT_2
+         };
+         imageIds[Setting.LEFT_MOVING] = new int[] {
+               Sprite.PLAYER2_LEFT_0, Sprite.PLAYER2_LEFT_1, Sprite.PLAYER2_LEFT_2
+         };
+         imageIds[Setting.UP_MOVING] = new int[] {
+               Sprite.PLAYER2_UP_0, Sprite.PLAYER2_UP_1, Sprite.PLAYER2_UP_2
+         };
+         imageIds[Setting.DOWN_MOVING] = new int[] {
+               Sprite.PLAYER2_DOWN_0, Sprite.PLAYER2_DOWN_1, Sprite.PLAYER2_DOWN_2
+         };
+         imageIds[Setting.DEAD] = new int[] {
+               Sprite.PLAYER2_DEAD_0, Sprite.PLAYER2_DEAD_1, Sprite.PLAYER2_DEAD_2,
+               Sprite.PLAYER2_DEAD_3, Sprite.PLAYER2_DEAD_4, Sprite.PLAYER2_DEAD_5,
+               Sprite.PLAYER2_DEAD_6, Sprite.PLAYER2_DEAD_7
+         };
       }
-      imageIds[Setting.ANIMATION_NULL][0] = Sprite.ANIMATION_NULL;
-      imageIds[Setting.ANIMATION_NULL][1] = Sprite.ANIMATION_NULL;
-      imageIds[Setting.ANIMATION_NULL][2] = Sprite.ANIMATION_NULL;
+
+      // ANIMATION_NULL (dùng để "ẩn" khi invincible)
+      imageIds[Setting.ANIMATION_NULL] = new int[] {
+            Sprite.ANIMATION_NULL, Sprite.ANIMATION_NULL, Sprite.ANIMATION_NULL
+      };
    }
 
    @Override
@@ -279,6 +275,10 @@ public class Bomber extends MobileEntity {
 
    public String getPlayerName() {
       return playerName;
+   }
+
+   public boolean isAlive() {
+      return health > 0;
    }
 
    public void setPlayerName(String playerName) {

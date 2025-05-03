@@ -4,6 +4,9 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Balloom;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.Oneal;
+import core.entity.dynamic_entity.mobile_entity.enemy_entity.Doll;
+import core.entity.dynamic_entity.mobile_entity.enemy_entity.Minvo;
+import core.entity.dynamic_entity.mobile_entity.enemy_entity.Ghost;
 import core.entity.dynamic_entity.static_entity.Brick;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 
@@ -124,6 +127,15 @@ public class MapEntity {
             } else if (c == '2') {
                Oneal oneal = new Oneal(j, i, Sprite.ONEAL_LEFT_0);
                GameControl.addEntity(oneal);
+            } else if (c == '3') {
+               Doll doll = new Doll(j, i, Sprite.DOLL_LEFT_0);
+               GameControl.addEntity(doll);
+            } else if (c == '4') {
+               Minvo minvo = new Minvo(j, i, Sprite.MINVO_LEFT_0);
+               GameControl.addEntity(minvo);
+            } else if (c == '5') {
+               Ghost ghost = new Ghost(j, i, Sprite.GHOST_LEFT_0);
+               GameControl.addEntity(ghost);
             } else if (c == 'b') {
                ItemEntity BombItem = new BombUpItem(j, i, Sprite.POWERUP_BOMBS);
                GameControl.addEntity(BombItem);
