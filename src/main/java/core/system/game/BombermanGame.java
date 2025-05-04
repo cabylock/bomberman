@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.HashSet;
 import javafx.scene.image.Image;
 import core.sound.Sound;
-import core.entity.dynamic_entity.mobile_entity.*;;
+
 public class BombermanGame {
 
     private GraphicsContext gc;
@@ -45,6 +45,7 @@ public class BombermanGame {
     private float deltaTime = 0; // Time between frames in seconds
 
     // UI elements for status bar
+    
     private Text healthText;
     private Text bombsText;
     private Text enemiesText;
@@ -221,10 +222,10 @@ public class BombermanGame {
         // Update score (if applicable)
         int score = 0; // You might want to track score in Player class or elsewhere
         scoreText.setText("🏆 Score: " + score);
-        Bomber player = GameControl.getBomberEntities().get(0);
-        healthText.setText("❤ Health: " + player.getHealth());
+        
+        
     }
-
+    
     // Add these new methods to BombermanGame class:
     public static StackPane getGameRoot() {
         return gameRoot;
