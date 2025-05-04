@@ -32,7 +32,8 @@ import javafx.geometry.Pos;
 import java.util.Set;
 import java.util.HashSet;
 import javafx.scene.image.Image;
-
+import core.sound.Sound;
+import core.entity.dynamic_entity.mobile_entity.*;;
 public class BombermanGame {
 
     private GraphicsContext gc;
@@ -68,11 +69,15 @@ public class BombermanGame {
 
     public static void main(String[] args) {
 
+       
         Application.launch(args);
+        
     }
 
     // Then update your createGameScene method:
     public void createGameScene(Stage stage) {
+        Sound.stopMusic();
+        Sound.playMusic("start_game",true);
         this.stage = stage;
 
         // Add close request handler to ensure clean shutdown
@@ -81,8 +86,11 @@ public class BombermanGame {
                 gameLoop.stop();
                 gameLoop = null;
             }
+            Sound.stopMusic();
             GameControl.stop();
             input.clear();
+
+            // Dừng âm thanh khi game thoát
             Platform.exit();
         });
 
@@ -171,7 +179,7 @@ public class BombermanGame {
         statusBar.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         // Create text elements for game stats
-        healthText = new Text("❤ Health: 3");
+        healthText = new Text("❤ Health: 1");
         healthText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         healthText.setFill(Color.WHITE);
 
@@ -207,11 +215,14 @@ public class BombermanGame {
                 enemyCount++;
             }
         }
+        
         enemiesText.setText("👾 Enemies: " + enemyCount);
 
         // Update score (if applicable)
         int score = 0; // You might want to track score in Player class or elsewhere
         scoreText.setText("🏆 Score: " + score);
+        Bomber player = GameControl.getBomberEntities().get(0);
+        healthText.setText("❤ Health: " + player.getHealth());
     }
 
     // Add these new methods to BombermanGame class:

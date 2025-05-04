@@ -9,6 +9,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import core.sound.Sound;
+
 
 public class Bomber extends MobileEntity {
 
@@ -136,6 +138,8 @@ public class Bomber extends MobileEntity {
    }
 
    private void placeBomb() {
+      Sound.playEffect("bomb_set");
+      
       BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.BOMB_PLACE]);
       if (bombCountMax == 0) {
          return;
@@ -149,6 +153,7 @@ public class Bomber extends MobileEntity {
       Bomb newBomb = new Bomb(bombX, bombY, bombSprite, flameSize, id);
       GameControl.addEntity(newBomb);
       bombCountMax--;
+
    }
 
    public void updateItem(float deltaTime) {
@@ -223,6 +228,7 @@ public class Bomber extends MobileEntity {
          flameUpTime = ITEM_DURATION;
       }
    }
+   
 
    public void setBombUp(boolean bombUp) {
       this.bombUp = bombUp;
@@ -238,8 +244,12 @@ public class Bomber extends MobileEntity {
          wallPassTime = ITEM_DURATION;
       }
    }
+   public int getHealth(){
+      return health;
+   }
 
    public void bombExplode() {
+      Sound.playEffect("bomb_explode");
       if (bombCountMax < 2) {
          bombCountMax++;
       }
@@ -254,14 +264,21 @@ public class Bomber extends MobileEntity {
    }
 
    public void resetBomber() {
+      Sound.stopMusic();
+      Sound.playMusic("start_game", true);
       x = initialX;
       y = initialY;
       bombCountMax = 1;
       speed = 25;
       flameSize = 1;
+      // không reset health ở đây!
       isInvincible = false;
-      invincibleTime = 0;
+      invincibleRemaining = 0f;
+      blinkTimer = 0f;
+   }
 
+   public boolean isDying() {
+      return this.dying;
    }
 
    public boolean isFlamePass() {
@@ -270,6 +287,8 @@ public class Bomber extends MobileEntity {
 
    @Override
    public void remove() {
+      Sound.stopMusic();
+      Sound.playEffect("death");
       GameControl.removeEntity(this);
    }
 

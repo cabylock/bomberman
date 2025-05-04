@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+
 public class MapSelectionController {
     @FXML
     private ListView<String> defaultMapList;
@@ -27,7 +28,6 @@ public class MapSelectionController {
     }
 
     public void loadMaps() {
-
         defaultMapList.getItems().clear();
         customMapList.getItems().clear();
         // Load default maps
@@ -117,6 +117,7 @@ public class MapSelectionController {
 
     @FXML
     private void playSelectedMap() {
+       
         String selectedDefaultMap = defaultMapList.getSelectionModel().getSelectedItem();
         String selectedCustomMap = customMapList.getSelectionModel().getSelectedItem();
 

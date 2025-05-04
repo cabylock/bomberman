@@ -10,7 +10,7 @@ import core.entity.background_entity.Wall;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.dynamic_entity.static_entity.Brick;
 import core.entity.dynamic_entity.static_entity.Bomb;
-
+import core.sound.Sound;
 
 import core.graphics.Sprite;
 
@@ -64,6 +64,7 @@ public class EnemyEntity extends MobileEntity {
 
     @Override
     public void remove() {
+        Sound.playEffect("enemy_death");
         GameControl.removeEntity(this);
     }
 
