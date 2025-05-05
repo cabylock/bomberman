@@ -71,6 +71,16 @@ public class GameControl {
       System.gc();
    }
 
+   // Add this setter
+   public static void setServer(GameServer s) {
+      server = s;
+   }
+
+   // Add this setter
+   public static void setClient(GameClient c) {
+      client = c;
+   }
+
    public static void update(float deltaTime) {
       GameControl.deltaTime = deltaTime;
       handleInput(deltaTime);
@@ -96,7 +106,8 @@ public class GameControl {
          }
       }
 
-      if (gameMode == Setting.SERVER_MODE) {
+      // Fix: Only call broadcastGameState if server is not null
+      if (gameMode == Setting.SERVER_MODE && server != null) {
          server.broadcastGameState();
       }
    }
@@ -111,7 +122,7 @@ public class GameControl {
    private static void handlePlayerInput(int playerType, int playerId, float deltaTime) {
       if (!bomberEntities.containsKey(playerId)) return;
 
-      String command = Setting.STOP;
+      String command = "NULL";
 
       if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.UP_MOVING])) {
          command = Setting.MOVE_UP;
@@ -128,7 +139,10 @@ public class GameControl {
       if (gameMode != Setting.CLIENT_MODE) {
          bomberEntities.get(playerId).control(command, deltaTime);
       } else {
-         client.sendCommand(command, playerId);
+         // Fix: Only send command if client is not null
+         if (client != null) {
+            client.sendCommand(command, playerId);
+         }
       }
    }
 
@@ -165,7 +179,7 @@ public class GameControl {
 
    public static void nextLevel() {
       if (mapType == Setting.CUSTOM_MAP) {
-         Util.showNotificationWindow("Please select another map or move to default map");
+         Util.logInfo("Please select another map or move to default map");
          return;
       }
       if (level == Setting.MAX_LEVEL) {

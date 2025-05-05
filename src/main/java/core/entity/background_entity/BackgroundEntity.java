@@ -13,8 +13,12 @@ public class BackgroundEntity extends Entity {
       // Background entities don't need updating
    }
 
+
+
    @Override
    public void remove() {
+     
+      
    }
-
+   
 }

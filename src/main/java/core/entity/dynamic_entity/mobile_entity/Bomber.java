@@ -32,8 +32,8 @@ public class Bomber extends MobileEntity {
 
    public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
       super(x, y, imageId);
-      this.initialX = x;
-      this.initialY = y;
+      this.initialX = x*Sprite.DEFAULT_SIZE;
+      this.initialY = y*Sprite.DEFAULT_SIZE;
       this.playerName = playerName;
       this.typePlayer = typePlayer;
       if (typePlayer == Setting.BOMBER2) {

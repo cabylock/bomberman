@@ -1,7 +1,5 @@
 package core.system.game;
 
-import core.entity.*;
-import core.entity.dynamic_entity.mobile_entity.enemy_entity.*;
 import core.graphics.*;
 import core.system.controller.base.MainMenuController;
 import core.system.controller.ingame.PauseMenuController;
@@ -18,17 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import java.util.Set;
 import java.util.HashSet;
 import javafx.scene.image.Image;
@@ -42,16 +31,8 @@ public class BombermanGame {
     private Stage stage;
 
     private long lastUpdateTime = 0;
-    private float deltaTime = 0; // Time between frames in seconds
-
-    // UI elements for status bar
+    private float deltaTime = 0; 
     
-    private Text healthText;
-    private Text bombsText;
-    private Text enemiesText;
-    private Text scoreText;
-
-    // Add these fields to your BombermanGame class
     private AnimationTimer gameLoop;
     private static StackPane gameRoot;
     private boolean isPaused = false;
@@ -75,13 +56,12 @@ public class BombermanGame {
         
     }
 
-    // Then update your createGameScene method:
     public void createGameScene(Stage stage) {
         Sound.stopMusic();
         Sound.playMusic("start_game",true);
         this.stage = stage;
 
-        // Add close request handler to ensure clean shutdown
+
         stage.setOnCloseRequest(_ -> {
             if (gameLoop != null) {
                 gameLoop.stop();
@@ -101,18 +81,16 @@ public class BombermanGame {
 
         gc = canvas.getGraphicsContext2D();
 
-        // Create status bar
-        HBox statusBar = createStatusBar();
 
-        // Create game content container
+
+       
         VBox gameContent = new VBox(5);
-        gameContent.getChildren().addAll(statusBar, canvas);
+        gameContent.getChildren().addAll( canvas);
 
-        // Create a StackPane for overlays
+        
         gameRoot = new StackPane();
         gameRoot.getChildren().add(gameContent);
 
-        // Create scene
         Scene scene = new Scene(gameRoot);
 
         scene.setOnKeyPressed(e -> {
@@ -133,7 +111,7 @@ public class BombermanGame {
             input.remove(e.getCode());
         });
 
-        // Add scene to stage
+        
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.setTitle("Bomberman Game");
@@ -141,28 +119,37 @@ public class BombermanGame {
         stage.setResizable(false);
         stage.show();
 
-        if (GameControl.start(Setting.GAME_MODE) == false) {
-
-            returnToMenu();
+       
+        if (!GameControl.start(Setting.GAME_MODE)) {
+            
+            Util.logError("Failed to start game in requested mode");
+            gameLoop = null;
             return;
         }
 
         gameLoop = new AnimationTimer() {
+            
+            
+      
+
             @Override
             public void handle(long now) {
-                // Calculate delta time in seconds (from nanoseconds)
                 if (lastUpdateTime > 0) {
                     deltaTime = (float) ((now - lastUpdateTime) / 1_000_000_000.0);
                     // Cap delta time to prevent huge jumps after lag
-                    if (deltaTime > 0.08)
+                    if (deltaTime > 0.08f)
                         deltaTime = 0.08f;
+                    // Frame limiter: skip update if frame is too fast
+                    if (deltaTime < Setting.FRAME_TIME_NS) {
+                        return;
+                    }
                 }
 
                 render();
 
                 // Always update with delta time regardless of frame timing
                 GameControl.update(deltaTime);
-                updateStatusBar();
+                
 
                 lastUpdateTime = now;
             }
@@ -173,59 +160,8 @@ public class BombermanGame {
     /**
      * Create a status bar with game information
      */
-    private HBox createStatusBar() {
-        HBox statusBar = new HBox(20);
-        statusBar.setPadding(new Insets(10));
-        statusBar.setAlignment(Pos.CENTER_LEFT);
-        statusBar.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+ 
 
-        // Create text elements for game stats
-        healthText = new Text("❤ Health: 1");
-        healthText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        healthText.setFill(Color.WHITE);
-
-        bombsText = new Text("💣 Bombs: 1");
-        bombsText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        bombsText.setFill(Color.WHITE);
-
-        enemiesText = new Text("👻 Enemies: 0");
-        enemiesText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        enemiesText.setFill(Color.WHITE);
-
-        scoreText = new Text("🏆 Score: 0");
-        scoreText.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        scoreText.setFill(Color.WHITE);
-
-        // In your createStatusBar method, add:
-
-        // Add to status bar
-        statusBar.getChildren().addAll(healthText, bombsText, enemiesText, scoreText);
-
-        return statusBar;
-    }
-
-    /**
-     * Update the status bar with current game information
-     */
-    private void updateStatusBar() {
-
-        // Count enemies
-        int enemyCount = 0;
-        for (Entity entity : GameControl.getEnemyEntities()) {
-            if (entity instanceof EnemyEntity) { // Assuming Enemy class exists
-                enemyCount++;
-            }
-        }
-        
-        enemiesText.setText("👾 Enemies: " + enemyCount);
-
-        // Update score (if applicable)
-        int score = 0; // You might want to track score in Player class or elsewhere
-        scoreText.setText("🏆 Score: " + score);
-        
-        
-    }
-    
     // Add these new methods to BombermanGame class:
     public static StackPane getGameRoot() {
         return gameRoot;
@@ -275,7 +211,7 @@ public class BombermanGame {
     public void nextLevel() {
         // Resume game if paused
         if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-            Util.showNotificationWindow("You don't have permission to change level in online mode");
+            Util.logInfo("You don't have permission to change level in online mode");
             return;
         }
         isPaused = false;
@@ -294,7 +230,7 @@ public class BombermanGame {
     public void restartGame() {
         // Resume game if paused
         if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-            Util.showNotificationWindow("You can't restart the game in online mode");
+            Util.logInfo("You can't restart the game in online mode");
             return;
         }
         isPaused = false;

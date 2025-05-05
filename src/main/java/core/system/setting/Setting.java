@@ -27,14 +27,14 @@ public class Setting {
       public static int SERVER_PORT = 2005;
       public static int ID = Util.uuid();
 
-      public static String NETWORK_STATIC_ENTITIES = "STATIC";
-      public static String NETWORK_ENEMY_ENTITIES = "ENEMY";
-      public static String NETWORK_ITEM_ENTITIES = "ITEM";
-      public static String NETWORK_BOMBER_ENTITIES = "BOMBER";
-      public static String NETWORK_BACKGROUND_ENTITIES = "BACKGROUND";
+      public static final String NETWORK_STATIC_ENTITIES = "STATIC";
+      public static final String NETWORK_ENEMY_ENTITIES = "ENEMY";
+      public static final String NETWORK_ITEM_ENTITIES = "ITEM";
+      public static final String NETWORK_BOMBER_ENTITIES = "BOMBER";
+      public static final String NETWORK_BACKGROUND_ENTITIES = "BACKGROUND";
 
-      public static final int FPS_MAX = 240;
-      public static final int FRAME_TIME_NS = 1 / FPS_MAX;
+      public static final float FPS_MAX = 60.0f; 
+      public static final float FRAME_TIME_NS = 1.0f / FPS_MAX;
 
       public static final int BOMBER1 = 0;
       public static final int BOMBER2 = 1;
@@ -44,7 +44,7 @@ public class Setting {
       public static final String MOVE_LEFT = "LEFT";
       public static final String MOVE_RIGHT = "RIGHT";
       public static final String PLACE_BOMB = "BOMB";
-      public static final String STOP = "STOP";
+
 
       public static final KeyCode[][] BOMBER_KEY_CONTROLS = {
 

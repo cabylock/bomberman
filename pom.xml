@@ -11,7 +11,7 @@
     <properties>
         <maven.compiler.source>23</maven.compiler.source>
         <maven.compiler.target>23</maven.compiler.target>
-        <javafx.version>21.0.1</javafx.version>
+        <javafx.version>24.0.1</javafx.version>
     </properties>
 
     <repositories>
@@ -25,19 +25,19 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
+            <version>24.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
+            <version>24.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
-            <version>${javafx.version}</version>
+            <version>24.0.1</version>
         </dependency>
         <dependency>
     <groupId>javazoom</groupId>
