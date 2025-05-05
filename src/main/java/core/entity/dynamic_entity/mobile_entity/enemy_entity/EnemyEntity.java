@@ -24,7 +24,7 @@ public class EnemyEntity extends MobileEntity {
 
     // A* pathfinding properties
     protected transient boolean usePathfinding = false;
-    protected transient float pathfindingRange = 0.01f;
+    protected transient float pathfindingRange = 0.001f;
     protected transient float pathUpdateFrequency = 1.0f;
     protected transient float pathUpdateTimer = 0;
     protected transient List<Node> currentPath = new ArrayList<>();
@@ -56,9 +56,10 @@ public class EnemyEntity extends MobileEntity {
                 if (!bomber.isInvincible()) {
                     bomber.decreaseHealth();
                     return true;
-                }
+                }  
             }
         }
+        
         return false;
     }
 

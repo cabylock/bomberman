@@ -10,6 +10,7 @@ import core.graphics.Sprite;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
 import core.sound.Sound;
+import core.util.Util;
 
 public class MobileEntity extends DynamicEntity {
 
@@ -19,7 +20,7 @@ public class MobileEntity extends DynamicEntity {
    protected transient boolean speedUp = false;
    protected transient boolean flameUp = false;
    protected transient boolean bombUp = false;
-   protected transient boolean wallPass = false;
+   protected transient boolean brickPass = false;
    protected boolean dying = false;
 
    protected transient float flamePassTime = 0;
@@ -27,7 +28,7 @@ public class MobileEntity extends DynamicEntity {
    protected transient float speedUpTime = 0;
    protected transient float flameUpTime = 0;
    protected transient float bombUpTime = 0;
-   protected transient float wallPassTime = 0;
+   protected transient float brickPassTime = 0;
 
    // Số mạng (health)
    protected transient int health = 1;
@@ -119,7 +120,7 @@ public class MobileEntity extends DynamicEntity {
                return true;
             }
          } else if (entity instanceof Brick) {
-            if (checkCollision(nextX, nextY, entity.getX(), entity.getY()) && !wallPass) {
+            if (checkCollision(nextX, nextY, entity.getX(), entity.getY()) && !brickPass) {
                return true;
             }
          }
@@ -127,7 +128,7 @@ public class MobileEntity extends DynamicEntity {
       for (Entity bg : GameControl.getBackgroundEntities()) {
          if (bg instanceof Grass)
             continue;
-         if (checkCollision(nextX, nextY, bg.getX(), bg.getY()) && !wallPass) {
+         if (checkCollision(nextX, nextY, bg.getX(), bg.getY()) ) {
             return true;
          }
       }
@@ -146,14 +147,26 @@ public class MobileEntity extends DynamicEntity {
          return;
 
       health--;
+      if (this instanceof Bomber) {
+         Sound.playEffect("bomber_death");
+      }
       if (health <= 0) {
+
+         if (this instanceof Bomber) {
+
+            if (GameControl.getBomberEntities().isEmpty()) {
+               Sound.stopMusic();
+               Sound.playEffect("game_over");
+            }
+         }
          dead();
+
       } else {
          isInvincible = true;
          invincibleRemaining = 3.0f;
          blinkTimer = 0f;
          moving = false;
-         animationStep = 0; 
+         animationStep = 0;
          direction = Setting.ANIMATION_NULL;
 
       }
@@ -219,6 +232,7 @@ public class MobileEntity extends DynamicEntity {
    }
 
    public void dead() {
+
       dying = true;
       direction = Setting.DEAD;
       moving = false;

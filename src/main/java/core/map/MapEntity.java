@@ -168,7 +168,7 @@ public class MapEntity {
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             } else if (c == 'w') {
-               ItemEntity WallPassItem = new WallPassItem(j, i, Sprite.POWERUP_WALL_PASS);
+               ItemEntity WallPassItem = new BrickPassItem(j, i, Sprite.POWERUP_WALL_PASS);
                GameControl.addEntity(WallPassItem);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);

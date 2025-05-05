@@ -106,10 +106,13 @@ public class MapGenerator {
       }
 
       // Add items under bricks
-      String[] items = { "b", "f", "s", "m", "h", "o", "w" };
+      String[] items = { "b", "f", "s", "m", "h", "o", "w", "x" };
       int totalBricks = countCharacter(map, '*');
       int itemCount = (int) (totalBricks * itemDensity);
       int itemsPlaced = 0;
+
+      // Tính số lượng mỗi item cần đặt
+      int itemsPerType = itemCount / items.length;
 
       while (itemsPlaced < itemCount) {
          int x = random.nextInt(width - 2) + 1;
@@ -117,8 +120,14 @@ public class MapGenerator {
 
          if (map[y][x] == '*') {
             String item = items[random.nextInt(items.length)];
-            map[y][x] = item.charAt(0);
-            itemsPlaced++;
+
+            // Đảm bảo mỗi item được phân bổ đều
+            int countForItem = 0;
+            while (countForItem < itemsPerType && map[y][x] == '*') {
+               map[y][x] = item.charAt(0);
+               itemsPlaced++;
+               countForItem++;
+            }
          }
       }
 
@@ -132,9 +141,26 @@ public class MapGenerator {
          int y = random.nextInt(height - 2) + 1;
 
          if (map[y][x] == ' ' && !safeZone[y][x]) {
-            // Higher levels get more Oneals (type 2)
-            float onealsRatio = (float) Math.min(0.3 + (level * 0.05), 0.8);
-            char enemyType = random.nextFloat() < onealsRatio ? '2' : '1';
+            // Tính tỷ lệ cho từng loại quái vật
+            float[] enemyRatios = { 0.2f, 0.2f, 0.2f, 0.2f, 0.2f }; // Cân nhắc phân phối tỷ lệ cho từng loại
+            float totalRatio = 0;
+            for (float ratio : enemyRatios) {
+               totalRatio += ratio;
+            }
+
+            // Chọn một quái vật ngẫu nhiên theo tỷ lệ phân phối
+            float randomChoice = random.nextFloat() * totalRatio;
+            char enemyType = '1'; // Mặc định là loại 1
+            float cumulativeRatio = 0;
+
+            for (int i = 0; i < enemyRatios.length; i++) {
+               cumulativeRatio += enemyRatios[i];
+               if (randomChoice < cumulativeRatio) {
+                  enemyType = (char) ('1' + i); // '1', '2', '3', '4', '5'
+                  break;
+               }
+            }
+
             map[y][x] = enemyType;
             enemiesPlaced++;
          }

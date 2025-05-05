@@ -22,7 +22,9 @@ public class Sound {
     }
 
     public static void playEffect(String sound) {
+
         String url = Sound.class.getResource("/sounds/" + sound + ".mp3").toExternalForm();
+        
         MediaPlayer fx = new MediaPlayer(new Media(url));
         fx.setCycleCount(1);
         fx.play();

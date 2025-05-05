@@ -24,8 +24,7 @@ public class Bomber extends MobileEntity {
 
    protected transient int bombCountMax = 1;
 
-   protected transient static final int ITEM_DURATION = 5; // 10 giây * 60 frames/giây
-
+   protected transient static final int ITEM_DURATION = 10; 
    // public Bomber(int x, int y, int imageId, int typePlayer) {
    // this(x, y, imageId, typePlayer, "Player " + (typePlayer == Setting.BOMBER2 ?
    // "2" : "1"));
@@ -190,10 +189,10 @@ public class Bomber extends MobileEntity {
             bombUp = false;
          }
       }
-      if (wallPassTime > 0) {
-         wallPassTime -= deltaTime;
-         if (wallPassTime <= 0) {
-            wallPass = false;
+      if (brickPassTime > 0) {
+         brickPassTime -= deltaTime;
+         if (brickPassTime <= 0) {
+            brickPass = false;
          }
       }
 
@@ -238,10 +237,10 @@ public class Bomber extends MobileEntity {
       }
    }
 
-   public void setWallPass(boolean wallPass) {
-      this.wallPass = wallPass;
-      if (wallPass) {
-         wallPassTime = ITEM_DURATION;
+   public void setBrickPass(boolean brickPass) {
+      this.brickPass = brickPass;
+      if (brickPass) {
+         brickPassTime = ITEM_DURATION;
       }
    }
    public int getHealth(){
@@ -287,8 +286,7 @@ public class Bomber extends MobileEntity {
 
    @Override
    public void remove() {
-      Sound.stopMusic();
-      Sound.playEffect("death");
+      
       GameControl.removeEntity(this);
    }
 

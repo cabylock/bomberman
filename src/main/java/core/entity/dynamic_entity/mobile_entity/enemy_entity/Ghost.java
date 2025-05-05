@@ -20,7 +20,7 @@ public class Ghost extends EnemyEntity {
     
     private static final float MOVEMENT_FREQUENCY_TIME = 0.01f;
     private static final float DIRECTION_CHANGE_TIME = 2.0f;
-    private static final float SIGHT_RANGE = 10.0f;
+    private static final float SIGHT_RANGE = 5.0f;
 
     public Ghost(int x, int y, int imageId) {
         super(x, y, imageId);
@@ -37,23 +37,23 @@ public class Ghost extends EnemyEntity {
         usePathfinding = true;
 
         // Khởi tạo imageIds
-        imageIds = new int[4][4];
-        imageIds[Setting.UP_MOVING][0] = Sprite.GHOST_LEFT_0;
-        imageIds[Setting.UP_MOVING][1] = Sprite.GHOST_LEFT_1;
-        imageIds[Setting.UP_MOVING][2] = Sprite.GHOST_LEFT_2;
-        imageIds[Setting.UP_MOVING][3] = Sprite.GHOST_LEFT_3;
-        imageIds[Setting.DOWN_MOVING][0] = Sprite.GHOST_RIGHT_0;
-        imageIds[Setting.DOWN_MOVING][1] = Sprite.GHOST_RIGHT_1;
-        imageIds[Setting.DOWN_MOVING][2] = Sprite.GHOST_RIGHT_2;
-        imageIds[Setting.DOWN_MOVING][3] = Sprite.GHOST_RIGHT_3;
-        imageIds[Setting.LEFT_MOVING][0] = Sprite.GHOST_LEFT_0;
-        imageIds[Setting.LEFT_MOVING][1] = Sprite.GHOST_LEFT_1;
-        imageIds[Setting.LEFT_MOVING][2] = Sprite.GHOST_LEFT_2;
-        imageIds[Setting.LEFT_MOVING][3] = Sprite.GHOST_LEFT_3;
-        imageIds[Setting.RIGHT_MOVING][0] = Sprite.GHOST_RIGHT_0;
-        imageIds[Setting.RIGHT_MOVING][1] = Sprite.GHOST_RIGHT_1;
-        imageIds[Setting.RIGHT_MOVING][2] = Sprite.GHOST_RIGHT_2;
-        imageIds[Setting.RIGHT_MOVING][3] = Sprite.GHOST_RIGHT_3;
+        imageIds = new int[5][]; // UP, DOWN, LEFT, RIGHT, DEAD
+
+        imageIds[Setting.UP_MOVING] = new int[] {
+                Sprite.GHOST_LEFT_0, Sprite.GHOST_LEFT_1, Sprite.GHOST_LEFT_2, Sprite.GHOST_LEFT_3
+        };
+        imageIds[Setting.DOWN_MOVING] = new int[] {
+                Sprite.GHOST_RIGHT_0, Sprite.GHOST_RIGHT_1, Sprite.GHOST_RIGHT_2, Sprite.GHOST_RIGHT_3
+        };
+        imageIds[Setting.LEFT_MOVING] = new int[] {
+                Sprite.GHOST_LEFT_0, Sprite.GHOST_LEFT_1, Sprite.GHOST_LEFT_2, Sprite.GHOST_LEFT_3
+        };
+        imageIds[Setting.RIGHT_MOVING] = new int[] {
+                Sprite.GHOST_RIGHT_0, Sprite.GHOST_RIGHT_1, Sprite.GHOST_RIGHT_2, Sprite.GHOST_RIGHT_3
+        };
+        imageIds[Setting.DEAD] = new int[] {
+                Sprite.GHOST_DEAD_0, Sprite.GHOST_DEAD_1, Sprite.GHOST_DEAD_2, Sprite.GHOST_DEAD_3, Sprite.GHOST_DEAD_4
+        };
     }
     
     @Override
