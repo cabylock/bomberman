@@ -33,7 +33,7 @@ public class Setting {
       public static final String NETWORK_BOMBER_ENTITIES = "BOMBER";
       public static final String NETWORK_BACKGROUND_ENTITIES = "BACKGROUND";
 
-      public static final float FPS_MAX = 60.0f; 
+      public static final float FPS_MAX = 240; 
       public static final float FRAME_TIME_NS = 1.0f / FPS_MAX;
 
       public static final int BOMBER1 = 0;
