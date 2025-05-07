@@ -14,7 +14,7 @@ import core.sound.Sound;
 
 public class Bomber extends MobileEntity {
 
-   private transient int speed = 25;
+   private  transient int speed = 25;
    private transient int flameSize = 1;
    private transient int typePlayer;
    private String playerName; // Store player's name

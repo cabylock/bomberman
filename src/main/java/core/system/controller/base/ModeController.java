@@ -41,6 +41,8 @@ public class ModeController {
     @FXML
     private void selectOnlineMode() {
         try {
+
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/NetworkSetup.fxml"));
             Parent root = loader.load();
 
@@ -56,14 +58,7 @@ public class ModeController {
     }
 
     private void startGame() {
-        // Load the map before creating the game scene
-        if (mapName != null && !mapName.isEmpty()) {
-            GameControl.loadMap(mapName);
-        } else {
-            System.err.println("Error: No map selected");
-            return;
-        }
-
+       
         BombermanGame.createGameScene(stage);
 
     }

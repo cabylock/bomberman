@@ -47,8 +47,7 @@ public class NetworkSetupController {
    private HBox statusContainer;
 
    private Stage stage;
-   private String mapName;
-   private int mapType;
+
    private ExecutorService executorService = Executors.newSingleThreadExecutor();
    private GameServer server; // Add this field
 
@@ -114,10 +113,8 @@ public class NetworkSetupController {
          Setting.SERVER_PORT = port;
 
          // Save player name
-         String playerName = playerNameField.getText().trim();
-         if (!playerName.isEmpty()) {
-            GameControl.getBomberEntities().get(Setting.ID).setName(playerName);
-         }
+         // String playerName = playerNameField.getText().trim();
+         
 
          // First check if the port is available
          if (!GameServer.isPortAvailable(port)) {
@@ -258,9 +255,9 @@ public class NetworkSetupController {
       executorService.shutdown();
 
       // Set the game mode before creating scene
-      
+            
 
-      GameControl.start();
+      GameControl.initializeNetwork();
 
       // Create the game with network mode
       BombermanGame.createGameScene(stage);

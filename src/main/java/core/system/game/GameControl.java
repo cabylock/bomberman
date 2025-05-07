@@ -49,7 +49,7 @@ public class GameControl {
       return client.connect();
    }
 
-   public static boolean start() {
+   public static boolean initializeNetwork() {
       
       if (Setting.GAME_MODE == Setting.SERVER_MODE)
          return InitializeServer();

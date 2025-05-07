@@ -183,6 +183,12 @@ public class MapSelectionController {
 
     private void startGameWithMap(String mapName) {
         try {
+            if (mapName != null && !mapName.isEmpty()) {
+                GameControl.loadMap(mapName);
+            } else {
+                System.err.println("Error: No map selected");
+                return;
+            }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
             Parent root = loader.load();
 
