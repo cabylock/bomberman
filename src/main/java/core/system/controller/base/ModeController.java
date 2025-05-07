@@ -1,6 +1,7 @@
 package core.system.controller.base;
 
 import core.system.game.BombermanGame;
+import core.system.game.GameControl;
 import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,18 +11,21 @@ import javafx.stage.Stage;
 
 public class ModeController {
     private Stage stage;
-    private String mapName;
-    private int mapType;
+    private String mapName; // Add field to store the map name
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    // Add setter for map name
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
     }
 
     @FXML
     private void selectSinglePlayerMode() {
         // Set the game to 1 player mode
         Setting.GAME_MODE = Setting.SINGLE_MODE;
-        Setting.PLAYER_NUM = 1;
         startGame();
     }
 
@@ -29,11 +33,11 @@ public class ModeController {
     private void selectMultiPlayerMode() {
         // Set the game to 2 player mode
         Setting.GAME_MODE = Setting.MULTI_MODE;
-        Setting.PLAYER_NUM = 2;
+
         startGame();
 
     }
-    
+
     @FXML
     private void selectOnlineMode() {
         try {
@@ -41,7 +45,7 @@ public class ModeController {
             Parent root = loader.load();
 
             NetworkSetupController controller = loader.getController();
-            controller.setMap(mapName, mapType);
+
             controller.setStage(stage);
 
             Scene scene = new Scene(root);
@@ -51,17 +55,17 @@ public class ModeController {
         }
     }
 
+    private void startGame() {
+        // Load the map before creating the game scene
+        if (mapName != null && !mapName.isEmpty()) {
+            GameControl.loadMap(mapName);
+        } else {
+            System.err.println("Error: No map selected");
+            return;
+        }
 
-    public void setMap(String mapName, int mapType) {
-        this.mapName = mapName;
-        this.mapType = mapType;
-    }
-    
+        BombermanGame.createGameScene(stage);
 
-    private void startGame()
-    {
-        BombermanGame game = new BombermanGame(mapName, mapType);
-        game.createGameScene(stage);
     }
 
     @FXML

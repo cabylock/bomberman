@@ -25,42 +25,26 @@ import core.sound.Sound;
 
 public class BombermanGame {
 
-    private GraphicsContext gc;
-    private Canvas canvas;
+    private static GraphicsContext gc;
+    private static Canvas canvas;
     public static final Set<KeyCode> input = new HashSet<>();
-    private Stage stage;
+    private static Stage stage;
 
-    private long lastUpdateTime = 0;
-    private float deltaTime = 0; 
-    
-    private AnimationTimer gameLoop;
+    private static long lastUpdateTime = 0;
+    private static float deltaTime = 0;
+
+    private static AnimationTimer gameLoop;
     private static StackPane gameRoot;
-    private boolean isPaused = false;
-
-    // for default or custom map
-    public BombermanGame(String mapName, int mapType) {
-        if (mapType == Setting.DEFAULT_MAP) {
-            int level = mapName.charAt(mapName.length() - 5) - '0';
-
-            GameControl.loadMap(level);
-        } else if (mapType == Setting.CUSTOM_MAP) {
-
-            GameControl.loadMap(mapName, Setting.CUSTOM_MAP);
-        }
-    }
+    private static boolean isPaused = false;
 
     public static void main(String[] args) {
-
-       
         Application.launch(args);
-        
     }
 
-    public void createGameScene(Stage stage) {
+    public static void createGameScene(Stage primaryStage) {
         Sound.stopMusic();
-        Sound.playMusic("start_game",true);
-        this.stage = stage;
-
+        Sound.playMusic("start_game", true);
+        stage = primaryStage;
 
         stage.setOnCloseRequest(_ -> {
             if (gameLoop != null) {
@@ -71,7 +55,6 @@ public class BombermanGame {
             GameControl.stop();
             input.clear();
 
-            // Dừng âm thanh khi game thoát
             Platform.exit();
         });
 
@@ -81,13 +64,9 @@ public class BombermanGame {
 
         gc = canvas.getGraphicsContext2D();
 
-
-
-       
         VBox gameContent = new VBox(5);
-        gameContent.getChildren().addAll( canvas);
+        gameContent.getChildren().addAll(canvas);
 
-        
         gameRoot = new StackPane();
         gameRoot.getChildren().add(gameContent);
 
@@ -111,7 +90,6 @@ public class BombermanGame {
             input.remove(e.getCode());
         });
 
-        
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.setTitle("Bomberman Game");
@@ -119,19 +97,7 @@ public class BombermanGame {
         stage.setResizable(false);
         stage.show();
 
-       
-        if (!GameControl.start(Setting.GAME_MODE)) {
-            
-            Util.logError("Failed to start game in requested mode");
-            gameLoop = null;
-            return;
-        }
-
         gameLoop = new AnimationTimer() {
-            
-            
-      
-
             @Override
             public void handle(long now) {
                 if (lastUpdateTime > 0) {
@@ -149,18 +115,12 @@ public class BombermanGame {
 
                 // Always update with delta time regardless of frame timing
                 GameControl.update(deltaTime);
-                
 
                 lastUpdateTime = now;
             }
         };
         gameLoop.start();
     }
-
-    /**
-     * Create a status bar with game information
-     */
- 
 
     // Add these new methods to BombermanGame class:
     public static StackPane getGameRoot() {
@@ -170,19 +130,20 @@ public class BombermanGame {
     /**
      * Show the pause menu overlay
      */
-    private void showPauseMenu() {
+    private static void showPauseMenu() {
         // Pause the game
         isPaused = true;
         gameLoop.stop();
 
         try {
             // Load the pause menu FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/ingame/PauseMenu.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    BombermanGame.class.getResource("/core/system/fxml/ingame/PauseMenu.fxml"));
             VBox pauseMenu = loader.load();
 
             // Get controller and set the game reference
             PauseMenuController controller = loader.getController();
-            controller.setGame(this);
+            controller.setGame();
 
             // Create overlay container
             StackPane overlay = new StackPane();
@@ -203,12 +164,12 @@ public class BombermanGame {
     /**
      * Resume the game from pause
      */
-    public void resumeGame() {
+    public static void resumeGame() {
         isPaused = false;
         gameLoop.start();
     }
 
-    public void nextLevel() {
+    public static void nextLevel() {
         // Resume game if paused
         if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
             Util.logInfo("You don't have permission to change level in online mode");
@@ -227,7 +188,7 @@ public class BombermanGame {
     }
 
     // Update your restartGame method to support the pause menu
-    public void restartGame() {
+    public static void restartGame() {
         // Resume game if paused
         if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
             Util.logInfo("You can't restart the game in online mode");
@@ -246,7 +207,7 @@ public class BombermanGame {
     }
 
     // Make returnToMenu method public so the controller can access it
-    public void returnToMenu() {
+    public static void returnToMenu() {
         // Stop the game loop
         if (gameLoop != null) {
             gameLoop.stop();
@@ -259,7 +220,7 @@ public class BombermanGame {
 
         try {
             // Load the MapSelection screen instead of Main
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/MainMenu.fxml"));
+            FXMLLoader loader = new FXMLLoader(BombermanGame.class.getResource("/core/system/fxml/base/MainMenu.fxml"));
             Parent root = loader.load();
 
             // Get the controller and set the stage
@@ -277,10 +238,9 @@ public class BombermanGame {
             Main main = new Main();
             main.start(stage);
         }
-
     }
 
-    public void render() {
+    public static void render() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         GameControl.getBackgroundEntities().forEach(entity -> entity.render(gc));
         GameControl.getItemEntities().forEach(entity -> entity.render(gc));

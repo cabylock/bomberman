@@ -56,10 +56,7 @@ public class NetworkSetupController {
       this.stage = stage;
    }
 
-   public void setMap(String mapName, int mapType) {
-      this.mapName = mapName;
-      this.mapType = mapType;
-   }
+  
 
    @FXML
    public void initialize() {
@@ -119,7 +116,7 @@ public class NetworkSetupController {
          // Save player name
          String playerName = playerNameField.getText().trim();
          if (!playerName.isEmpty()) {
-            Setting.PLAYER_NAME = playerName;
+            GameControl.getBomberEntities().get(Setting.ID).setName(playerName);
          }
 
          // First check if the port is available
@@ -153,7 +150,8 @@ public class NetworkSetupController {
                GameControl.setServer(server);
                // Only now start the game scene
                updateConnectionStatus("Server started!", "green", false);
-               startNetworkGame(Setting.SERVER_MODE);
+               Setting.GAME_MODE = Setting.SERVER_MODE;
+               startNetworkGame();
             });
          }, executorService);
 
@@ -190,11 +188,7 @@ public class NetworkSetupController {
          Setting.SERVER_PORT = port;
 
          // Save player name
-         String playerName = playerNameField.getText().trim();
-         if (!playerName.isEmpty()) {
-            Setting.PLAYER_NAME = playerName;
-         }
-
+         
          updateConnectionStatus("Connecting to server...", "orange", true);
          Util.logInfo("Attempting to connect to " + ipAddress + ":" + port);
 
@@ -209,7 +203,12 @@ public class NetworkSetupController {
                   GameControl.setClient(client);
 
                   updateConnectionStatus("Connected to server!", "green", false);
-                  startNetworkGame(Setting.CLIENT_MODE);
+                  Setting.GAME_MODE = Setting.CLIENT_MODE;
+                  startNetworkGame();   
+               
+
+                  
+
                } else {
                   // Don't return to menu, just show the error
                   String errorMessage = client.getLastError();
@@ -254,19 +253,17 @@ public class NetworkSetupController {
       }
    }
 
-   private void startNetworkGame(int networkMode) {
+   private void startNetworkGame() {
       // Clean up executor service
       executorService.shutdown();
 
       // Set the game mode before creating scene
-      Setting.GAME_MODE = networkMode;
+      
 
-      // Only call GameControl.start() for local setup (network already handled)
-      GameControl.start(networkMode);
+      GameControl.start();
 
       // Create the game with network mode
-      BombermanGame game = new BombermanGame(mapName, mapType);
-      game.createGameScene(stage);
+      BombermanGame.createGameScene(stage);
    }
 
    @FXML
@@ -284,7 +281,7 @@ public class NetworkSetupController {
          Parent root = loader.load();
 
          ModeController controller = loader.getController();
-         controller.setMap(mapName, mapType);
+         
          controller.setStage(stage);
 
          Scene scene = new Scene(root);

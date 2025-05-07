@@ -29,11 +29,10 @@ public class PauseMenuController {
    @FXML
    private Button exitButton;
 
-   private BombermanGame game;
+   
    private StackPane overlay;
 
-   public void setGame(BombermanGame game) {
-      this.game = game;
+   public void setGame() {
 
       // Hide restart and next level buttons in client mode
       if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
@@ -57,7 +56,7 @@ public class PauseMenuController {
    private void handleResume() {
       if (overlay != null) {
          overlay.getChildren().clear();
-         game.resumeGame();
+         BombermanGame.resumeGame();
       }
    }
 
@@ -73,7 +72,7 @@ public class PauseMenuController {
    private void handleNextLevel() {
       if (overlay != null) {
          overlay.getChildren().clear();
-         game.nextLevel();
+         BombermanGame.nextLevel();
       }
    }
 
@@ -81,15 +80,13 @@ public class PauseMenuController {
    private void handleRestart() {
       if (overlay != null) {
          overlay.getChildren().clear();
-         game.restartGame();
+         BombermanGame.restartGame();
       }
    }
 
    @FXML
    private void handleReturnToMenu() {
-      if (game != null) {
-         game.returnToMenu();
-      }
+      BombermanGame.returnToMenu();
    }
 
    @FXML

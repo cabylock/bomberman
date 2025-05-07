@@ -28,37 +28,18 @@ public class MapEntity {
 
    private static char[][] mapData;
 
-   public static int getWidth() {
-      return width;
-   }
+ 
 
-   public static int getLevel() {
-      return level;
-   }
+  
 
-   public static int getHeight() {
-      return height;
-   }
+   public static void readMap(String name) {
 
-   public char[][] getMap() {
-      return mapData;
-   }
+      String filePath = Setting.MAP_TYPE == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name;
+      
 
-   public static void readMap(int level, int type) {
-      String filePath = "";
-      if (type == Setting.DEFAULT_MAP) {
-
-         filePath = "/default_levels/Level" + level + ".txt";
-      } else if (type == Setting.CUSTOM_MAP) {
-         filePath = "/custom_levels/Level" + level + ".txt";
-      }
-      readMap(filePath);
-   }
-
-   public static void readMap(String filePath) {
       try {
          // Try to load the resource
-         InputStream is = MapEntity.class.getResourceAsStream(filePath);
+         InputStream is = MapEntity.class.getResourceAsStream(filePath+".txt");
 
          // Check if resource was found
          if (is == null) {
@@ -75,8 +56,11 @@ public class MapEntity {
 
          // Now parse the values
          level = Integer.parseInt(info[0]);
+         Setting.MAP_LEVEl = level;
          height = Integer.parseInt(info[1]);
+         GameControl.setHeight(height);
          width = Integer.parseInt(info[2]);
+         GameControl.setWidth(width);
          mapData = new char[height][width];
 
          // Rest of your code remains the same
@@ -94,10 +78,10 @@ public class MapEntity {
       }
    }
 
-   public static void loadMap(String name, int mapType) {
+   public static void loadMap(String name) {
 
-      String filePath = mapType == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name;
-      readMap(filePath);
+      
+      readMap(name);
 
       for (int i = 0; i < height; i++) {
          for (int j = 0; j < width; j++) {
@@ -118,7 +102,7 @@ public class MapEntity {
             } else if (c == 'p') {
                Bomber player = new Bomber(j, i, Sprite.PLAYER1_RIGHT_0, Setting.BOMBER1, "Player 1");
                GameControl.addEntity(player);
-            } else if (c == 'q' && Setting.PLAYER_NUM == 2) {
+            } else if (c == 'q' && Setting.GAME_MODE == Setting.MULTI_MODE) {
                Bomber player = new Bomber(j, i, Sprite.PLAYER2_RIGHT_0, Setting.BOMBER2, "Player 2");
                GameControl.addEntity(player);
             } else if (c == '1') {
@@ -183,9 +167,6 @@ public class MapEntity {
 
    }
 
-   public static void loadMap(int level) {
-      loadMap("Level" + level + ".txt", Setting.DEFAULT_MAP);
-
-   }
+   
 
 }

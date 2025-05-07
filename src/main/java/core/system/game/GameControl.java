@@ -20,12 +20,11 @@ import core.util.Util;
 
 public class GameControl {
 
-   private static String mapName;
-   private static int mapType;
-   private static int level;
-   private static int gameMode;
-
+   
+  
    private static float deltaTime;
+   private static int width;
+   private static int height;
 
    private static GameServer server;
    private static GameClient client;
@@ -50,23 +49,24 @@ public class GameControl {
       return client.connect();
    }
 
-   public static boolean start(int gameMode) {
-      GameControl.gameMode = gameMode;
-      bomberEntities.get(Setting.ID).setName(Setting.PLAYER_NAME);
-      if (gameMode == Setting.SERVER_MODE) return InitializeServer();
-      if (gameMode == Setting.CLIENT_MODE) return InitializeClient();
+   public static boolean start() {
+      
+      if (Setting.GAME_MODE == Setting.SERVER_MODE)
+         return InitializeServer();
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE)
+         return InitializeClient();
       return true;
    }
 
    public static void stop() {
-      if (gameMode == Setting.SERVER_MODE && server != null) {
+      if (Setting.GAME_MODE == Setting.SERVER_MODE && server != null) {
          server.stopServer();
          server = null;
-      } else if (gameMode == Setting.CLIENT_MODE && client != null) {
+      } else if (Setting.GAME_MODE == Setting.CLIENT_MODE && client != null) {
          client.disconnect();
          client = null;
       }
-      gameMode = Setting.SINGLE_MODE;
+      Setting.GAME_MODE = Setting.SINGLE_MODE;
       clear();
       System.gc();
    }
@@ -85,12 +85,17 @@ public class GameControl {
       GameControl.deltaTime = deltaTime;
       handleInput(deltaTime);
 
-      if (gameMode == Setting.CLIENT_MODE) return;
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE)
+         return;
 
-      for (EnemyEntity entity : enemyEntities) entity.update(deltaTime);
-      for (StaticEntity entity : staticEntities) entity.update(deltaTime);
-      for (ItemEntity entity : itemEntities) entity.update(deltaTime);
-      for (Bomber entity : bomberEntities.values()) entity.update(deltaTime);
+      for (EnemyEntity entity : enemyEntities)
+         entity.update(deltaTime);
+      for (StaticEntity entity : staticEntities)
+         entity.update(deltaTime);
+      for (ItemEntity entity : itemEntities)
+         entity.update(deltaTime);
+      for (Bomber entity : bomberEntities.values())
+         entity.update(deltaTime);
 
       // Check if all players are dead, then stop music and play death sound
       if (!deathHandled) {
@@ -107,20 +112,21 @@ public class GameControl {
       }
 
       // Fix: Only call broadcastGameState if server is not null
-      if (gameMode == Setting.SERVER_MODE && server != null) {
+      if (Setting.GAME_MODE == Setting.SERVER_MODE && server != null) {
          server.broadcastGameState();
       }
    }
 
    public static void handleInput(float deltaTime) {
       handlePlayerInput(Setting.BOMBER1, Setting.ID, deltaTime);
-      if (gameMode == Setting.MULTI_MODE) {
+      if (Setting.GAME_MODE == Setting.MULTI_MODE) {
          handlePlayerInput(Setting.BOMBER2, Setting.ID + 1, deltaTime);
       }
    }
 
    private static void handlePlayerInput(int playerType, int playerId, float deltaTime) {
-      if (!bomberEntities.containsKey(playerId)) return;
+      if (!bomberEntities.containsKey(playerId))
+         return;
 
       String command = "NULL";
 
@@ -136,7 +142,7 @@ public class GameControl {
          command = Setting.PLACE_BOMB;
       }
 
-      if (gameMode != Setting.CLIENT_MODE) {
+      if (Setting.GAME_MODE != Setting.CLIENT_MODE) {
          bomberEntities.get(playerId).control(command, deltaTime);
       } else {
          // Fix: Only send command if client is not null
@@ -150,49 +156,29 @@ public class GameControl {
       return deltaTime;
    }
 
-   public static int getWidth() {
-      return MapEntity.getWidth();
-   }
+  
 
-   public static int getLevel() {
-      return MapEntity.getLevel();
-   }
+   public static void loadMap(String name) {
 
-   public static int getHeight() {
-      return MapEntity.getHeight();
-   }
-
-   public static void loadMap(int level) {
-      clear();
-      GameControl.level = level;
-      mapName = "Level" + level + ".txt";
-      mapType = Setting.DEFAULT_MAP;
-      MapEntity.loadMap(level);
-   }
-
-   public static void loadMap(String mapName, int mapType) {
-      clear();
-      GameControl.mapName = mapName;
-      GameControl.mapType = mapType;
-      MapEntity.loadMap(mapName, mapType);
+      MapEntity.loadMap(name);
    }
 
    public static void nextLevel() {
-      if (mapType == Setting.CUSTOM_MAP) {
+      if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
          Util.logInfo("Please select another map or move to default map");
          return;
       }
-      if (level == Setting.MAX_LEVEL) {
+      if (Setting.MAP_LEVEl == Setting.MAX_LEVEL) {
          Util.showImage("/textures/win2.png", BombermanGame.getGameRoot());
          return;
       }
-      level++;
-      loadMap(level);
+      Setting.MAP_LEVEl++;
+      loadMap("Level" + Setting.MAP_LEVEl);
    }
 
    public static void resetGame() {
       clear();
-      MapEntity.loadMap(mapName, mapType);
+      loadMap("Level" + Setting.MAP_LEVEl);
    }
 
    public static void clear() {
@@ -239,6 +225,21 @@ public class GameControl {
 
    public static void setItemEntities(List<ItemEntity> entities) {
       itemEntities = new CopyOnWriteArrayList<>(entities);
+   }
+
+   public static void setHeight(int height) {
+      GameControl.height = height;
+   }
+
+   public static void setWidth(int width) {
+
+      GameControl.width = width; 
+   }
+   public static int getHeight() {
+      return height;
+   }
+   public static int getWidth() {
+      return width;
    }
 
    public static void removeEntity(Entity entity) {

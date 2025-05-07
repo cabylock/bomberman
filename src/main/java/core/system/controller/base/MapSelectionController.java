@@ -1,8 +1,11 @@
 package core.system.controller.base;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 
+import core.system.game.GameControl;
 import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,13 +18,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-
 public class MapSelectionController {
     @FXML
     private ListView<String> defaultMapList;
     @FXML
     private ListView<String> customMapList;
     private Stage stage;
+    private static final String DEFAULT_MAPS_DIR = "src/main/resources/default_levels";
+    private static final String CUSTOM_MAPS_DIR = "src/main/resources/custom_levels";
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -30,27 +34,10 @@ public class MapSelectionController {
     public void loadMaps() {
         defaultMapList.getItems().clear();
         customMapList.getItems().clear();
-        // Load default maps
-        File defaultMapsDir = new File("src/main/resources/default_levels");
-        if (defaultMapsDir.exists() && defaultMapsDir.isDirectory()) {
-            File[] mapFiles = defaultMapsDir.listFiles((_, name) -> name.endsWith(".txt"));
-            if (mapFiles != null) {
-                for (File mapFile : mapFiles) {
-                    defaultMapList.getItems().add(mapFile.getName().replace(".txt", ""));
-                }
-            }
-        }
 
-        // Load custom maps
-        File customMapsDir = new File("src/main/resources/custom_levels");
-        if (customMapsDir.exists() && customMapsDir.isDirectory()) {
-            File[] mapFiles = customMapsDir.listFiles((_, name) -> name.endsWith(".txt"));
-            if (mapFiles != null) {
-                for (File mapFile : mapFiles) {
-                    customMapList.getItems().add(mapFile.getName().replace(".txt", ""));
-                }
-            }
-        }
+        // Load maps from directories
+        loadMapsFromDirectory(DEFAULT_MAPS_DIR, defaultMapList);
+        loadMapsFromDirectory(CUSTOM_MAPS_DIR, customMapList);
 
         // Set up selection listeners
         defaultMapList.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> {
@@ -66,18 +53,43 @@ public class MapSelectionController {
         });
     }
 
+    /**
+     * Helper method to load maps from a directory into a ListView
+     * 
+     * @param directoryPath Path to map directory
+     * @param listView      ListView to populate with map names
+     */
+    private void loadMapsFromDirectory(String directoryPath, ListView<String> listView) {
+        File mapsDir = new File(directoryPath);
+        if (mapsDir.exists() && mapsDir.isDirectory()) {
+            File[] mapFiles = mapsDir.listFiles((_, name) -> name.endsWith(".txt"));
+            if (mapFiles != null) {
+                // Sort the files alphabetically
+                Arrays.sort(mapFiles, Comparator.comparing(File::getName));
+
+                for (File mapFile : mapFiles) {
+                    listView.getItems().add(mapFile.getName().replace(".txt", ""));
+                }
+            }
+        } else {
+            System.out.println("Warning: Directory not found: " + directoryPath);
+        }
+    }
+
     @FXML
     private void handleKeyPress(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             if (event.getSource() == defaultMapList) {
                 String selectedMap = defaultMapList.getSelectionModel().getSelectedItem();
                 if (selectedMap != null) {
-                    startGameWithMap(selectedMap, MainController.DEFAULT);
+                    Setting.MAP_TYPE = Setting.DEFAULT_MAP;
+                    startGameWithMap(selectedMap);
                 }
             } else if (event.getSource() == customMapList) {
                 String selectedMap = customMapList.getSelectionModel().getSelectedItem();
                 if (selectedMap != null) {
-                    startGameWithMap(selectedMap, MainController.CUSTOM);
+                    Setting.MAP_TYPE = Setting.CUSTOM_MAP;
+                    startGameWithMap(selectedMap);
                 }
             }
         }
@@ -108,7 +120,6 @@ public class MapSelectionController {
 
             dialogStage.showAndWait();
 
-            
             loadMaps();
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,14 +128,16 @@ public class MapSelectionController {
 
     @FXML
     private void playSelectedMap() {
-       
+
         String selectedDefaultMap = defaultMapList.getSelectionModel().getSelectedItem();
         String selectedCustomMap = customMapList.getSelectionModel().getSelectedItem();
 
         if (selectedDefaultMap != null) {
-            startGameWithMap(selectedDefaultMap, MainController.DEFAULT);
+            Setting.MAP_TYPE = Setting.DEFAULT_MAP;
+            startGameWithMap(selectedDefaultMap);
         } else if (selectedCustomMap != null) {
-            startGameWithMap(selectedCustomMap, MainController.CUSTOM);
+            Setting.MAP_TYPE = Setting.CUSTOM_MAP;
+            startGameWithMap(selectedCustomMap);
         } else {
             showAlert("No Map Selected", "Please select a map to play.", null);
         }
@@ -160,7 +173,7 @@ public class MapSelectionController {
                     "Are you sure you want to delete " + selectedCustomMap + "?",
                     "This action cannot be undone.");
             if (confirmed) {
-                deleteMap(selectedCustomMap, MainController.CUSTOM);
+                deleteMap(selectedCustomMap);
                 loadMaps(); // Reload maps to refresh the list
             }
         } else {
@@ -168,30 +181,27 @@ public class MapSelectionController {
         }
     }
 
-    private void startGameWithMap(String mapName, int mapType) {
+    private void startGameWithMap(String mapName) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
             Parent root = loader.load();
 
             ModeController modeController = loader.getController();
             modeController.setStage(stage);
-            modeController.setMap(mapName+".txt", mapType);
+            modeController.setMapName(mapName); // Pass the map name to ModeController
 
             Scene scene = new Scene(root, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
             stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 
-    private void deleteMap(String mapName, int mapType) {
+    private void deleteMap(String mapName) {
         try {
-            mapName += ".txt";
-            String dirPath = mapType == MainController.DEFAULT ? "src/main/resources/default_levels"
-                    : "src/main/resources/custom_levels";
-
-            File mapFile = new File(dirPath, mapName);
+            String dirPath = "src/main/resources/custom_levels";
+            File mapFile = new File(dirPath, mapName + ".txt");
             if (mapFile.exists()) {
                 boolean deleted = mapFile.delete();
                 if (!deleted) {

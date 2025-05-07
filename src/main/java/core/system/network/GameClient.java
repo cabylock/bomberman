@@ -62,12 +62,7 @@ public class GameClient extends Thread {
                Setting.ID = id;
                Util.logInfo("Joined game as Player #" + id);
 
-               // Send player name immediately after getting ID
-               out.writeUTF("PLAYER_NAME");
-               out.writeUTF(Setting.PLAYER_NAME);
-               out.writeInt(id);
-               out.flush();
-               Util.logInfo("Sent player name: " + Setting.PLAYER_NAME);
+             
 
                // Wait a brief moment to ensure the server processes the player name
                Thread.sleep(100);
