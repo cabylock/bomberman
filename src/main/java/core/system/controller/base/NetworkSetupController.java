@@ -1,7 +1,6 @@
 package core.system.controller.base;
 
 import javafx.scene.control.Label;
-
 import core.system.game.BombermanGame;
 import core.system.setting.Setting;
 import core.util.Util;

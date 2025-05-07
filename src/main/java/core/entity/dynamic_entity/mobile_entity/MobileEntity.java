@@ -12,13 +12,13 @@ import core.sound.Sound;
 
 public class MobileEntity extends DynamicEntity {
 
-   public static final int RIGHT_MOVING = 0;
-   public static final int LEFT_MOVING = 1;
-   public static final int UP_MOVING = 2;
-   public static final int DOWN_MOVING = 3;
+   public static transient final int RIGHT_MOVING = 0;
+   public static transient final int LEFT_MOVING = 1;
+   public static transient final int UP_MOVING = 2;
+   public static transient final int DOWN_MOVING = 3;
 
-   public static final int DEAD = 4;
-   public static final int ANIMATION_NULL = 5;
+   public static transient final int DEAD = 4;
+   public static transient final int ANIMATION_NULL = 5;
 
    protected transient boolean moving = false;
    protected transient boolean flamePass = false;
