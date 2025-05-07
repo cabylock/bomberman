@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import core.sound.Sound;
 import javafx.scene.input.KeyCode;
+import java.util.Map;
 
 
 public class Bomber extends MobileEntity {
@@ -35,6 +36,8 @@ public class Bomber extends MobileEntity {
    private transient int flameSize = 1;
    private transient int typePlayer;
    private String playerName; // Store player's name
+   private transient boolean permanentFreeze = false;
+   
 
    private int initialX;
    private int initialY;
@@ -138,6 +141,10 @@ public class Bomber extends MobileEntity {
    }
 
    public void control(String command, float deltaTime) {
+      if (permanentFreeze){
+         moving = false;
+         return;
+      }
       if (command.equals(MOVE_DOWN)) {
          move(DOWN_MOVING, speed, deltaTime);
       } else if (command.equals(MOVE_UP)) {
@@ -260,6 +267,15 @@ public class Bomber extends MobileEntity {
          brickPassTime = ITEM_DURATION;
       }
    }
+   
+   public void setPermanentFreeze(boolean freeze) {
+      this.permanentFreeze = freeze;
+   }
+
+   public boolean isPermanentFreeze() {
+      return permanentFreeze;
+   }
+
    public int getHealth(){
       return health;
    }
@@ -317,6 +333,12 @@ public class Bomber extends MobileEntity {
 
    public void setPlayerName(String playerName) {
       this.playerName = playerName;
+   }
+   public static boolean isGameOver() {
+      Map<Integer,Bomber> map = GameControl.getBomberEntitiesMap();
+      if (map.isEmpty()) return false;
+      return map.values().stream()
+                .allMatch(b -> b.getHealth() <= 0 || b.isDying());
    }
 
 }

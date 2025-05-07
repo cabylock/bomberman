@@ -8,6 +8,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 import java.util.Random;
+import javafx.scene.control.Button;
+import javafx.geometry.Pos;
+import javafx.stage.Modality;
 
 public class Util {
 
@@ -109,6 +112,85 @@ public class Util {
 
    }
    
+
+
+
+
+   public static void showOverlayWithButton(String filePath,
+         StackPane gameRoot,
+         String buttonText,
+         Runnable onClick) {
+      // Kiểm tra nếu overlay đã tồn tại thì không thêm nữa
+      for (javafx.scene.Node node : gameRoot.getChildren()) {
+         if ("levelOverlay".equals(node.getId())) {
+            return; // Đã có overlay → không làm gì thêm
+         }
+      }
+
+      // Tạo ảnh overlay
+      Image image = new Image(Util.class.getResourceAsStream(filePath));
+      ImageView imageView = new ImageView(image);
+      imageView.setPreserveRatio(true);
+      imageView.setFitHeight(gameRoot.getHeight() * 0.5);
+
+      // Tạo nút Next
+      Button nextButton = new Button(buttonText);
+      nextButton.setStyle("-fx-font-size:18px; -fx-background-color:#44c767; -fx-text-fill:white;");
+
+      // Tạo overlay chứa ảnh và nút
+      StackPane overlay = new StackPane(imageView, nextButton);
+      overlay.setId("levelOverlay"); // đánh dấu để tránh trùng lặp
+      overlay.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
+      overlay.setPrefSize(gameRoot.getWidth(), gameRoot.getHeight());
+      StackPane.setAlignment(nextButton, Pos.BOTTOM_CENTER);
+
+      // Hành động khi ấn nút
+      nextButton.setOnAction(e -> {
+         gameRoot.getChildren().remove(overlay);
+         if (onClick != null)
+            onClick.run();
+      });
+
+      // Thêm overlay vào gameRoot
+      gameRoot.getChildren().add(overlay);
+   }
    
+   public static void showGameOverOverlay(String filePath,
+         StackPane gameRoot,
+         Runnable onPlayAgain) {
+      // Tránh tạo nhiều overlay trùng
+      for (javafx.scene.Node node : gameRoot.getChildren()) {
+         if ("gameOverOverlay".equals(node.getId())) {
+            return;
+         }
+      }
+
+      // Tạo ảnh Game Over
+      Image image = new Image(Util.class.getResourceAsStream(filePath));
+      ImageView imageView = new ImageView(image);
+      imageView.setPreserveRatio(true);
+      imageView.setFitHeight(gameRoot.getHeight() * 0.5);
+
+      // Nút Play Again
+      Button playAgainButton = new Button("Play Again");
+      playAgainButton.setStyle("-fx-font-size:18px; -fx-background-color:#e74c3c; -fx-text-fill:white;");
+
+      // Overlay chứa ảnh và nút
+      StackPane overlay = new StackPane(imageView, playAgainButton);
+      overlay.setId("gameOverOverlay");
+      overlay.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
+      overlay.setPrefSize(gameRoot.getWidth(), gameRoot.getHeight());
+      StackPane.setAlignment(playAgainButton, Pos.BOTTOM_CENTER);
+
+      // Hành động khi click
+      playAgainButton.setOnAction(e -> {
+         gameRoot.getChildren().remove(overlay);
+         if (onPlayAgain != null)
+            onPlayAgain.run();
+      });
+
+      // Thêm overlay vào game
+      gameRoot.getChildren().add(overlay);
+   }
 
 }

@@ -34,8 +34,9 @@ public class GameControl {
    private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<>();
+   private static boolean deathOverlayShown = false;
 
-   private static boolean deathHandled = false; // NEW
+   
 
    public static boolean InitializeServer() {
       server = new GameServer();
@@ -98,19 +99,15 @@ public class GameControl {
          entity.update(deltaTime);
 
       // Check if all players are dead, then stop music and play death sound
-      if (!deathHandled) {
-         long total = bomberEntities.size();
-         long deadCount = bomberEntities.values().stream()
-               .filter(b -> b.getHealth() <= 0 || b.isDying())
-               .count();
-
-         if (total > 0 && deadCount == total) {
-            Sound.stopMusic();
-            Sound.playEffect("game_over");
-            deathHandled = true;
-         }
-      }
-
+      if (Bomber.isGameOver() && !deathOverlayShown) {
+         Sound.stopMusic();
+         Sound.playEffect("game_over");
+         Util.showGameOverOverlay("/textures/game_over.png", BombermanGame.getGameRoot(), () -> {
+         Setting.MAP_LEVEl = 1;
+         resetGame();
+      });
+      deathOverlayShown = true;
+   }
       // Fix: Only call broadcastGameState if server is not null
       if (Setting.GAME_MODE == Setting.SERVER_MODE && server != null) {
          server.broadcastGameState();
@@ -164,25 +161,38 @@ public class GameControl {
    }
 
    public static void nextLevel() {
+
       if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
          Util.logInfo("Please select another map or move to default map");
          return;
       }
       if (Setting.MAP_LEVEl == Setting.MAX_LEVEL) {
-         Util.showImage("/textures/win2.png", BombermanGame.getGameRoot());
+         Util.showOverlayWithButton("/textures/win2.png", BombermanGame.getGameRoot(), "Play Again", () -> {
+            Setting.MAP_LEVEl = 1;
+            loadMap("Level" + Setting.MAP_LEVEl);
+            resetGame();
+         });
          return;
       }
-      Setting.MAP_LEVEl++;
-      loadMap("Level" + Setting.MAP_LEVEl);
+
+      Util.showOverlayWithButton("/textures/level_complete.jpg", BombermanGame.getGameRoot(), "Next Level", () -> {
+         Setting.MAP_LEVEl++;
+         resetGame();
+
+      });
    }
 
    public static void resetGame() {
+     
       clear();
+      BombermanGame.input.clear();
+      Sound.stopMusic();
+      Sound.playMusic("start_game", true);
       loadMap("Level" + Setting.MAP_LEVEl);
    }
 
    public static void clear() {
-      deathHandled = false;
+      deathOverlayShown = false;
       bomberEntities.forEach((_, b) -> b.resetBomber());
       staticEntities.clear();
       enemyEntities.clear();
