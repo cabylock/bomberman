@@ -1,7 +1,7 @@
 package core.system.setting;
 
 import core.util.Util;
-import javafx.scene.input.KeyCode;
+
 
 public class Setting {
 
@@ -36,28 +36,8 @@ public class Setting {
       public static final float FPS_MAX = 240;
       public static final float FRAME_TIME_NS = 1.0f / FPS_MAX;
 
-      public static final int BOMBER1 = 0;
-      public static final int BOMBER2 = 1;
+    
 
-      public static final String MOVE_UP = "UP";
-      public static final String MOVE_DOWN = "DOWN";
-      public static final String MOVE_LEFT = "LEFT";
-      public static final String MOVE_RIGHT = "RIGHT";
-      public static final String PLACE_BOMB = "BOMB";
 
-      public static final KeyCode[][] BOMBER_KEY_CONTROLS = {
-
-                  { KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP, KeyCode.DOWN, KeyCode.NUMPAD1 },
-
-                  { KeyCode.D, KeyCode.A, KeyCode.W, KeyCode.S, KeyCode.J }
-      };
-
-      public static final int RIGHT_MOVING = 0;
-      public static final int LEFT_MOVING = 1;
-      public static final int UP_MOVING = 2;
-      public static final int DOWN_MOVING = 3;
-      public static final int BOMB_PLACE = 4;
-      public static final int DEAD = 4;
-      public static final int ANIMATION_NULL = 5;
-
+      
 }

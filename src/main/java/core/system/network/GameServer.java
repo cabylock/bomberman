@@ -229,7 +229,7 @@ public class GameServer extends Thread {
             Util.logInfo("Received player name from client: " + playerName + " (ID: " + playerId + ")");
 
             // Create a new bomber for this client with the correct player name
-            Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1, playerName);
+            Bomber clientBomber = new Bomber(1, 1, Bomber.BOMBER1, Bomber.BOMBER1, playerName);
             clientBomber.setId(id);
             GameControl.addEntity(clientBomber);
 

@@ -8,11 +8,17 @@ import core.entity.dynamic_entity.static_entity.Bomb;
 import core.entity.dynamic_entity.static_entity.Brick;
 import core.graphics.Sprite;
 import core.system.game.GameControl;
-import core.system.setting.Setting;
 import core.sound.Sound;
-import core.util.Util;
 
 public class MobileEntity extends DynamicEntity {
+
+   public static final int RIGHT_MOVING = 0;
+   public static final int LEFT_MOVING = 1;
+   public static final int UP_MOVING = 2;
+   public static final int DOWN_MOVING = 3;
+
+   public static final int DEAD = 4;
+   public static final int ANIMATION_NULL = 5;
 
    protected transient boolean moving = false;
    protected transient boolean flamePass = false;
@@ -41,7 +47,7 @@ public class MobileEntity extends DynamicEntity {
    protected transient float blinkTimer = 0f;
    protected transient final float BLINK_INTERVAL = 0.1f; // nháy mỗi 0.1s
 
-   protected transient int direction = Setting.DOWN_MOVING;
+   protected transient int direction = DOWN_MOVING;
 
    protected transient final int ALIGN_TOLERANCE = 16;
 
@@ -71,16 +77,16 @@ public class MobileEntity extends DynamicEntity {
       float deltaX = 0, deltaY = 0;
 
       switch (direction) {
-         case Setting.RIGHT_MOVING:
+         case RIGHT_MOVING:
             deltaX = speed;
             break;
-         case Setting.LEFT_MOVING:
+         case LEFT_MOVING:
             deltaX = -speed;
             break;
-         case Setting.DOWN_MOVING:
+         case DOWN_MOVING:
             deltaY = speed;
             break;
-         case Setting.UP_MOVING:
+         case UP_MOVING:
             deltaY = -speed;
             break;
       }
@@ -167,7 +173,7 @@ public class MobileEntity extends DynamicEntity {
          blinkTimer = 0f;
          moving = false;
          animationStep = 0;
-         direction = Setting.ANIMATION_NULL;
+         direction = ANIMATION_NULL;
 
       }
    }
@@ -190,7 +196,7 @@ public class MobileEntity extends DynamicEntity {
       if (dying) {
          deadAnimationTimer += deltaTime;
          if (deadAnimationTimer >= DEAD_ANIMATION_TIME) {
-            int max = imageIds[Setting.DEAD].length - 1;
+            int max = imageIds[DEAD].length - 1;
             if (animationStep < max) {
                animationStep++;
             } else {
@@ -199,7 +205,7 @@ public class MobileEntity extends DynamicEntity {
             }
             deadAnimationTimer = 0;
          }
-         imageId = imageIds[Setting.DEAD][animationStep];
+         imageId = imageIds[DEAD][animationStep];
          return;
       }
 
@@ -210,8 +216,8 @@ public class MobileEntity extends DynamicEntity {
             int frames = imageIds[direction].length;
             imageId = imageIds[direction][animationStep % frames];
          } else {
-            int frames = imageIds[Setting.ANIMATION_NULL].length;
-            imageId = imageIds[Setting.ANIMATION_NULL][animationStep % frames];
+            int frames = imageIds[ANIMATION_NULL].length;
+            imageId = imageIds[ANIMATION_NULL][animationStep % frames];
          }
          return;
       }
@@ -234,7 +240,7 @@ public class MobileEntity extends DynamicEntity {
    public void dead() {
 
       dying = true;
-      direction = Setting.DEAD;
+      direction = DEAD;
       moving = false;
       animationStep = 0;
       deadAnimationTimer = 0;

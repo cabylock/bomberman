@@ -3,7 +3,6 @@ package core.entity.dynamic_entity.mobile_entity.enemy_entity;
 import core.entity.dynamic_entity.mobile_entity.MobileEntity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.system.game.GameControl;
-import core.system.setting.Setting;
 import core.util.Util;
 import core.entity.background_entity.BackgroundEntity;
 import core.entity.background_entity.Wall;
@@ -335,13 +334,13 @@ public class EnemyEntity extends MobileEntity {
                 // Only change direction when at a tile boundary to prevent zigzagging
                 if (Math.abs(x % Sprite.DEFAULT_SIZE) < 2 && Math.abs(y % Sprite.DEFAULT_SIZE) < 2) {
                     if (nextNode.x > getXTile()) {
-                        direction = Setting.RIGHT_MOVING;
+                        direction = RIGHT_MOVING;
                     } else if (nextNode.x < getXTile()) {
-                        direction = Setting.LEFT_MOVING;
+                        direction = LEFT_MOVING;
                     } else if (nextNode.y > getYTile()) {
-                        direction = Setting.DOWN_MOVING;
+                        direction = DOWN_MOVING;
                     } else if (nextNode.y < getYTile()) {
-                        direction = Setting.UP_MOVING;
+                        direction = UP_MOVING;
                     }
                 }
 

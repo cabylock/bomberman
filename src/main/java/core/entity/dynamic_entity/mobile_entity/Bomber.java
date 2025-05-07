@@ -3,16 +3,33 @@ package core.entity.dynamic_entity.mobile_entity;
 import core.graphics.Sprite;
 import core.system.game.BombermanGame;
 import core.system.game.GameControl;
-import core.system.setting.Setting;
 import core.entity.dynamic_entity.static_entity.Bomb;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import core.sound.Sound;
+import javafx.scene.input.KeyCode;
 
 
 public class Bomber extends MobileEntity {
+
+   public static final int BOMBER1 = 0;
+   public static final int BOMBER2 = 1;
+
+   public static final String MOVE_UP = "UP";
+   public static final String MOVE_DOWN = "DOWN";
+   public static final String MOVE_LEFT = "LEFT";
+   public static final String MOVE_RIGHT = "RIGHT";
+   public static final String PLACE_BOMB = "BOMB";
+   public static final int BOMB_PLACE = 4;
+
+   public static final KeyCode[][] BOMBER_KEY_CONTROLS = {
+
+         { KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP, KeyCode.DOWN, KeyCode.NUMPAD1 },
+
+         { KeyCode.D, KeyCode.A, KeyCode.W, KeyCode.S, KeyCode.J }
+   };
 
    private transient int speed = 25;
    private transient int flameSize = 1;
@@ -36,43 +53,43 @@ public class Bomber extends MobileEntity {
       this.initialY = y*Sprite.DEFAULT_SIZE;
       this.playerName = playerName;
       this.typePlayer = typePlayer;
-      if (typePlayer == Setting.BOMBER2) {
+      if (typePlayer == BOMBER2) {
          id++;
       }
       imageIds = new int[6][]; // 0 → UP, 1 → DOWN, 2 → LEFT, 3 → RIGHT, 4 → DEAD, 5 → ANIMATION_NULL
 
-      if (typePlayer == Setting.BOMBER1) {
-         imageIds[Setting.RIGHT_MOVING] = new int[] {
+      if (typePlayer == BOMBER1) {
+         imageIds[RIGHT_MOVING] = new int[] {
                Sprite.PLAYER1_RIGHT_0, Sprite.PLAYER1_RIGHT_1, Sprite.PLAYER1_RIGHT_2
          };
-         imageIds[Setting.LEFT_MOVING] = new int[] {
+         imageIds[LEFT_MOVING] = new int[] {
                Sprite.PLAYER1_LEFT_0, Sprite.PLAYER1_LEFT_1, Sprite.PLAYER1_LEFT_2
          };
-         imageIds[Setting.UP_MOVING] = new int[] {
+         imageIds[UP_MOVING] = new int[] {
                Sprite.PLAYER1_UP_0, Sprite.PLAYER1_UP_1, Sprite.PLAYER1_UP_2
          };
-         imageIds[Setting.DOWN_MOVING] = new int[] {
+         imageIds[DOWN_MOVING] = new int[] {
                Sprite.PLAYER1_DOWN_0, Sprite.PLAYER1_DOWN_1, Sprite.PLAYER1_DOWN_2
          };
-         imageIds[Setting.DEAD] = new int[] {
+         imageIds[DEAD] = new int[] {
                Sprite.PLAYER1_DEAD_0, Sprite.PLAYER1_DEAD_1, Sprite.PLAYER1_DEAD_2,
                Sprite.PLAYER1_DEAD_3, Sprite.PLAYER1_DEAD_4, Sprite.PLAYER1_DEAD_5,
                Sprite.PLAYER1_DEAD_6, Sprite.PLAYER1_DEAD_7
          };
       } else {
-         imageIds[Setting.RIGHT_MOVING] = new int[] {
+         imageIds[RIGHT_MOVING] = new int[] {
                Sprite.PLAYER2_RIGHT_0, Sprite.PLAYER2_RIGHT_1, Sprite.PLAYER2_RIGHT_2
          };
-         imageIds[Setting.LEFT_MOVING] = new int[] {
+         imageIds[LEFT_MOVING] = new int[] {
                Sprite.PLAYER2_LEFT_0, Sprite.PLAYER2_LEFT_1, Sprite.PLAYER2_LEFT_2
          };
-         imageIds[Setting.UP_MOVING] = new int[] {
+         imageIds[UP_MOVING] = new int[] {
                Sprite.PLAYER2_UP_0, Sprite.PLAYER2_UP_1, Sprite.PLAYER2_UP_2
          };
-         imageIds[Setting.DOWN_MOVING] = new int[] {
+         imageIds[DOWN_MOVING] = new int[] {
                Sprite.PLAYER2_DOWN_0, Sprite.PLAYER2_DOWN_1, Sprite.PLAYER2_DOWN_2
          };
-         imageIds[Setting.DEAD] = new int[] {
+         imageIds[DEAD] = new int[] {
                Sprite.PLAYER2_DEAD_0, Sprite.PLAYER2_DEAD_1, Sprite.PLAYER2_DEAD_2,
                Sprite.PLAYER2_DEAD_3, Sprite.PLAYER2_DEAD_4, Sprite.PLAYER2_DEAD_5,
                Sprite.PLAYER2_DEAD_6, Sprite.PLAYER2_DEAD_7
@@ -80,7 +97,7 @@ public class Bomber extends MobileEntity {
       }
 
       // ANIMATION_NULL (dùng để "ẩn" khi invincible)
-      imageIds[Setting.ANIMATION_NULL] = new int[] {
+      imageIds[ANIMATION_NULL] = new int[] {
             Sprite.ANIMATION_NULL, Sprite.ANIMATION_NULL, Sprite.ANIMATION_NULL
       };
    }
@@ -121,15 +138,15 @@ public class Bomber extends MobileEntity {
    }
 
    public void control(String command, float deltaTime) {
-      if (command.equals(Setting.MOVE_DOWN)) {
-         move(Setting.DOWN_MOVING, speed, deltaTime);
-      } else if (command.equals(Setting.MOVE_UP)) {
-         move(Setting.UP_MOVING, speed, deltaTime);
-      } else if (command.equals(Setting.MOVE_LEFT)) {
-         move(Setting.LEFT_MOVING, speed, deltaTime);
-      } else if (command.equals(Setting.MOVE_RIGHT)) {
-         move(Setting.RIGHT_MOVING, speed, deltaTime);
-      } else if (command.equals(Setting.PLACE_BOMB)) {
+      if (command.equals(MOVE_DOWN)) {
+         move(DOWN_MOVING, speed, deltaTime);
+      } else if (command.equals(MOVE_UP)) {
+         move(UP_MOVING, speed, deltaTime);
+      } else if (command.equals(MOVE_LEFT)) {
+         move(LEFT_MOVING, speed, deltaTime);
+      } else if (command.equals(MOVE_RIGHT)) {
+         move(RIGHT_MOVING, speed, deltaTime);
+      } else if (command.equals(PLACE_BOMB)) {
          placeBomb();
       } else {
          moving = false;
@@ -139,7 +156,7 @@ public class Bomber extends MobileEntity {
    private void placeBomb() {
       Sound.playEffect("bomb_set");
       
-      BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.BOMB_PLACE]);
+      BombermanGame.input.remove(BOMBER_KEY_CONTROLS[typePlayer][BOMB_PLACE]);
       if (bombCountMax == 0) {
          return;
       }
@@ -148,7 +165,7 @@ public class Bomber extends MobileEntity {
       int bombY = this.getYTile();
 
       // Sử dụng sprite bomb phù hợp với loại player
-      int bombSprite = (typePlayer == Setting.BOMBER1) ? Sprite.PLAYER1_BOMB_0 : Sprite.PLAYER2_BOMB_0;
+      int bombSprite = (typePlayer == BOMBER1) ? Sprite.PLAYER1_BOMB_0 : Sprite.PLAYER2_BOMB_0;
       Bomb newBomb = new Bomb(bombX, bombY, bombSprite, flameSize, id);
       GameControl.addEntity(newBomb);
       bombCountMax--;

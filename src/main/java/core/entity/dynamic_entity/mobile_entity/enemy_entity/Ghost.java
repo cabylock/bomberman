@@ -1,7 +1,6 @@
 package core.entity.dynamic_entity.mobile_entity.enemy_entity;
 
 import core.system.game.GameControl;
-import core.system.setting.Setting;
 import core.util.Util;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.dynamic_entity.static_entity.Bomb;
@@ -39,19 +38,19 @@ public class Ghost extends EnemyEntity {
         // Khởi tạo imageIds
         imageIds = new int[5][]; // UP, DOWN, LEFT, RIGHT, DEAD
 
-        imageIds[Setting.UP_MOVING] = new int[] {
+        imageIds[UP_MOVING] = new int[] {
                 Sprite.GHOST_LEFT_0, Sprite.GHOST_LEFT_1, Sprite.GHOST_LEFT_2, Sprite.GHOST_LEFT_3
         };
-        imageIds[Setting.DOWN_MOVING] = new int[] {
+        imageIds[DOWN_MOVING] = new int[] {
                 Sprite.GHOST_RIGHT_0, Sprite.GHOST_RIGHT_1, Sprite.GHOST_RIGHT_2, Sprite.GHOST_RIGHT_3
         };
-        imageIds[Setting.LEFT_MOVING] = new int[] {
+        imageIds[LEFT_MOVING] = new int[] {
                 Sprite.GHOST_LEFT_0, Sprite.GHOST_LEFT_1, Sprite.GHOST_LEFT_2, Sprite.GHOST_LEFT_3
         };
-        imageIds[Setting.RIGHT_MOVING] = new int[] {
+        imageIds[RIGHT_MOVING] = new int[] {
                 Sprite.GHOST_RIGHT_0, Sprite.GHOST_RIGHT_1, Sprite.GHOST_RIGHT_2, Sprite.GHOST_RIGHT_3
         };
-        imageIds[Setting.DEAD] = new int[] {
+        imageIds[DEAD] = new int[] {
                 Sprite.GHOST_DEAD_0, Sprite.GHOST_DEAD_1, Sprite.GHOST_DEAD_2, Sprite.GHOST_DEAD_3, Sprite.GHOST_DEAD_4
         };
     }

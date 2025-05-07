@@ -1,5 +1,4 @@
 package core.entity.dynamic_entity.mobile_entity.enemy_entity;
-import core.system.setting.Setting;
 import core.util.Util;
 import core.graphics.Sprite;    
 
@@ -28,19 +27,19 @@ public class Minvo extends EnemyEntity {
         // Khởi tạo ảnh chuyển động
         imageIds = new int[5][]; // UP, DOWN, LEFT, RIGHT, DEAD
 
-        imageIds[Setting.UP_MOVING] = new int[] {
+        imageIds[UP_MOVING] = new int[] {
                 Sprite.MINVO_LEFT_0, Sprite.MINVO_LEFT_1, Sprite.MINVO_LEFT_2, Sprite.MINVO_LEFT_3
         };
-        imageIds[Setting.DOWN_MOVING] = new int[] {
+        imageIds[DOWN_MOVING] = new int[] {
                 Sprite.MINVO_RIGHT_0, Sprite.MINVO_RIGHT_1, Sprite.MINVO_RIGHT_2, Sprite.MINVO_RIGHT_3
         };
-        imageIds[Setting.LEFT_MOVING] = new int[] {
+        imageIds[LEFT_MOVING] = new int[] {
                 Sprite.MINVO_LEFT_0, Sprite.MINVO_LEFT_1, Sprite.MINVO_LEFT_2, Sprite.MINVO_LEFT_3
         };
-        imageIds[Setting.RIGHT_MOVING] = new int[] {
+        imageIds[RIGHT_MOVING] = new int[] {
                 Sprite.MINVO_RIGHT_0, Sprite.MINVO_RIGHT_1, Sprite.MINVO_RIGHT_2, Sprite.MINVO_RIGHT_3
         };
-        imageIds[Setting.DEAD] = new int[] {
+        imageIds[DEAD] = new int[] {
                 Sprite.MINVO_DEAD_0, Sprite.MINVO_DEAD_1, Sprite.MINVO_DEAD_2, Sprite.MINVO_DEAD_3, Sprite.MINVO_DEAD_4
         };
 

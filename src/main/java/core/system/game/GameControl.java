@@ -118,9 +118,9 @@ public class GameControl {
    }
 
    public static void handleInput(float deltaTime) {
-      handlePlayerInput(Setting.BOMBER1, Setting.ID, deltaTime);
+      handlePlayerInput(Bomber.BOMBER1, Setting.ID, deltaTime);
       if (Setting.GAME_MODE == Setting.MULTI_MODE) {
-         handlePlayerInput(Setting.BOMBER2, Setting.ID + 1, deltaTime);
+         handlePlayerInput(Bomber.BOMBER2, Setting.ID + 1, deltaTime);
       }
    }
 
@@ -130,16 +130,16 @@ public class GameControl {
 
       String command = "NULL";
 
-      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.UP_MOVING])) {
-         command = Setting.MOVE_UP;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.DOWN_MOVING])) {
-         command = Setting.MOVE_DOWN;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.LEFT_MOVING])) {
-         command = Setting.MOVE_LEFT;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.RIGHT_MOVING])) {
-         command = Setting.MOVE_RIGHT;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.BOMB_PLACE])) {
-         command = Setting.PLACE_BOMB;
+      if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.UP_MOVING])) {
+         command = Bomber.MOVE_UP;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.DOWN_MOVING])) {
+         command = Bomber.MOVE_DOWN;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.LEFT_MOVING])) {
+         command = Bomber.MOVE_LEFT;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.RIGHT_MOVING])) {
+         command = Bomber.MOVE_RIGHT;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.BOMB_PLACE])) {
+         command = Bomber.PLACE_BOMB;
       }
 
       if (Setting.GAME_MODE != Setting.CLIENT_MODE) {

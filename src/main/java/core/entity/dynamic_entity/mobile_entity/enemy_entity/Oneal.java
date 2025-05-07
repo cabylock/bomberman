@@ -1,6 +1,4 @@
 package core.entity.dynamic_entity.mobile_entity.enemy_entity;
-
-import core.system.setting.Setting;
 import core.util.Util;
 import core.graphics.Sprite;
 
@@ -26,21 +24,21 @@ public class Oneal extends EnemyEntity {
         imageIds = new int[5][];
 
         // UP, DOWN, LEFT, RIGHT each with 4 frames
-        imageIds[Setting.UP_MOVING] = new int[] {
+        imageIds[UP_MOVING] = new int[] {
                 Sprite.ONEAL_LEFT_0, Sprite.ONEAL_LEFT_1, Sprite.ONEAL_LEFT_2, Sprite.ONEAL_LEFT_3
         };
-        imageIds[Setting.DOWN_MOVING] = new int[] {
+        imageIds[DOWN_MOVING] = new int[] {
                 Sprite.ONEAL_RIGHT_0, Sprite.ONEAL_RIGHT_1, Sprite.ONEAL_RIGHT_2, Sprite.ONEAL_RIGHT_3
         };
-        imageIds[Setting.LEFT_MOVING] = new int[] {
+        imageIds[LEFT_MOVING] = new int[] {
                 Sprite.ONEAL_LEFT_0, Sprite.ONEAL_LEFT_1, Sprite.ONEAL_LEFT_2, Sprite.ONEAL_LEFT_3
         };
-        imageIds[Setting.RIGHT_MOVING] = new int[] {
+        imageIds[RIGHT_MOVING] = new int[] {
                 Sprite.ONEAL_RIGHT_0, Sprite.ONEAL_RIGHT_1, Sprite.ONEAL_RIGHT_2, Sprite.ONEAL_RIGHT_3
         };
 
         // DEAD with 5 frames
-        imageIds[Setting.DEAD] = new int[] {
+        imageIds[DEAD] = new int[] {
                 Sprite.ONEAL_DEAD_0, Sprite.ONEAL_DEAD_1, Sprite.ONEAL_DEAD_2, Sprite.ONEAL_DEAD_3, Sprite.ONEAL_DEAD_4
         };
 
