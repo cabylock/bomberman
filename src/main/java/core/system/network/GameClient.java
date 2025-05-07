@@ -62,7 +62,7 @@ public class GameClient extends Thread {
                Setting.ID = id;
                Util.logInfo("Joined game as Player #" + id);
 
-             
+              
 
                // Wait a brief moment to ensure the server processes the player name
                Thread.sleep(100);

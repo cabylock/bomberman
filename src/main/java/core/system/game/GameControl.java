@@ -144,11 +144,6 @@ public class GameControl {
 
       if (Setting.GAME_MODE != Setting.CLIENT_MODE) {
          bomberEntities.get(playerId).control(command, deltaTime);
-      } else {
-         // Fix: Only send command if client is not null
-         if (client != null) {
-            client.sendCommand(command, playerId);
-         }
       }
    }
 

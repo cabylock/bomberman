@@ -92,9 +92,7 @@ public class GameServer extends Thread {
                Util.logInfo("Client connected: " + clientHandler.clientName +
                      " (" + clients.size() + "/" + MAX_CLIENTS + ")");
 
-               // Notify all clients about the new connection
-               broadcastMessage("Player joined: " + clientHandler.clientName);
-               // Important game event - notify host
+              
 
             }
          }
@@ -154,12 +152,7 @@ public class GameServer extends Thread {
       }
    }
 
-   /**
-    * Checks if a port is available without actually starting a server
-    * 
-    * @param port The port to check
-    * @return True if port is available, false otherwise
-    */
+ 
    public static boolean isPortAvailable(int port) {
       try (ServerSocket socket = new ServerSocket(port)) {
          // If we can open a server socket, the port is available
@@ -207,7 +200,7 @@ public class GameServer extends Thread {
             // First assign an ID
             id = Util.uuid();
 
-            // Send ID to client - must be the first message
+            
             
             synchronized (outLock) {
                out.reset();
@@ -217,30 +210,17 @@ public class GameServer extends Thread {
             }
             Util.logInfo("Sent ID " + id + " to client " + clientName);
 
-            // Wait for client to send PLAYER_NAME message
-            String nameType = in.readUTF();
-            if (!"PLAYER_NAME".equals(nameType)) {
-               Util.logError("Expected PLAYER_NAME from client, got: " + nameType);
-               disconnect();
-               return;
-            }
-            String playerName = in.readUTF();
-            int playerId = in.readInt();
-            Util.logInfo("Received player name from client: " + playerName + " (ID: " + playerId + ")");
+            
+            
 
             // Create a new bomber for this client with the correct player name
-            Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1, playerName);
+            Bomber clientBomber = new Bomber(1, 1, Setting.BOMBER1, Setting.BOMBER1, "client_player");
             clientBomber.setId(id);
             GameControl.addEntity(clientBomber);
 
            
 
-            // Notify other clients about new player
-            for (ClientHandler client : clients) {
-               if (client != this && client.isRunning) {
-                  client.sendMessage("New player joined: " + playerName);
-               }
-            }
+            
 
             // Send background entities - with careful error handling
             sendBackgroundData();

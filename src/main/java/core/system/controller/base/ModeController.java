@@ -41,13 +41,11 @@ public class ModeController {
     @FXML
     private void selectOnlineMode() {
         try {
-
-            
+            Setting.GAME_MODE = Setting.SERVER_MODE;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/NetworkSetup.fxml"));
             Parent root = loader.load();
 
             NetworkSetupController controller = loader.getController();
-
             controller.setStage(stage);
 
             Scene scene = new Scene(root);
@@ -58,7 +56,7 @@ public class ModeController {
     }
 
     private void startGame() {
-       
+
         BombermanGame.createGameScene(stage);
 
     }

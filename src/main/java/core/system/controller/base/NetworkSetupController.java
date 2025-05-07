@@ -1,6 +1,7 @@
 package core.system.controller.base;
 
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 import core.system.game.BombermanGame;
 import core.system.setting.Setting;
@@ -26,19 +27,13 @@ public class NetworkSetupController {
    private TextField hostPortField;
 
    @FXML
-   private TextField ipAddressField;
-
-   @FXML
    private Label myIpAddressField;
 
    @FXML
-   private TextField clientPortField;
+   private Label statusLabel;
 
    @FXML
    private TextField playerNameField;
-
-   @FXML
-   private Label statusLabel;
 
    @FXML
    private ProgressIndicator connectionProgress;
@@ -46,16 +41,27 @@ public class NetworkSetupController {
    @FXML
    private HBox statusContainer;
 
+   // Add these fields for toggling UI
+   @FXML
+   private VBox hostBox;
+   @FXML
+   private VBox clientBox;
+   @FXML
+   private TextField ipAddressField;
+   @FXML
+   private TextField clientPortField;
+
    private Stage stage;
 
    private ExecutorService executorService = Executors.newSingleThreadExecutor();
    private GameServer server; // Add this field
 
+
    public void setStage(Stage stage) {
       this.stage = stage;
    }
 
-  
+
 
    @FXML
    public void initialize() {
@@ -63,7 +69,19 @@ public class NetworkSetupController {
          String localIp = getLocalIpAddress();
          myIpAddressField.setText(localIp);
 
-         playerNameField.setText("Player_" + localIp.substring(localIp.lastIndexOf('.') + 1));
+         
+            if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+               hostBox.setVisible(false);
+               hostBox.setManaged(false);
+               clientBox.setVisible(true);
+               clientBox.setManaged(true);
+            } else {
+               hostBox.setVisible(true);
+               hostBox.setManaged(true);
+               clientBox.setVisible(false);
+               clientBox.setManaged(false);
+            }
+         
 
          updateConnectionStatus("Ready to connect", "green", false);
       } catch (Exception e) {
@@ -71,6 +89,8 @@ public class NetworkSetupController {
          updateConnectionStatus("Error retrieving IP address", "red", false);
       }
    }
+
+   
 
    // Helper method to get the real LAN IP address (works on Linux and Windows)
    private String getLocalIpAddress() {
@@ -102,6 +122,7 @@ public class NetworkSetupController {
          hostPortField.setStyle("");
 
          int port = Integer.parseInt(hostPortField.getText());
+         String playerName = playerNameField.getText();
 
          // Validate port range
          if (port < 1024 || port > 65535) {
@@ -111,10 +132,6 @@ public class NetworkSetupController {
          }
 
          Setting.SERVER_PORT = port;
-
-         // Save player name
-         // String playerName = playerNameField.getText().trim();
-         
 
          // First check if the port is available
          if (!GameServer.isPortAvailable(port)) {
@@ -184,8 +201,6 @@ public class NetworkSetupController {
          Setting.SERVER_ADDRESS = ipAddress;
          Setting.SERVER_PORT = port;
 
-         // Save player name
-         
          updateConnectionStatus("Connecting to server...", "orange", true);
          Util.logInfo("Attempting to connect to " + ipAddress + ":" + port);
 
@@ -196,28 +211,19 @@ public class NetworkSetupController {
 
             Platform.runLater(() -> {
                if (success) {
-                  // Set the client in GameControl so it can be used for sending commands
                   GameControl.setClient(client);
 
                   updateConnectionStatus("Connected to server!", "green", false);
                   Setting.GAME_MODE = Setting.CLIENT_MODE;
-                  startNetworkGame();   
-               
-
-                  
-
+                  startNetworkGame();
                } else {
-                  // Don't return to menu, just show the error
                   String errorMessage = client.getLastError();
                   if (errorMessage != null && !errorMessage.isEmpty()) {
                      updateConnectionStatus("Connection failed: " + errorMessage, "red", false);
-                     // Also log for debugging
                      Util.logError("Connection failed: " + errorMessage);
                   } else {
                      updateConnectionStatus("Failed to connect to " + ipAddress + ":" + port, "red", false);
                   }
-
-                  // Highlight the fields that might need correction
                   ipAddressField.setStyle("-fx-border-color: orange; -fx-border-width: 1px;");
                   clientPortField.setStyle("-fx-border-color: orange; -fx-border-width: 1px;");
                }
@@ -254,9 +260,7 @@ public class NetworkSetupController {
       // Clean up executor service
       executorService.shutdown();
 
-      // Set the game mode before creating scene
-            
-
+      
       GameControl.initializeNetwork();
 
       // Create the game with network mode
@@ -278,7 +282,7 @@ public class NetworkSetupController {
          Parent root = loader.load();
 
          ModeController controller = loader.getController();
-         
+
          controller.setStage(stage);
 
          Scene scene = new Scene(root);

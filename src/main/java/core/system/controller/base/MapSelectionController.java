@@ -14,9 +14,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+
 import javafx.stage.Stage;
+
 
 public class MapSelectionController {
     @FXML
@@ -178,6 +181,24 @@ public class MapSelectionController {
             }
         } else {
             showAlert("No Map Selected", "Please select a map to delete.", null);
+        }
+    }
+
+    @FXML
+    private void joinOnlineGame() {
+        try {
+            // Ensure client mode is set before opening the network setup
+            Setting.GAME_MODE = Setting.CLIENT_MODE;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/NetworkSetup.fxml"));
+            Parent root = loader.load();
+
+            NetworkSetupController controller = loader.getController();
+            controller.setStage(stage);
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
