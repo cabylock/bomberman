@@ -3,18 +3,14 @@ package core.system.network;
 import java.io.*;
 import java.net.*;
 import java.util.List;
-import java.util.ArrayList;
 import core.util.Util;
-import javafx.application.Platform;
 import core.system.setting.Setting;
-import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.entity.background_entity.BackgroundEntity;
-import core.entity.Entity;
 
 public class GameClient {
    private static String serverAddress;

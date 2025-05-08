@@ -190,7 +190,7 @@ public class EnemyEntity extends MobileEntity {
         Map<String, Node> closedSet = new HashMap<>();
 
         Node startNode = new Node(startX, startY);
-        Node targetNode = new Node(targetX, targetY);
+
 
         startNode.gCost = 0;
         startNode.hCost = calculateHeuristic(startX, startY, targetX, targetY);
