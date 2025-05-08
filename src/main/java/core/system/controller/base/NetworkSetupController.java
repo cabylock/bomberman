@@ -16,8 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+
 
 public class NetworkSetupController {
    @FXML

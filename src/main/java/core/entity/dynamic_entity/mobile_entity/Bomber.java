@@ -12,7 +12,6 @@ import core.sound.Sound;
 import javafx.scene.input.KeyCode;
 import java.util.Map;
 
-
 public class Bomber extends MobileEntity {
 
    public static transient final int BOMBER1 = 0;
@@ -37,10 +36,10 @@ public class Bomber extends MobileEntity {
    private transient int typePlayer;
    private String playerName; // Store player's name
    private transient boolean permanentFreeze = false;
-   private transient String initialName;
 
-   private int initialX;
-   private int initialY;
+   private transient int initialX;
+   private transient int initialY;
+   private transient String initialName;
 
    protected transient int bombCountMax = 1;
    protected boolean died = false;
@@ -49,8 +48,9 @@ public class Bomber extends MobileEntity {
 
    public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
       super(x, y, imageId);
-      this.initialX = x*Sprite.DEFAULT_SIZE;
-      this.initialY = y*Sprite.DEFAULT_SIZE;
+      this.initialX = x * Sprite.DEFAULT_SIZE;
+      this.initialY = y * Sprite.DEFAULT_SIZE;
+      this.initialName = playerName;
       this.playerName = playerName;
       this.typePlayer = typePlayer;
       if (typePlayer == BOMBER2) {
@@ -138,7 +138,7 @@ public class Bomber extends MobileEntity {
    }
 
    public void control(String command, float deltaTime) {
-      if (permanentFreeze){
+      if (permanentFreeze) {
          moving = false;
          return;
       }
@@ -159,7 +159,7 @@ public class Bomber extends MobileEntity {
 
    private void placeBomb() {
       Sound.playEffect("bomb_set");
-      
+
       BombermanGame.input.remove(BOMBER_KEY_CONTROLS[typePlayer][BOMB_PLACE]);
       if (bombCountMax == 0) {
          return;
@@ -251,7 +251,6 @@ public class Bomber extends MobileEntity {
          flameUpTime = ITEM_DURATION;
       }
    }
-   
 
    public void setBombUp(boolean bombUp) {
       this.bombUp = bombUp;
@@ -267,7 +266,7 @@ public class Bomber extends MobileEntity {
          brickPassTime = ITEM_DURATION;
       }
    }
-   
+
    public void setPermanentFreeze(boolean freeze) {
       this.permanentFreeze = freeze;
    }
@@ -276,7 +275,7 @@ public class Bomber extends MobileEntity {
       return permanentFreeze;
    }
 
-   public int getHealth(){
+   public int getHealth() {
       return health;
    }
 
@@ -315,7 +314,7 @@ public class Bomber extends MobileEntity {
       blinkTimer = 0f;
       direction = DOWN_MOVING;
       died = false;
-      playerName = initialName; // Reset player name to initial value
+      playerName = initialName; 
    }
 
    public boolean isDying() {
@@ -338,17 +337,15 @@ public class Bomber extends MobileEntity {
 
    public boolean isAlive() {
       return !died;
-      
-      
+
    }
 
-   
-
    public static boolean isGameOver() {
-      Map<Integer,Bomber> map = GameControl.getBomberEntitiesMap();
-      if (map.isEmpty()) return false;
+      Map<Integer, Bomber> map = GameControl.getBomberEntitiesMap();
+      if (map.isEmpty())
+         return false;
       return map.values().stream()
-                .allMatch(b -> b.getHealth() <= 0 || b.isDying());
+            .allMatch(b -> b.getHealth() <= 0 || b.isDying());
    }
 
 }

@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView;
 import java.util.Random;
 import javafx.scene.control.Button;
 import javafx.geometry.Pos;
-import javafx.stage.Modality;
 
 public class Util {
 
@@ -145,7 +144,7 @@ public class Util {
       StackPane.setAlignment(nextButton, Pos.BOTTOM_CENTER);
 
       // Hành động khi ấn nút
-      nextButton.setOnAction(e -> {
+      nextButton.setOnAction(_ -> {
          gameRoot.getChildren().remove(overlay);
          if (onClick != null)
             onClick.run();
@@ -183,7 +182,7 @@ public class Util {
       StackPane.setAlignment(playAgainButton, Pos.BOTTOM_CENTER);
 
       // Hành động khi click
-      playAgainButton.setOnAction(e -> {
+      playAgainButton.setOnAction(_ -> {
          gameRoot.getChildren().remove(overlay);
          if (onPlayAgain != null)
             onPlayAgain.run();

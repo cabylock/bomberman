@@ -3,8 +3,6 @@ package core.system.network;
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.List;
-
 import core.system.setting.Setting;
 import core.util.Util;
 import core.system.game.GameControl;
