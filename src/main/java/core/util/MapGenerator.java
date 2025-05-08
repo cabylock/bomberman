@@ -21,7 +21,7 @@ public class MapGenerator {
       int numberOfBricks = (int) (area * 0.4);
       int numberOfEnemy = (int) (area * 0.1) + level;
       int numberOfItem = (int) (area * 0.2);
-      int numberOfPortals = (int) (area * 0.05)+ level;
+      int numberOfPortals = (int) (area * 0.05) + level;
 
       // border walls
       for (int y = 0; y < height; y++) {
@@ -79,12 +79,10 @@ public class MapGenerator {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
 
-         if (map[y][x] == '\u0000' ) {
+         if (map[y][x] == '\u0000') {
             map[y][x] = 'x';
          }
       }
-
-
 
       // Place items under bricks
       char[] itemTypes = { 'b', 'f', 's', 'm', 'h', 'o', 'w' }; // bomb, flame, speed, etc.
@@ -115,12 +113,11 @@ public class MapGenerator {
                int enemyType = random.nextInt(maxEnemyLevel);
                if (maxEnemyType[enemyType] > 0) {
                   maxEnemyType[enemyType]--;
-                  map[y][x] = (char) ('1' + enemyType); 
+                  map[y][x] = (char) ('1' + enemyType);
                   break;
                }
             }
 
-            
          }
       }
 
@@ -136,18 +133,14 @@ public class MapGenerator {
       saveMap(level, height, width, map, name);
    }
 
-   
    private static int[][] createSafeZoneArea(int x, int y, int safeZoneArea, int[][] safeZone) {
-      int dx[] = { 1, -1, 0, 0 };
-      int dy[] = { 0, 0, 1, -1 };
-      for (int i = 0; i <= safeZoneArea; i++) {
-         for (int j = 0; j <= safeZoneArea; j++) {
-            for (int k = 0; k < 4; k++) {
-               int newX = x + dx[k] * i;
-               int newY = y + dy[k] * j;
-               if (newX >= 0 && newX < safeZone[0].length && newY >= 0 && newY < safeZone.length) {
-                  safeZone[newY][newX] = 1;
-               }
+      // Tạo một vùng an toàn hình vuông xung quanh điểm spawn
+      for (int i = -safeZoneArea; i <= safeZoneArea; i++) {
+         for (int j = -safeZoneArea; j <= safeZoneArea; j++) {
+            int newX = x + i;
+            int newY = y + j;
+            if (newX >= 0 && newX < safeZone[0].length && newY >= 0 && newY < safeZone.length) {
+               safeZone[newY][newX] = 1;
             }
          }
       }

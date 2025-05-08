@@ -1,21 +1,19 @@
 package core.entity.dynamic_entity.mobile_entity.enemy_entity;
-import core.util.Util;
-import core.graphics.Sprite;    
 
+import core.util.Util;
+import core.graphics.Sprite;
 
 public class Minvo extends EnemyEntity {
 
-    private static final float MOVEMENT_FREQUENCY_TIME = 0.01f;
     private static final float DIRECTION_CHANGE_TIME = 2.0f;
     private static final float SIGHT_RANGE = 10.0f;
     private static final int MIN_SPEED = 10;
-    private static final int MAX_SPEED = 30;
+    private static final int MAX_SPEED = 25;
 
     private float speedChangeTimer = 0;
 
     public Minvo(int x, int y, int imageId) {
         super(x, y, imageId);
-        movementFrequencyTime = MOVEMENT_FREQUENCY_TIME;
         directionChangeTimer = DIRECTION_CHANGE_TIME;
         direction = Util.randomDirection();
 
@@ -44,6 +42,7 @@ public class Minvo extends EnemyEntity {
         };
 
     }
+
     @Override
     public void update(float deltaTime) {
         // Cập nhật tốc độ mỗi 1.5 giây, chọn giữa min và max
@@ -55,6 +54,7 @@ public class Minvo extends EnemyEntity {
             } else {
                 speed = MAX_SPEED; // Chọn tốc độ max
             }
+            System.out.println("Speed: " + speed);
             speedChangeTimer = 0; // Reset bộ đếm thời gian
         }
 
@@ -66,4 +66,3 @@ public class Minvo extends EnemyEntity {
     }
 
 }
-

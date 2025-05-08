@@ -5,11 +5,11 @@ import core.graphics.Sprite;
 
 public class Doll extends EnemyEntity 
 {
-    private static final int SPEED = 30;
+    
     public Doll(int x, int y, int imageId) {
         super(x, y, imageId);
         imageIds = new int[5][]; // UP, DOWN, LEFT, RIGHT, DEAD
-        speed = SPEED;
+        speed = 30;
 
         imageIds[UP_MOVING] = new int[] {
                 Sprite.DOLL_LEFT_0, Sprite.DOLL_LEFT_1, Sprite.DOLL_LEFT_2, Sprite.DOLL_LEFT_3

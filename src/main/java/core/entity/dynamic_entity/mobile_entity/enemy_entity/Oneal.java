@@ -3,15 +3,13 @@ import core.util.Util;
 import core.graphics.Sprite;
 
 public class Oneal extends EnemyEntity {
-    private static final int SPEED = 15;
-    private static final float MOVEMENT_FREQUENCY_TIME = 0.01f;
+    
     private static final float DIRECTION_CHANGE_TIME = 2.0f;
     private static final float SIGHT_RANGE = 5.0f;
 
     public Oneal(int x, int y, int imageId) {
         super(x, y, imageId);
-        speed = SPEED;
-        movementFrequencyTime = MOVEMENT_FREQUENCY_TIME;
+        
         directionChangeTimer = DIRECTION_CHANGE_TIME;
         direction = Util.randomDirection();
         

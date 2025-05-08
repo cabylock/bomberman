@@ -16,11 +16,11 @@ import core.graphics.Sprite;
 import java.util.*;
 
 public class EnemyEntity extends MobileEntity {
-    protected transient int boostedspeed = 30;
-    protected transient int speed = 15;
+    protected transient int boostedspeed = 25;
+    protected transient int speed = 10;
     protected transient float moveTimer = 0;
     protected transient float directionChangeTimer = 0;
-    protected transient float movementFrequencyTime = 0.01f;
+    protected transient float movementFrequencyTime = 0.02f;
 
     // A* pathfinding properties
     protected transient boolean usePathfinding = false;
@@ -28,6 +28,7 @@ public class EnemyEntity extends MobileEntity {
     protected transient float pathUpdateFrequency = 1.0f;
     protected transient float pathUpdateTimer = 0;
     protected transient List<Node> currentPath = new ArrayList<>();
+    protected transient boolean hasPathToBomber = false;
 
     public EnemyEntity(int x, int y, int imageId) {
         super(x, y, imageId);
@@ -45,7 +46,16 @@ public class EnemyEntity extends MobileEntity {
         if (moveTimer >= movementFrequencyTime) {
             moveTimer = 0;
             if (!move(direction, speed, deltaTime)) {
-                direction = Util.randomDirection();
+                // Nếu không thể di chuyển, thử các hướng khác
+                int[] directions = { UP_MOVING, DOWN_MOVING, LEFT_MOVING, RIGHT_MOVING };
+                for (int newDir : directions) {
+                    if (newDir != direction) {
+                        direction = newDir;
+                        if (move(direction, speed, deltaTime)) {
+                            break;
+                        }
+                    }
+                }
             }
         }
     }
@@ -56,10 +66,10 @@ public class EnemyEntity extends MobileEntity {
                 if (!bomber.isInvincible()) {
                     bomber.decreaseHealth();
                     return true;
-                }  
+                }
             }
         }
-        
+
         return false;
     }
 
@@ -119,11 +129,12 @@ public class EnemyEntity extends MobileEntity {
         for (StaticEntity entity : GameControl.getStaticEntities()) {
             if (entity.getXTile() == x && entity.getYTile() == y) {
                 // Explicitly check if it's a brick
-                if (entity instanceof Brick) {
+                if (entity instanceof Brick && !brickPass) {
                     return false;
                 }
                 // For bombs, check if the enemy can pass bombs
-                if (entity instanceof Bomb && !bombPass) {
+                if (entity instanceof Bomb) {
+                    // Nếu có bom, tìm đường đi khác
                     return false;
                 }
             }
@@ -271,6 +282,9 @@ public class EnemyEntity extends MobileEntity {
             float minDistance = Float.MAX_VALUE;
 
             for (Bomber bomber : GameControl.getBomberEntities()) {
+                if (!bomber.isAlive()) {
+                    continue;
+                }
                 float distance = calculateHeuristic(getXTile(), getYTile(), bomber.getXTile(), bomber.getYTile());
                 if (distance < minDistance) {
                     minDistance = distance;
@@ -280,13 +294,29 @@ public class EnemyEntity extends MobileEntity {
 
             // If Bomber is within range, update path
             if (closestBomber != null && minDistance <= pathfindingRange && closestBomber.isAlive()) {
-                
+                speed = boostedspeed;
+                movementFrequencyTime = 0.01f;
+
                 currentPath = findPath(getXTile(), getYTile(),
                         closestBomber.getXTile(), closestBomber.getYTile());
+
+                if (currentPath.isEmpty()) {
+                    // Không tìm được đường → di chuyển ngẫu nhiên
+                    speed = 15;
+                    movementFrequencyTime = 0.02f;
+                    hasPathToBomber = false;
+                    defaultMove(deltaTime);
+                    return;
+                } else {
+                    hasPathToBomber = true;
+                }
             } else {
-                
                 currentPath.clear();
+                speed = 15;
+                movementFrequencyTime = 0.01f;
+                hasPathToBomber = false;
                 defaultMove(deltaTime);
+                return;
             }
         }
 
@@ -296,72 +326,60 @@ public class EnemyEntity extends MobileEntity {
             moveTimer = 0;
 
             if (!currentPath.isEmpty()) {
-                // Get next node in path
                 Node nextNode = currentPath.get(0);
 
-                // Double check that the next node is walkable
+                // Kiểm tra xem node tiếp theo có an toàn không
                 if (!isWalkable(nextNode.x, nextNode.y)) {
-                    // If not walkable anymore, clear path and recalculate next time
+                    // Nếu node không an toàn, tìm đường đi mới
                     currentPath.clear();
-                    defaultMove(deltaTime);
+                    pathUpdateTimer = pathUpdateFrequency;
+                    defaultMove(deltaTime); // Chuyển sang di chuyển ngẫu nhiên tạm thời
                     return;
                 }
 
-                // Calculate distance to node center
                 float nodeX = nextNode.x * Sprite.DEFAULT_SIZE;
                 float nodeY = nextNode.y * Sprite.DEFAULT_SIZE;
                 float distX = Math.abs(x - nodeX);
                 float distY = Math.abs(y - nodeY);
 
-                // If closely aligned to the grid, ensure enemy is exactly on a tile boundary
                 boolean isCloseToNodeX = distX < speed * deltaTime * 10;
                 boolean isCloseToNodeY = distY < speed * deltaTime * 10;
 
-                // First align with the grid if needed
                 if (isCloseToNodeX && isCloseToNodeY) {
-                    // We've reached this node, align precisely and move to next node
                     x = nodeX;
                     y = nodeY;
-
-                    // Remove current node and get next node if available
                     currentPath.remove(0);
-                    if (currentPath.isEmpty()) {
-                        defaultMove(deltaTime);
-                        return;
-                    }
-
-                    // Update to next node
-                    nextNode = currentPath.get(0);
+                    return;
                 }
 
-                // Determine direction to the next node
-                // Only change direction when at a tile boundary to prevent zigzagging
                 if (Math.abs(x % Sprite.DEFAULT_SIZE) < 2 && Math.abs(y % Sprite.DEFAULT_SIZE) < 2) {
-                    if (nextNode.x > getXTile()) {
+                    if (nextNode.x > getXTile())
                         direction = RIGHT_MOVING;
-                    } else if (nextNode.x < getXTile()) {
+                    else if (nextNode.x < getXTile())
                         direction = LEFT_MOVING;
-                    } else if (nextNode.y > getYTile()) {
+                    else if (nextNode.y > getYTile())
                         direction = DOWN_MOVING;
-                    } else if (nextNode.y < getYTile()) {
+                    else if (nextNode.y < getYTile())
                         direction = UP_MOVING;
-                    }
                 }
 
-                // Move in the current direction
                 if (!move(direction, speed, deltaTime)) {
-                    // If we can't move in the desired direction, realign to grid and recalculate
-                    // path
-                    x = getXTile() * Sprite.DEFAULT_SIZE;
-                    y = getYTile() * Sprite.DEFAULT_SIZE;
+                    // Nếu không thể di chuyển, tìm đường mới
                     currentPath.clear();
+                    pathUpdateTimer = pathUpdateFrequency;
+                    defaultMove(deltaTime); // Chuyển sang di chuyển ngẫu nhiên tạm thời
                 }
-            } else {
-                // No path, use default movement
-                defaultMove(deltaTime);
             }
         }
     }
-    
-   
+
+    @Override
+    public void render(javafx.scene.canvas.GraphicsContext gc) {
+        super.render(gc);
+        if (hasPathToBomber) {
+            gc.setFill(javafx.scene.paint.Color.RED);
+            gc.setFont(new javafx.scene.text.Font("Arial Bold", 35));
+            gc.fillText("!?", x + Sprite.DEFAULT_SIZE + 2, y);
+        }
+    }
 }

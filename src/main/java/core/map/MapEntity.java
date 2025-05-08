@@ -56,7 +56,7 @@ public class MapEntity {
 
          // Now parse the values
          level = Integer.parseInt(info[0]);
-         Setting.MAP_LEVEl = level;
+         Setting.Map_LEVEL = level;
          height = Integer.parseInt(info[1]);
          GameControl.setHeight(height);
          width = Integer.parseInt(info[2]);

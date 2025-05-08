@@ -32,7 +32,7 @@ public class Bomber extends MobileEntity {
          { KeyCode.D, KeyCode.A, KeyCode.W, KeyCode.S, KeyCode.J }
    };
 
-   private transient int speed = 25;
+   private transient int speed = 20;
    private transient int flameSize = 1;
    private transient int typePlayer;
    private String playerName; // Store player's name

@@ -14,7 +14,7 @@ public class Setting {
       public static int GAME_MODE = 0;
       public static int MAP_TYPE = 0;
       public static String MAP_NAME = "";
-      public static int MAP_LEVEl = 0;
+      public static int Map_LEVEL = 0;
 
       public static final int SINGLE_MODE = 0;
       public static final int MULTI_MODE = 1;

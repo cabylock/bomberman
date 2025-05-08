@@ -132,16 +132,19 @@ public class GameControl {
          Util.logInfo("Please select another map or move to default map");
          return;
       }
-      if (Setting.MAP_LEVEl == Setting.MAX_LEVEL) {
+      if (Setting.Map_LEVEL == Setting.MAX_LEVEL) {
          Util.showOverlayWithButton("/textures/win2.png", BombermanGame.getGameRoot(), "Play Again", () -> {
            
             reset();
          });
          return;
       }
-
       Util.showOverlayWithButton("/textures/level_complete.jpg", BombermanGame.getGameRoot(), "Next Level", () -> {
-         Setting.MAP_LEVEl++;
+         
+         Setting.Map_LEVEL++;
+         Setting.MAP_NAME = "LEVEL" + Setting.Map_LEVEL;
+         System.out.println("Next level: " + Setting.Map_LEVEL);
+         System.out.println("Loading map: " + Setting.MAP_NAME);
          reset();
 
       });
@@ -178,6 +181,7 @@ public class GameControl {
       enemyEntities.clear();
       itemEntities.clear();
       backgroundEntities.clear();
+      
    }
 
    public static void addEntity(Entity entity) {
