@@ -17,11 +17,11 @@ public class MapGenerator {
 
       int area = height * width;
       int safeZoneArea = 2;
-      int numberOfWalls = (int) (area * 0.2);
-      int numberOfBricks = (int) (area * 0.3);
-      int numberOfEnemy = (int) (area * 0.1);
+      int numberOfWalls = (int) (area * 0.1);
+      int numberOfBricks = (int) (area * 0.4);
+      int numberOfEnemy = (int) (area * 0.1) + level;
       int numberOfItem = (int) (area * 0.2);
-      int numberOfPortals = Math.min(4, level + 1);
+      int numberOfPortals = (int) (area * 0.05)+ level;
 
       // border walls
       for (int y = 0; y < height; y++) {
@@ -75,11 +75,11 @@ public class MapGenerator {
       }
 
       // random portals
-      for (int i = 0; i < numberOfPortals; i++) {
+      for (int i = 0; i <= numberOfPortals; i++) {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
 
-         if (map[y][x] == '\u0000' && safeZone[y][x] == 0) {
+         if (map[y][x] == '\u0000' ) {
             map[y][x] = 'x';
          }
       }
@@ -99,14 +99,28 @@ public class MapGenerator {
       }
 
       // Add enemies to empty spaces
-      int maxEnemyLevel = Math.min(5, level+1); // Enemy levels from 1 to 5 based on current level
+      int maxEnemyLevel = Math.min(5, level + 1); // Enemy levels from 1 to 5 based on current level
+      int maxEnemyType[] = new int[5];
+      maxEnemyType[0] = 99; // Balloom
+      maxEnemyType[1] = 5; // Oneal
+      maxEnemyType[2] = 6; // Doll
+      maxEnemyType[3] = 6; // Minvo
+      maxEnemyType[4] = 2; // Ghost
       for (int i = 0; i < numberOfEnemy; i++) {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
 
          if (map[y][x] == '\u0000' && safeZone[y][x] == 0) {
-            int enemyType = random.nextInt(maxEnemyLevel) + 1;
-            map[y][x] = (char) ('0' + enemyType);
+            while (true) {
+               int enemyType = random.nextInt(maxEnemyLevel);
+               if (maxEnemyType[enemyType] > 0) {
+                  maxEnemyType[enemyType]--;
+                  map[y][x] = (char) ('1' + enemyType); 
+                  break;
+               }
+            }
+
+            
          }
       }
 
@@ -122,13 +136,18 @@ public class MapGenerator {
       saveMap(level, height, width, map, name);
    }
 
-
-
+   
    private static int[][] createSafeZoneArea(int x, int y, int safeZoneArea, int[][] safeZone) {
-      for (int i = 0; i < safeZoneArea; i++) {
-         for (int j = 0; j < safeZoneArea; j++) {
-            if(i + y < safeZone.length && j + x < safeZone[0].length) {
-               safeZone[i + y][j + x] = 1;
+      int dx[] = { 1, -1, 0, 0 };
+      int dy[] = { 0, 0, 1, -1 };
+      for (int i = 0; i <= safeZoneArea; i++) {
+         for (int j = 0; j <= safeZoneArea; j++) {
+            for (int k = 0; k < 4; k++) {
+               int newX = x + dx[k] * i;
+               int newY = y + dy[k] * j;
+               if (newX >= 0 && newX < safeZone[0].length && newY >= 0 && newY < safeZone.length) {
+                  safeZone[newY][newX] = 1;
+               }
             }
          }
       }

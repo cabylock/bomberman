@@ -72,12 +72,11 @@ public class GameControl {
          Sound.stopMusic();
          Sound.playEffect("game_over");
          Util.showGameOverOverlay("/textures/game_over.png", BombermanGame.getGameRoot(), () -> {
-         Setting.MAP_LEVEl = 1;
          reset();
       });
       deathOverlayShown = true;
    }
-      // Fix: Only call broadcastGameState if server is not null
+      
       
    }
 
@@ -135,8 +134,7 @@ public class GameControl {
       }
       if (Setting.MAP_LEVEl == Setting.MAX_LEVEL) {
          Util.showOverlayWithButton("/textures/win2.png", BombermanGame.getGameRoot(), "Play Again", () -> {
-            Setting.MAP_LEVEl = 1;
-            loadMap("Level" + Setting.MAP_LEVEl);
+           
             reset();
          });
          return;
@@ -158,7 +156,7 @@ public class GameControl {
       } else if (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE) {
          clearEntities();
       }
-      loadMap("Level" + Setting.MAP_LEVEl);
+      loadMap(Setting.MAP_NAME);
       if (Setting.GAME_MODE == Setting.SERVER_MODE) {
          GameServer.broadcastMapDimensions();
 
