@@ -122,10 +122,8 @@ public class GameControl {
    public static void reset() {
 
       if (Setting.GAME_MODE == Setting.SERVER_MODE) {
-         bomberEntities.forEach((_, b) -> b.resetBomber());
-         clearEntities();
+         resetEntities();
       } else if (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE) {
-         bomberEntities.clear();
          clearEntities();
       }
       loadMap("Level" + Setting.MAP_LEVEl);
@@ -134,8 +132,17 @@ public class GameControl {
       }
    }
 
-   public static void clearEntities() {
+   public static void resetEntities() {
+      bomberEntities.forEach((_, b) -> b.resetBomber());
+      staticEntities.clear();
+      enemyEntities.clear();
+      itemEntities.clear();
+      backgroundEntities.clear();
+   }
 
+   public static void clearEntities()
+   {
+      bomberEntities.clear();
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
