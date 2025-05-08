@@ -22,26 +22,11 @@
           style="-fx-font-size: 40px; -fx-font-weight: bold;">
     </Text>
     
-    <!-- Add player name input -->
-    <HBox alignment="CENTER" spacing="10">
-        <Label text="Player Name:" style="-fx-font-size: 18px;"/>
-        <TextField fx:id="playerNameField" text="Player" prefWidth="200"/>
-    </HBox>
-
     <HBox alignment="CENTER" spacing="10">
         <Label text="Your IP Address:" style="-fx-font-size: 18px;"/>
         <Label fx:id ="myIpAddressField" text= "localhost" style="-fx-font-size: 18px; -fx-text-fill: grey;"/>
     </HBox>
     
-    <!-- Connection status with ProgressIndicator -->
-    <StackPane>
-        <HBox fx:id="statusContainer" alignment="CENTER" spacing="15">
-            <ProgressIndicator fx:id="connectionProgress" visible="false" />
-            <Label fx:id="statusLabel" text="Ready to connect" 
-                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: green;"/>
-        </HBox>
-    </StackPane>
-
     <HBox alignment="CENTER" spacing="50">
         <VBox fx:id="hostBox" alignment="CENTER" spacing="15" styleClass="network-card">
             <padding>

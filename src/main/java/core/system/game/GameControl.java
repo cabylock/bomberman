@@ -13,21 +13,16 @@ import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.map.MapEntity;
 import core.sound.Sound;
+import core.system.setting.Setting;
 import core.system.network.GameClient;
 import core.system.network.GameServer;
-import core.system.setting.Setting;
 import core.util.Util;
 
 public class GameControl {
 
-   
-  
    private static float deltaTime;
    private static int width;
    private static int height;
-
-   private static GameServer server;
-   private static GameClient client;
 
    private static Map<Integer, Bomber> bomberEntities = new ConcurrentHashMap<>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<>();
@@ -35,53 +30,20 @@ public class GameControl {
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<>();
 
-   private static boolean deathHandled = false; // NEW
-
-   public static boolean InitializeServer() {
-      server = new GameServer();
-      server.startServer(Setting.SERVER_PORT);
-      return server.isRunning;
-   }
-
-   public static boolean InitializeClient() {
-      clear();
-      client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-      return client.connect();
-   }
-
-   public static boolean initializeNetwork() {
-      
-      if (Setting.GAME_MODE == Setting.SERVER_MODE)
-         return InitializeServer();
-      if (Setting.GAME_MODE == Setting.CLIENT_MODE)
-         return InitializeClient();
-      return true;
-   }
-
    public static void stop() {
-      if (Setting.GAME_MODE == Setting.SERVER_MODE && server != null) {
-         server.stopServer();
-         server = null;
-      } else if (Setting.GAME_MODE == Setting.CLIENT_MODE && client != null) {
-         client.disconnect();
-         client = null;
+      if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         GameServer.stopServer();
+      }
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+         GameClient.disconnect();
       }
       Setting.GAME_MODE = Setting.SINGLE_MODE;
-      clear();
+      clearEntities();
       System.gc();
    }
 
-   // Add this setter
-   public static void setServer(GameServer s) {
-      server = s;
-   }
-
-   // Add this setter
-   public static void setClient(GameClient c) {
-      client = c;
-   }
-
    public static void update(float deltaTime) {
+
       GameControl.deltaTime = deltaTime;
       handleInput(deltaTime);
 
@@ -97,61 +59,46 @@ public class GameControl {
       for (Bomber entity : bomberEntities.values())
          entity.update(deltaTime);
 
-      // Check if all players are dead, then stop music and play death sound
-      if (!deathHandled) {
-         long total = bomberEntities.size();
-         long deadCount = bomberEntities.values().stream()
-               .filter(b -> b.getHealth() <= 0 || b.isDying())
-               .count();
+   }
 
-         if (total > 0 && deadCount == total) {
-            Sound.stopMusic();
-            Sound.playEffect("game_over");
-            deathHandled = true;
-         }
+   private static String getCommandFromInput(int bomberType) {
+      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.UP_MOVING])) {
+         return Setting.MOVE_UP;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.DOWN_MOVING])) {
+         return Setting.MOVE_DOWN;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.LEFT_MOVING])) {
+         return Setting.MOVE_LEFT;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.RIGHT_MOVING])) {
+         return Setting.MOVE_RIGHT;
+      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.BOMB_PLACE])) {
+         return Setting.PLACE_BOMB;
       }
-
-      // Fix: Only call broadcastGameState if server is not null
-      if (Setting.GAME_MODE == Setting.SERVER_MODE && server != null) {
-         server.broadcastGameState();
-      }
+      return "NULL";
    }
 
    public static void handleInput(float deltaTime) {
-      handlePlayerInput(Setting.BOMBER1, Setting.ID, deltaTime);
-      if (Setting.GAME_MODE == Setting.MULTI_MODE) {
-         handlePlayerInput(Setting.BOMBER2, Setting.ID + 1, deltaTime);
-      }
-   }
-
-   private static void handlePlayerInput(int playerType, int playerId, float deltaTime) {
-      if (!bomberEntities.containsKey(playerId))
-         return;
-
       String command = "NULL";
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+         command = getCommandFromInput(Setting.BOMBER1);
+         GameClient.sendControl(Setting.ID, command);
 
-      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.UP_MOVING])) {
-         command = Setting.MOVE_UP;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.DOWN_MOVING])) {
-         command = Setting.MOVE_DOWN;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.LEFT_MOVING])) {
-         command = Setting.MOVE_LEFT;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.RIGHT_MOVING])) {
-         command = Setting.MOVE_RIGHT;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[playerType][Setting.BOMB_PLACE])) {
-         command = Setting.PLACE_BOMB;
-      }
-
-      if (Setting.GAME_MODE != Setting.CLIENT_MODE) {
-         bomberEntities.get(playerId).control(command, deltaTime);
+      } else if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         command = getCommandFromInput(Setting.BOMBER1);
+         bomberEntities.get(Setting.ID).control(command, deltaTime);
+      } else if (Setting.GAME_MODE == Setting.SINGLE_MODE) {
+         command = getCommandFromInput(Setting.BOMBER1);
+         bomberEntities.get(Setting.ID).control(command, deltaTime);
+      } else if (Setting.GAME_MODE == Setting.MULTI_MODE) {
+         command = getCommandFromInput(Setting.BOMBER1);
+         bomberEntities.get(Setting.ID).control(command, deltaTime);
+         command = getCommandFromInput(Setting.BOMBER2);
+         bomberEntities.get(Setting.ID + 1).control(command, deltaTime);
       }
    }
 
    public static float getDeltaTime() {
       return deltaTime;
    }
-
-  
 
    public static void loadMap(String name) {
 
@@ -168,17 +115,27 @@ public class GameControl {
          return;
       }
       Setting.MAP_LEVEl++;
-      loadMap("Level" + Setting.MAP_LEVEl);
+      reset();
+
    }
 
-   public static void resetGame() {
-      clear();
+   public static void reset() {
+
+      if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         bomberEntities.forEach((_, b) -> b.resetBomber());
+         clearEntities();
+      } else if (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE) {
+         bomberEntities.clear();
+         clearEntities();
+      }
       loadMap("Level" + Setting.MAP_LEVEl);
+      if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         GameServer.broadcastMapDimensions();
+      }
    }
 
-   public static void clear() {
-      deathHandled = false;
-      bomberEntities.forEach((_, b) -> b.resetBomber());
+   public static void clearEntities() {
+
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
@@ -228,12 +185,16 @@ public class GameControl {
 
    public static void setWidth(int width) {
 
-      GameControl.width = width; 
+      GameControl.width = width;
    }
+
    public static int getHeight() {
+
       return height;
    }
+
    public static int getWidth() {
+
       return width;
    }
 

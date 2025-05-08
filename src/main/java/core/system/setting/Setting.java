@@ -13,6 +13,7 @@ public class Setting {
 
       public static int GAME_MODE = 0;
       public static int MAP_TYPE = 0;
+      public static String MAP_NAME = "";
       public static int MAP_LEVEl = 0;
 
       public static final int SINGLE_MODE = 0;
@@ -32,6 +33,9 @@ public class Setting {
       public static final String NETWORK_ITEM_ENTITIES = "ITEM";
       public static final String NETWORK_BOMBER_ENTITIES = "BOMBER";
       public static final String NETWORK_BACKGROUND_ENTITIES = "BACKGROUND";
+      public static final String NETWORK_ID = "ID";
+      public static final String NETWORK_CONTROL = "CONTROL";
+      public static final String NETWORK_MAP_DIMENSIONS = "MAP_DIMENSIONS";
 
       public static final float FPS_MAX = 240;
       public static final float FRAME_TIME_NS = 1.0f / FPS_MAX;

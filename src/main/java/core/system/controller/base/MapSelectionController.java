@@ -205,7 +205,6 @@ public class MapSelectionController {
     private void startGameWithMap(String mapName) {
         try {
             if (mapName != null && !mapName.isEmpty()) {
-                GameControl.loadMap(mapName);
             } else {
                 System.err.println("Error: No map selected");
                 return;
@@ -215,7 +214,7 @@ public class MapSelectionController {
 
             ModeController modeController = loader.getController();
             modeController.setStage(stage);
-            modeController.setMapName(mapName); // Pass the map name to ModeController
+            Setting.MAP_NAME = mapName;
 
             Scene scene = new Scene(root, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
             stage.setScene(scene);

@@ -11,30 +11,28 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import core.sound.Sound;
 
-
 public class Bomber extends MobileEntity {
 
-   private  transient int speed = 25;
+   private transient int speed = 25;
    private transient int flameSize = 1;
-   private transient int typePlayer;
-   private String playerName; // Store player's name
+   private int typePlayer;
+   private String playerName;
 
-   private int initialX;
-   private int initialY;
+   private transient int initialX;
+   private transient int initialY;
+   private transient String initialName;
 
    protected transient int bombCountMax = 1;
+   protected boolean died = false;
 
-   protected transient static final int ITEM_DURATION = 10; 
-   // public Bomber(int x, int y, int imageId, int typePlayer) {
-   // this(x, y, imageId, typePlayer, "Player " + (typePlayer == Setting.BOMBER2 ?
-   // "2" : "1"));
-   // }
+   protected transient static final int ITEM_DURATION = 10;
 
    public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
       super(x, y, imageId);
-      this.initialX = x*Sprite.DEFAULT_SIZE;
-      this.initialY = y*Sprite.DEFAULT_SIZE;
+      this.initialX = x * Sprite.DEFAULT_SIZE;
+      this.initialY = y * Sprite.DEFAULT_SIZE;
       this.playerName = playerName;
+      this.initialName = playerName; // <-- Store the initial player name
       this.typePlayer = typePlayer;
       if (typePlayer == Setting.BOMBER2) {
          id++;
@@ -138,7 +136,7 @@ public class Bomber extends MobileEntity {
 
    private void placeBomb() {
       Sound.playEffect("bomb_set");
-      
+
       BombermanGame.input.remove(Setting.BOMBER_KEY_CONTROLS[typePlayer][Setting.BOMB_PLACE]);
       if (bombCountMax == 0) {
          return;
@@ -227,7 +225,6 @@ public class Bomber extends MobileEntity {
          flameUpTime = ITEM_DURATION;
       }
    }
-   
 
    public void setBombUp(boolean bombUp) {
       this.bombUp = bombUp;
@@ -243,7 +240,8 @@ public class Bomber extends MobileEntity {
          brickPassTime = ITEM_DURATION;
       }
    }
-   public int getHealth(){
+
+   public int getHealth() {
       return health;
    }
 
@@ -258,22 +256,31 @@ public class Bomber extends MobileEntity {
       health++;
    }
 
-   public void setName(String name) {
-      this.playerName = name;
+   public void setPlayerName(String playerName) {
+      this.playerName = playerName;
    }
 
    public void resetBomber() {
-      Sound.stopMusic();
-      Sound.playMusic("start_game", true);
       x = initialX;
       y = initialY;
       bombCountMax = 1;
       speed = 25;
       flameSize = 1;
-      // không reset health ở đây!
+      health = 1;
+      dying = false;
+      flamePass = false;
+      bombPass = false;
+      speedUp = false;
+      flameUp = false;
+      bombUp = false;
+      imageId = typePlayer == Setting.BOMBER1 ? Sprite.PLAYER1_DOWN_0 : Sprite.PLAYER2_DOWN_0;
+      brickPass = false;
       isInvincible = false;
       invincibleRemaining = 0f;
       blinkTimer = 0f;
+      direction = Setting.DOWN_MOVING;
+      died = false;
+      playerName = initialName; // Reset player name to initial value
    }
 
    public boolean isDying() {
@@ -286,8 +293,8 @@ public class Bomber extends MobileEntity {
 
    @Override
    public void remove() {
-      
-      GameControl.removeEntity(this);
+
+      died = true;
    }
 
    public String getPlayerName() {
@@ -295,11 +302,7 @@ public class Bomber extends MobileEntity {
    }
 
    public boolean isAlive() {
-      return health > 0;
-   }
-
-   public void setPlayerName(String playerName) {
-      this.playerName = playerName;
+      return !died;
    }
 
 }

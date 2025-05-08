@@ -99,7 +99,7 @@ public class MapEntity {
                GameControl.addEntity(portal);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
-            } else if (c == 'p' &&  Setting.GAME_MODE == Setting.SINGLE_MODE) {
+            } else if (c == 'p' && (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE)) {
                Bomber player = new Bomber(j, i, Sprite.PLAYER1_RIGHT_0, Setting.BOMBER1, "Player 1");
                GameControl.addEntity(player);
             } else if (c == 'q' && Setting.GAME_MODE == Setting.MULTI_MODE) {

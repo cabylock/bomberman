@@ -202,7 +202,7 @@ public class BombermanGame {
         }
 
         // Reset the game
-        GameControl.resetGame();
+        GameControl.reset();
         gameLoop.start();
     }
 
@@ -213,8 +213,8 @@ public class BombermanGame {
             gameLoop.stop();
             gameLoop = null;
         }
-        GameControl.clear();
         GameControl.stop();
+        GameControl.clearEntities();
         // Reset the game state if needed
         input.clear();
 
@@ -245,7 +245,11 @@ public class BombermanGame {
         GameControl.getBackgroundEntities().forEach(entity -> entity.render(gc));
         GameControl.getItemEntities().forEach(entity -> entity.render(gc));
         GameControl.getStaticEntities().forEach(entity -> entity.render(gc));
-        GameControl.getBomberEntities().forEach(entity -> entity.render(gc));
+        GameControl.getBomberEntities().forEach(entity -> {
+            if (entity.isAlive()) {
+                entity.render(gc);
+            }
+        });
         GameControl.getEnemyEntities().forEach(entity -> entity.render(gc));
     }
 }
