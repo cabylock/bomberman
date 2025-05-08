@@ -10,18 +10,17 @@ public class ItemEntity extends Entity {
     }
 
     @Override
-    public void update(double deltaTime) {
+    public void update(float deltaTime) {
         // Base implementation does nothing
     }
 
-   
     @Override
     public void remove() {
         GameControl.removeEntity(this);
     }
 
-    protected boolean checkCollision(double x1, double y1, double x2, double y2) {
-        int size = Sprite.SCALED_SIZE;
+    protected boolean checkCollision(float x1, float y1, float x2, float y2) {
+        int size = Sprite.DEFAULT_SIZE;
         return (x1 + size > x2 && x1 < x2 + size
                 && y1 + size > y2 && y1 < y2 + size);
     }

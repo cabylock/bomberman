@@ -1,22 +1,23 @@
 package core.graphics;
 
 import javafx.scene.image.*;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Lưu trữ thông tin các pixel của 1 sprite (hình ảnh game)
  */
 public class Sprite {
 
-	public static final int DEFAULT_SIZE = 16;
-	public static final int SCALED_SIZE = DEFAULT_SIZE * 3;
-	private static final int TRANSPARENT_COLOR = 0xffff00ff;
+	public static final int DEFAULT_SIZE = 48;
+
 	public final int SIZE;
-	private int _x, _y;
 	public int[] _pixels;
 	protected int _realWidth;
 	protected int _realHeight;
 	private SpriteSheet _sheet;
-	public static final Sprite[] sprites = new Sprite[100];
+	private static final Map<Integer, Sprite> spriteCache = new HashMap<>();
 	private Image cachedImage = null;
 
 	// Sprite IDs - Tổ chức theo nhóm để dễ quản lý
@@ -26,253 +27,705 @@ public class Sprite {
 	public static final int WALL = 2;
 	public static final int PORTAL = 3;
 
-	// Player
-	public static final int PLAYER_UP = 4;
-	public static final int PLAYER_DOWN = 5;
-	public static final int PLAYER_LEFT = 6;
-	public static final int PLAYER_RIGHT = 7;
-	public static final int PLAYER_UP_1 = 8;
-	public static final int PLAYER_UP_2 = 9;
-	public static final int PLAYER_DOWN_1 = 10;
-	public static final int PLAYER_DOWN_2 = 11;
-	public static final int PLAYER_LEFT_1 = 12;
-	public static final int PLAYER_LEFT_2 = 13;
-	public static final int PLAYER_RIGHT_1 = 14;
-	public static final int PLAYER_RIGHT_2 = 15;
-	public static final int PLAYER_DEAD1 = 16;
-	public static final int PLAYER_DEAD2 = 17;
-	public static final int PLAYER_DEAD3 = 18;
+	// Player1
+	public static final int PLAYER1_UP_0 = 4;
+	public static final int PLAYER1_UP_1 = 5;
+	public static final int PLAYER1_UP_2 = 6;
+	public static final int PLAYER1_DOWN_0 = 7;
+	public static final int PLAYER1_DOWN_1 = 8;
+	public static final int PLAYER1_DOWN_2 = 9;
+	public static final int PLAYER1_LEFT_0 = 10;
+	public static final int PLAYER1_LEFT_1 = 11;
+	public static final int PLAYER1_LEFT_2 = 12;
+	public static final int PLAYER1_RIGHT_0 = 13;
+	public static final int PLAYER1_RIGHT_1 = 14;
+	public static final int PLAYER1_RIGHT_2 = 15;
+	public static final int PLAYER1_DEAD_0 = 16;
+	public static final int PLAYER1_DEAD_1 = 17;
+	public static final int PLAYER1_DEAD_2 = 18;
+	public static final int PLAYER1_DEAD_3 = 19;
+	public static final int PLAYER1_DEAD_4 = 20;
+	public static final int PLAYER1_DEAD_5 = 21;
+	public static final int PLAYER1_DEAD_6 = 22;
+	public static final int PLAYER1_DEAD_7 = 23;
+
+	// Player2
+	public static final int PLAYER2_UP_0 = 24;
+	public static final int PLAYER2_UP_1 = 25;
+	public static final int PLAYER2_UP_2 = 26;
+	public static final int PLAYER2_DOWN_0 = 27;
+	public static final int PLAYER2_DOWN_1 = 28;
+	public static final int PLAYER2_DOWN_2 = 29;
+	public static final int PLAYER2_LEFT_0 = 30;
+	public static final int PLAYER2_LEFT_1 = 31;
+	public static final int PLAYER2_LEFT_2 = 32;
+	public static final int PLAYER2_RIGHT_0 = 33;
+	public static final int PLAYER2_RIGHT_1 = 34;
+	public static final int PLAYER2_RIGHT_2 = 35;
+	public static final int PLAYER2_DEAD_0 = 36;
+	public static final int PLAYER2_DEAD_1 = 37;
+	public static final int PLAYER2_DEAD_2 = 38;
+	public static final int PLAYER2_DEAD_3 = 39;
+	public static final int PLAYER2_DEAD_4 = 40;
+	public static final int PLAYER2_DEAD_5 = 41;
+	public static final int PLAYER2_DEAD_6 = 42;
+	public static final int PLAYER2_DEAD_7 = 43;
 
 	// Enemies - Balloom
-	public static final int BALLOOM_LEFT1 = 19;
-	public static final int BALLOOM_LEFT2 = 20;
-	public static final int BALLOOM_LEFT3 = 21;
-	public static final int BALLOOM_RIGHT1 = 22;
-	public static final int BALLOOM_RIGHT2 = 23;
-	public static final int BALLOOM_RIGHT3 = 24;
-	public static final int BALLOOM_DEAD = 25;
+	public static final int BALLOOM_LEFT_0 = 44;
+	public static final int BALLOOM_LEFT_1 = 45;
+	public static final int BALLOOM_LEFT_2 = 46;
+	public static final int BALLOOM_LEFT_3 = 47;
+	public static final int BALLOOM_RIGHT_0 = 48;
+	public static final int BALLOOM_RIGHT_1 = 49;
+	public static final int BALLOOM_RIGHT_2 = 50;
+	public static final int BALLOOM_RIGHT_3 = 51;
+	public static final int BALLOOM_DEAD_0 = 52;
+	public static final int BALLOOM_DEAD_1 = 53;
+	public static final int BALLOOM_DEAD_2 = 54;
+	public static final int BALLOOM_DEAD_3 = 55;
+	public static final int BALLOOM_DEAD_4 = 56;
 
 	// Enemies - Oneal
-	public static final int ONEAL_LEFT1 = 26;
-	public static final int ONEAL_LEFT2 = 27;
-	public static final int ONEAL_LEFT3 = 28;
-	public static final int ONEAL_RIGHT1 = 29;
-	public static final int ONEAL_RIGHT2 = 30;
-	public static final int ONEAL_RIGHT3 = 31;
-	public static final int ONEAL_DEAD = 32;
+	public static final int ONEAL_LEFT_0 = 57;
+	public static final int ONEAL_LEFT_1 = 58;
+	public static final int ONEAL_LEFT_2 = 59;
+	public static final int ONEAL_LEFT_3 = 60;
+	public static final int ONEAL_RIGHT_0 = 61;
+	public static final int ONEAL_RIGHT_1 = 62;
+	public static final int ONEAL_RIGHT_2 = 63;
+	public static final int ONEAL_RIGHT_3 = 64;
+	public static final int ONEAL_DEAD_0 = 65;
+	public static final int ONEAL_DEAD_1 = 66;
+	public static final int ONEAL_DEAD_2 = 67;
+	public static final int ONEAL_DEAD_3 = 68;
+	public static final int ONEAL_DEAD_4 = 69;
 
 	// Enemies - Doll
-	public static final int DOLL_LEFT1 = 33;
-	public static final int DOLL_LEFT2 = 34;
-	public static final int DOLL_LEFT3 = 35;
-	public static final int DOLL_RIGHT1 = 36;
-	public static final int DOLL_RIGHT2 = 37;
-	public static final int DOLL_RIGHT3 = 38;
-	public static final int DOLL_DEAD = 39;
+	public static final int DOLL_LEFT_0 = 70;
+	public static final int DOLL_LEFT_1 = 71;
+	public static final int DOLL_LEFT_2 = 72;
+	public static final int DOLL_LEFT_3 = 73;
+	public static final int DOLL_RIGHT_0 = 74;
+	public static final int DOLL_RIGHT_1 = 75;
+	public static final int DOLL_RIGHT_2 = 76;
+	public static final int DOLL_RIGHT_3 = 77;
+	public static final int DOLL_DEAD_0 = 78;
+	public static final int DOLL_DEAD_1 = 79;
+	public static final int DOLL_DEAD_2 = 80;
+	public static final int DOLL_DEAD_3 = 81;
+	public static final int DOLL_DEAD_4 = 82;
+
 
 	// Enemies - Minvo
-	public static final int MINVO_LEFT1 = 40;
-	public static final int MINVO_LEFT2 = 41;
-	public static final int MINVO_LEFT3 = 42;
-	public static final int MINVO_RIGHT1 = 43;
-	public static final int MINVO_RIGHT2 = 44;
-	public static final int MINVO_RIGHT3 = 45;
-	public static final int MINVO_DEAD = 46;
+	public static final int MINVO_LEFT_0 = 83;
+	public static final int MINVO_LEFT_1 = 84;
+	public static final int MINVO_LEFT_2 = 85;
+	public static final int MINVO_LEFT_3 = 86;	
+	public static final int MINVO_RIGHT_0 = 87;
+	public static final int MINVO_RIGHT_1 = 88;
+	public static final int MINVO_RIGHT_2 = 89;
+	public static final int MINVO_RIGHT_3 = 90;
+	public static final int MINVO_DEAD_0 = 91;
+	public static final int MINVO_DEAD_1 = 92;
+	public static final int MINVO_DEAD_2 = 93;
+	public static final int MINVO_DEAD_3 = 94;
+	public static final int MINVO_DEAD_4 = 95;
 
-	// Enemies - Kondoria
-	public static final int KONDORIA_LEFT1 = 47;
-	public static final int KONDORIA_LEFT2 = 48;
-	public static final int KONDORIA_LEFT3 = 49;
-	public static final int KONDORIA_RIGHT1 = 50;
-	public static final int KONDORIA_RIGHT2 = 51;
-	public static final int KONDORIA_RIGHT3 = 52;
-	public static final int KONDORIA_DEAD = 53;
+	
+	// Enemies - Ghost
+	public static final int GHOST_LEFT_0 = 96;
+	public static final int GHOST_LEFT_1 = 97;
+	public static final int GHOST_LEFT_2 = 98;
+	public static final int GHOST_LEFT_3 = 99;
+	public static final int GHOST_RIGHT_0 = 100;
+	public static final int GHOST_RIGHT_1 = 101;
+	public static final int GHOST_RIGHT_2 = 102;
+	public static final int GHOST_RIGHT_3 = 103;
+	public static final int GHOST_DEAD_0 = 104;
+	public static final int GHOST_DEAD_1 = 105;
+	public static final int GHOST_DEAD_2 = 106;
+	public static final int GHOST_DEAD_3 = 107;
+	public static final int GHOST_DEAD_4 = 108;
 
-	// Mob dead
-	public static final int MOB_DEAD1 = 54;
-	public static final int MOB_DEAD2 = 55;
-	public static final int MOB_DEAD3 = 56;
 
 	// Bombs
-	public static final int BOMB = 57;
-	public static final int BOMB_1 = 58;
-	public static final int BOMB_2 = 59;
-	public static final int BOMB_EXPLODED = 60;
-	public static final int BOMB_EXPLODED1 = 61;
-	public static final int BOMB_EXPLODED2 = 62;
+	
+	public static final int PLAYER1_BOMB_0 = 109;
+	public static final int PLAYER1_BOMB_1 = 110;
+	public static final int PLAYER1_BOMB_2 = 111;
+	public static final int PLAYER1_BOMB_3 = 112;
+	public static final int PLAYER1_BOMB_4 = 113;
+	public static final int PLAYER1_BOMB_5 = 114;
+	public static final int PLAYER1_BOMB_6 = 115;
+	public static final int PLAYER1_BOMB_7 = 116;
+	public static final int PLAYER1_BOMB_8 = 117;
+	public static final int PLAYER1_BOMB_9 = 118;
+	public static final int PLAYER2_BOMB_0 = 119;
+	public static final int PLAYER2_BOMB_1 = 120;
+	public static final int PLAYER2_BOMB_2 = 121;
+	public static final int BOMB_EXPLODED_0 = 122;
+	public static final int BOMB_EXPLODED_1 = 123;
+	public static final int BOMB_EXPLODED_2 = 124;
 
 	// Explosions
-	public static final int EXPLOSION_VERTICAL = 63;
-	public static final int EXPLOSION_VERTICAL1 = 64;
-	public static final int EXPLOSION_VERTICAL2 = 65;
-	public static final int EXPLOSION_HORIZONTAL = 66;
-	public static final int EXPLOSION_HORIZONTAL1 = 67;
-	public static final int EXPLOSION_HORIZONTAL2 = 68;
-	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST = 69;
-	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST1 = 70;
-	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST2 = 71;
-	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST = 72;
-	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST1 = 73;
-	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST2 = 74;
-	public static final int EXPLOSION_VERTICAL_TOP_LAST = 75;
-	public static final int EXPLOSION_VERTICAL_TOP_LAST1 = 76;
-	public static final int EXPLOSION_VERTICAL_TOP_LAST2 = 77;
-	public static final int EXPLOSION_VERTICAL_DOWN_LAST = 78;
-	public static final int EXPLOSION_VERTICAL_DOWN_LAST1 = 79;
-	public static final int EXPLOSION_VERTICAL_DOWN_LAST2 = 80;
+	public static final int EXPLOSION_VERTICAL_0 = 125;
+	public static final int EXPLOSION_VERTICAL_1 = 126;
+	public static final int EXPLOSION_VERTICAL_2 = 127;
+	public static final int EXPLOSION_HORIZONTAL_0 = 128;
+	public static final int EXPLOSION_HORIZONTAL_1 = 129;
+	public static final int EXPLOSION_HORIZONTAL_2 = 130;
+	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_0 = 131;
+	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_1 = 132;
+	public static final int EXPLOSION_HORIZONTAL_LEFT_LAST_2 = 133;
+
+	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_0 = 134;
+	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_1 = 135;
+	public static final int EXPLOSION_HORIZONTAL_RIGHT_LAST_2 = 136;
+	
+	public static final int EXPLOSION_VERTICAL_TOP_LAST_0 = 137;
+	public static final int EXPLOSION_VERTICAL_TOP_LAST_1 = 138;
+	public static final int EXPLOSION_VERTICAL_TOP_LAST_2 = 139;
+	public static final int EXPLOSION_VERTICAL_DOWN_LAST_0 = 140;
+	public static final int EXPLOSION_VERTICAL_DOWN_LAST_1 = 141;
+	public static final int EXPLOSION_VERTICAL_DOWN_LAST_2 = 142;
 
 	// Brick explosions
-	public static final int BRICK_EXPLODED = 81;
-	public static final int BRICK_EXPLODED1 = 82;
-	public static final int BRICK_EXPLODED2 = 83;
+
+	public static final int BRICK_EXPLODED_0 = 143;
+	public static final int BRICK_EXPLODED_1 = 144;
+	public static final int BRICK_EXPLODED_2 = 145;
 
 	// Powerups
-	public static final int POWERUP_BOMBS = 84;
-	public static final int POWERUP_FLAMES = 85;
-	public static final int POWERUP_SPEED = 86;
-	public static final int POWERUP_WALLPASS = 87;
-	public static final int POWERUP_HEALTH_UP = 88;
-	public static final int POWERUP_BOMB_PASS = 89;
-	public static final int POWERUP_FLAME_PASS = 90;
-	public static final int POWERUP_DETONATOR_PASS = 91;
-	public static final int POWERUP_SPEED_PASS = 92;
-	public static final int POWERUP_WALL_PASS = 93;
-	public static final int ANIMATION_NULL = 94;
-	
+	public static final int POWERUP_BOMBS = 146;
+	public static final int POWERUP_FLAMES = 147;
+	public static final int POWERUP_SPEED = 148;
+	public static final int POWERUP_WALLPASS = 149;
+	public static final int POWERUP_HEALTH_UP = 150;
+	public static final int POWERUP_BOMB_PASS = 151;
+	public static final int POWERUP_FLAME_PASS = 152;
+	public static final int POWERUP_DETONATOR_PASS = 153;
+	public static final int POWERUP_SPEED_PASS = 154;
+	public static final int POWERUP_WALL_PASS = 155;
+	public static final int ANIMATION_NULL = 156;
 
-	static {
-		sprites[GRASS] = new Sprite(DEFAULT_SIZE, 6, 0, SpriteSheet.tiles, 16, 16);
-		sprites[BRICK] = new Sprite(DEFAULT_SIZE, 7, 0, SpriteSheet.tiles, 16, 16);
-		sprites[WALL] = new Sprite(DEFAULT_SIZE, 5, 0, SpriteSheet.tiles, 16, 16);
-		sprites[PORTAL] = new Sprite(DEFAULT_SIZE, 4, 0, SpriteSheet.tiles, 14, 14);
-
-		// Player sprites
-		sprites[PLAYER_UP] = new Sprite(DEFAULT_SIZE, 0, 0, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_DOWN] = new Sprite(DEFAULT_SIZE, 2, 0, SpriteSheet.tiles, 12, 15);
-		sprites[PLAYER_LEFT] = new Sprite(DEFAULT_SIZE, 3, 0, SpriteSheet.tiles, 10, 15);
-		sprites[PLAYER_RIGHT] = new Sprite(DEFAULT_SIZE, 1, 0, SpriteSheet.tiles, 10, 16);
-		sprites[PLAYER_UP_1] = new Sprite(DEFAULT_SIZE, 0, 1, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_UP_2] = new Sprite(DEFAULT_SIZE, 0, 2, SpriteSheet.tiles, 12, 15);
-		sprites[PLAYER_DOWN_1] = new Sprite(DEFAULT_SIZE, 2, 1, SpriteSheet.tiles, 12, 15);
-		sprites[PLAYER_DOWN_2] = new Sprite(DEFAULT_SIZE, 2, 2, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_LEFT_1] = new Sprite(DEFAULT_SIZE, 3, 1, SpriteSheet.tiles, 11, 16);
-		sprites[PLAYER_LEFT_2] = new Sprite(DEFAULT_SIZE, 3, 2, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_RIGHT_1] = new Sprite(DEFAULT_SIZE, 1, 1, SpriteSheet.tiles, 11, 16);
-		sprites[PLAYER_RIGHT_2] = new Sprite(DEFAULT_SIZE, 1, 2, SpriteSheet.tiles, 12, 16);
-		sprites[PLAYER_DEAD1] = new Sprite(DEFAULT_SIZE, 4, 2, SpriteSheet.tiles, 14, 16);
-		sprites[PLAYER_DEAD2] = new Sprite(DEFAULT_SIZE, 5, 2, SpriteSheet.tiles, 13, 15);
-		sprites[PLAYER_DEAD3] = new Sprite(DEFAULT_SIZE, 6, 2, SpriteSheet.tiles, 16, 16);
-
-		// Balloom sprites
-		sprites[BALLOOM_LEFT1] = new Sprite(DEFAULT_SIZE, 9, 0, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_LEFT2] = new Sprite(DEFAULT_SIZE, 9, 1, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_LEFT3] = new Sprite(DEFAULT_SIZE, 9, 2, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_RIGHT1] = new Sprite(DEFAULT_SIZE, 10, 0, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_RIGHT2] = new Sprite(DEFAULT_SIZE, 10, 1, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_RIGHT3] = new Sprite(DEFAULT_SIZE, 10, 2, SpriteSheet.tiles, 16, 16);
-		sprites[BALLOOM_DEAD] = new Sprite(DEFAULT_SIZE, 9, 3, SpriteSheet.tiles, 16, 16);
-
-		// Oneal sprites
-		sprites[ONEAL_LEFT1] = new Sprite(DEFAULT_SIZE, 11, 0, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_LEFT2] = new Sprite(DEFAULT_SIZE, 11, 1, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_LEFT3] = new Sprite(DEFAULT_SIZE, 11, 2, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_RIGHT1] = new Sprite(DEFAULT_SIZE, 12, 0, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_RIGHT2] = new Sprite(DEFAULT_SIZE, 12, 1, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_RIGHT3] = new Sprite(DEFAULT_SIZE, 12, 2, SpriteSheet.tiles, 16, 16);
-		sprites[ONEAL_DEAD] = new Sprite(DEFAULT_SIZE, 11, 3, SpriteSheet.tiles, 16, 16);
-
-		// Doll sprites
-		sprites[DOLL_LEFT1] = new Sprite(DEFAULT_SIZE, 13, 0, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_LEFT2] = new Sprite(DEFAULT_SIZE, 13, 1, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_LEFT3] = new Sprite(DEFAULT_SIZE, 13, 2, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_RIGHT1] = new Sprite(DEFAULT_SIZE, 14, 0, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_RIGHT2] = new Sprite(DEFAULT_SIZE, 14, 1, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_RIGHT3] = new Sprite(DEFAULT_SIZE, 14, 2, SpriteSheet.tiles, 16, 16);
-		sprites[DOLL_DEAD] = new Sprite(DEFAULT_SIZE, 13, 3, SpriteSheet.tiles, 16, 16);
-
-		// Minvo sprites
-		sprites[MINVO_LEFT1] = new Sprite(DEFAULT_SIZE, 8, 5, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_LEFT2] = new Sprite(DEFAULT_SIZE, 8, 6, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_LEFT3] = new Sprite(DEFAULT_SIZE, 8, 7, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_RIGHT1] = new Sprite(DEFAULT_SIZE, 9, 5, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_RIGHT2] = new Sprite(DEFAULT_SIZE, 9, 6, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_RIGHT3] = new Sprite(DEFAULT_SIZE, 9, 7, SpriteSheet.tiles, 16, 16);
-		sprites[MINVO_DEAD] = new Sprite(DEFAULT_SIZE, 8, 8, SpriteSheet.tiles, 16, 16);
-
-		// Kondoria sprites
-		sprites[KONDORIA_LEFT1] = new Sprite(DEFAULT_SIZE, 10, 5, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_LEFT2] = new Sprite(DEFAULT_SIZE, 10, 6, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_LEFT3] = new Sprite(DEFAULT_SIZE, 10, 7, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_RIGHT1] = new Sprite(DEFAULT_SIZE, 11, 5, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_RIGHT2] = new Sprite(DEFAULT_SIZE, 11, 6, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_RIGHT3] = new Sprite(DEFAULT_SIZE, 11, 7, SpriteSheet.tiles, 16, 16);
-		sprites[KONDORIA_DEAD] = new Sprite(DEFAULT_SIZE, 10, 8, SpriteSheet.tiles, 16, 16);
-
-		// Mob dead sprites
-		sprites[MOB_DEAD1] = new Sprite(DEFAULT_SIZE, 15, 0, SpriteSheet.tiles, 16, 16);
-		sprites[MOB_DEAD2] = new Sprite(DEFAULT_SIZE, 15, 1, SpriteSheet.tiles, 16, 16);
-		sprites[MOB_DEAD3] = new Sprite(DEFAULT_SIZE, 15, 2, SpriteSheet.tiles, 16, 16);
-
-		// Bomb sprites
-		sprites[BOMB] = new Sprite(DEFAULT_SIZE, 0, 3, SpriteSheet.tiles, 15, 15);
-		sprites[BOMB_1] = new Sprite(DEFAULT_SIZE, 1, 3, SpriteSheet.tiles, 13, 15);
-		sprites[BOMB_2] = new Sprite(DEFAULT_SIZE, 2, 3, SpriteSheet.tiles, 12, 14);
-
-		// Explosion sprites
-		sprites[BOMB_EXPLODED] = new Sprite(DEFAULT_SIZE, 0, 4, SpriteSheet.tiles, 16, 16);
-		sprites[BOMB_EXPLODED1] = new Sprite(DEFAULT_SIZE, 0, 5, SpriteSheet.tiles, 16, 16);
-		sprites[BOMB_EXPLODED2] = new Sprite(DEFAULT_SIZE, 0, 6, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL] = new Sprite(DEFAULT_SIZE, 1, 5, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL1] = new Sprite(DEFAULT_SIZE, 2, 5, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL2] = new Sprite(DEFAULT_SIZE, 3, 5, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL] = new Sprite(DEFAULT_SIZE, 1, 7, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL1] = new Sprite(DEFAULT_SIZE, 1, 8, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL2] = new Sprite(DEFAULT_SIZE, 1, 9, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST] = new Sprite(DEFAULT_SIZE, 0, 7, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST1] = new Sprite(DEFAULT_SIZE, 0, 8, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_LEFT_LAST2] = new Sprite(DEFAULT_SIZE, 0, 9, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST] = new Sprite(DEFAULT_SIZE, 2, 7, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST1] = new Sprite(DEFAULT_SIZE, 2, 8, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_HORIZONTAL_RIGHT_LAST2] = new Sprite(DEFAULT_SIZE, 2, 9, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_TOP_LAST] = new Sprite(DEFAULT_SIZE, 1, 4, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_TOP_LAST1] = new Sprite(DEFAULT_SIZE, 2, 4, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_TOP_LAST2] = new Sprite(DEFAULT_SIZE, 3, 4, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST] = new Sprite(DEFAULT_SIZE, 1, 6, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST1] = new Sprite(DEFAULT_SIZE, 2, 6, SpriteSheet.tiles, 16, 16);
-		sprites[EXPLOSION_VERTICAL_DOWN_LAST2] = new Sprite(DEFAULT_SIZE, 3, 6, SpriteSheet.tiles, 16, 16);
-
-		// Brick explosion sprites
-		sprites[BRICK_EXPLODED] = new Sprite(DEFAULT_SIZE, 7, 1, SpriteSheet.tiles, 16, 16);
-		sprites[BRICK_EXPLODED1] = new Sprite(DEFAULT_SIZE, 7, 2, SpriteSheet.tiles, 16, 16);
-		sprites[BRICK_EXPLODED2] = new Sprite(DEFAULT_SIZE, 7, 3, SpriteSheet.tiles, 16, 16);
-
-		// Powerup sprites
-		sprites[POWERUP_BOMBS] = new Sprite(DEFAULT_SIZE, 0, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_FLAMES] = new Sprite(DEFAULT_SIZE, 1, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_SPEED] = new Sprite(DEFAULT_SIZE, 2, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_WALLPASS] = new Sprite(DEFAULT_SIZE, 3, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_HEALTH_UP] = new Sprite(DEFAULT_SIZE, 4, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_BOMB_PASS] = new Sprite(DEFAULT_SIZE, 5, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_FLAME_PASS] = new Sprite(DEFAULT_SIZE, 6, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_DETONATOR_PASS] = new Sprite(DEFAULT_SIZE, 7, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_SPEED_PASS] = new Sprite(DEFAULT_SIZE, 8, 10, SpriteSheet.tiles, 16, 16);
-		sprites[POWERUP_WALL_PASS] = new Sprite(DEFAULT_SIZE, 9, 10, SpriteSheet.tiles, 16, 16);
-		sprites[ANIMATION_NULL] = new Sprite(DEFAULT_SIZE, 11, 11, SpriteSheet.tiles, 16, 16);
+	/**
+	 * Gets a sprite by its ID, loading it only if needed
+	 */
+	public static Sprite getSprite(int id) {
+		if (!spriteCache.containsKey(id)) {
+			loadSprite(id);
+		}
+		return spriteCache.get(id);
 	}
 
-	public Sprite(int size, int x, int y, SpriteSheet sheet, int rw, int rh) {
-		SIZE = size;
+	/**
+	 * Load a specific sprite into the cache
+	 */
+	private static void loadSprite(int id) {
+		Sprite sprite = null;
+
+		switch (id) {
+			case GRASS:
+				sprite = new Sprite("grass.png");
+				break;
+			case BRICK:
+				sprite = new Sprite("brick.png");
+				break;
+			case WALL:
+				sprite = new Sprite("wall.png");
+				break;
+			case PORTAL:
+				sprite = new Sprite("portal.png");
+				break;
+			// Player1 sprites
+			case PLAYER1_UP_0:
+				sprite = new Sprite("player1_up_0.png");
+				break;
+			case PLAYER1_UP_1:
+				sprite = new Sprite("player1_up_1.png");
+				break;
+			case PLAYER1_UP_2:
+				sprite = new Sprite("player1_up_2.png");
+				break;
+			case PLAYER1_DOWN_0:
+				sprite = new Sprite("player1_down_0.png");
+				break;
+			case PLAYER1_DOWN_1:
+				sprite = new Sprite("player1_down_1.png");
+				break;
+			case PLAYER1_DOWN_2:
+				sprite = new Sprite("player1_down_2.png");
+				break;
+			case PLAYER1_LEFT_0:
+				sprite = new Sprite("player1_left_0.png");
+				break;
+			case PLAYER1_LEFT_1:
+				sprite = new Sprite("player1_left_1.png");
+				break;
+			case PLAYER1_LEFT_2:
+				sprite = new Sprite("player1_left_2.png");
+				break;
+			case PLAYER1_RIGHT_0:
+				sprite = new Sprite("player1_right_0.png");
+				break;
+			case PLAYER1_RIGHT_1:
+				sprite = new Sprite("player1_right_1.png");
+				break;
+			case PLAYER1_RIGHT_2:
+				sprite = new Sprite("player1_right_2.png");
+				break;
+			case PLAYER1_DEAD_0:
+				sprite = new Sprite("player1_dead_0.png");
+				break;
+			case PLAYER1_DEAD_1:
+				sprite = new Sprite("player1_dead_1.png");
+				break;
+			case PLAYER1_DEAD_2:
+				sprite = new Sprite("player1_dead_2.png");
+				break;
+			case PLAYER1_DEAD_3:
+				sprite = new Sprite("player1_dead_3.png");
+				break;
+			case PLAYER1_DEAD_4:
+				sprite = new Sprite("player1_dead_4.png");
+				break;
+			case PLAYER1_DEAD_5:
+				sprite = new Sprite("player1_dead_5.png");
+				break;
+			case PLAYER1_DEAD_6:
+				sprite = new Sprite("player1_dead_6.png");
+				break;
+			case PLAYER1_DEAD_7:
+				sprite = new Sprite("player1_dead_7.png");
+				break;
+			// Player2 sprites
+			case PLAYER2_UP_0:
+				sprite = new Sprite("player2_up_0.png");
+				break;
+			case PLAYER2_UP_1:
+				sprite = new Sprite("player2_up_1.png");
+				break;
+			case PLAYER2_UP_2:
+				sprite = new Sprite("player2_up_2.png");
+				break;
+			case PLAYER2_DOWN_0:
+				sprite = new Sprite("player2_down_0.png");
+				break;
+			case PLAYER2_DOWN_1:
+				sprite = new Sprite("player2_down_1.png");
+				break;
+			case PLAYER2_DOWN_2:
+				sprite = new Sprite("player2_down_2.png");
+				break;
+			case PLAYER2_LEFT_0:
+				sprite = new Sprite("player2_left_0.png");
+				break;
+			case PLAYER2_LEFT_1:
+				sprite = new Sprite("player2_left_1.png");
+				break;
+			case PLAYER2_LEFT_2:
+				sprite = new Sprite("player2_left_2.png");
+				break;
+			case PLAYER2_RIGHT_0:
+				sprite = new Sprite("player2_right_0.png");
+				break;
+			case PLAYER2_RIGHT_1:
+				sprite = new Sprite("player2_right_1.png");
+				break;
+			case PLAYER2_RIGHT_2:
+				sprite = new Sprite("player2_right_2.png");
+				break;
+			case PLAYER2_DEAD_0:
+				sprite = new Sprite("player2_dead_0.png");
+				break;
+			case PLAYER2_DEAD_1:
+				sprite = new Sprite("player2_dead_1.png");
+				break;
+			case PLAYER2_DEAD_2:
+				sprite = new Sprite("player2_dead_2.png");
+				break;
+			case PLAYER2_DEAD_3:
+				sprite = new Sprite("player2_dead_3.png");
+				break;
+			case PLAYER2_DEAD_4:
+				sprite = new Sprite("player2_dead_4.png");
+				break;
+			case PLAYER2_DEAD_5:
+				sprite = new Sprite("player2_dead_5.png");
+				break;
+			case PLAYER2_DEAD_6:
+				sprite = new Sprite("player2_dead_6.png");
+				break;
+			case PLAYER2_DEAD_7:
+				sprite = new Sprite("player2_dead_7.png");
+				break;
+			// Balloom sprites
+			case BALLOOM_LEFT_0:
+				sprite = new Sprite("balloom_left_0.png");
+				break;
+			case BALLOOM_LEFT_1:
+				sprite = new Sprite("balloom_left_1.png");
+				break;
+			case BALLOOM_LEFT_2:
+				sprite = new Sprite("balloom_left_2.png");
+				break;
+			case BALLOOM_LEFT_3:
+				sprite = new Sprite("balloom_left_3.png");
+				break;
+			case BALLOOM_RIGHT_0:
+				sprite = new Sprite("balloom_right_0.png");
+				break;
+			case BALLOOM_RIGHT_1:
+				sprite = new Sprite("balloom_right_1.png");
+				break;	
+			case BALLOOM_RIGHT_2:
+				sprite = new Sprite("balloom_right_2.png");
+				break;
+			case BALLOOM_RIGHT_3:
+				sprite = new Sprite("balloom_right_3.png");
+				break;
+			case BALLOOM_DEAD_0:
+				sprite = new Sprite("balloom_dead_0.png");
+				break;
+			case BALLOOM_DEAD_1:
+				sprite = new Sprite("balloom_dead_1.png");
+				break;
+			case BALLOOM_DEAD_2:
+				sprite = new Sprite("balloom_dead_2.png");
+				break;
+			case BALLOOM_DEAD_3:
+				sprite = new Sprite("balloom_dead_3.png");
+				break;
+			case BALLOOM_DEAD_4:
+				sprite = new Sprite("balloom_dead_4.png");
+				break;
+				
+				
+			// Oneal sprites
+			case ONEAL_LEFT_0:
+				sprite = new Sprite("oneal_left_0.png");
+				break;
+			case ONEAL_LEFT_1:
+				sprite = new Sprite("oneal_left_1.png");
+				break;
+			case ONEAL_LEFT_2:
+				sprite = new Sprite("oneal_left_2.png");
+				break;
+			case ONEAL_LEFT_3:
+				sprite = new Sprite("oneal_left_3.png");
+				break;
+			case ONEAL_RIGHT_0:
+				sprite = new Sprite("oneal_right_0.png");
+				break;
+			case ONEAL_RIGHT_1:
+				sprite = new Sprite("oneal_right_1.png");
+				break;
+			case ONEAL_RIGHT_2:
+				sprite = new Sprite("oneal_right_2.png");
+				break;
+			case ONEAL_RIGHT_3:
+				sprite = new Sprite("oneal_right_3.png");
+				break;
+			case ONEAL_DEAD_0:
+				sprite = new Sprite("oneal_dead_0.png");
+				break;
+			case ONEAL_DEAD_1:
+				sprite = new Sprite("oneal_dead_1.png");
+				break;
+			case ONEAL_DEAD_2:
+				sprite = new Sprite("oneal_dead_2.png");
+				break;
+			case ONEAL_DEAD_3:
+				sprite = new Sprite("oneal_dead_3.png");
+				break;
+			case ONEAL_DEAD_4:
+				sprite = new Sprite("oneal_dead_4.png");
+				break;
+			// Doll sprites
+			case DOLL_LEFT_0:
+				sprite = new Sprite("doll_left_0.png");
+				break;
+			case DOLL_LEFT_1:
+				sprite = new Sprite("doll_left_1.png");
+				break;
+			case DOLL_LEFT_2:
+				sprite = new Sprite("doll_left_2.png");
+				break;
+			case DOLL_LEFT_3:
+				sprite = new Sprite("doll_left_3.png");
+				break;
+			case DOLL_RIGHT_0:
+				sprite = new Sprite("doll_right_0.png");
+				break;
+			case DOLL_RIGHT_1:
+				sprite = new Sprite("doll_right_1.png");
+				break;
+			case DOLL_RIGHT_2:
+				sprite = new Sprite("doll_right_2.png");
+				break;
+			case DOLL_RIGHT_3:
+				sprite = new Sprite("doll_right_3.png");
+				break;
+			case DOLL_DEAD_0:
+				sprite = new Sprite("doll_dead_0.png");
+				break;
+			case DOLL_DEAD_1:
+				sprite = new Sprite("doll_dead_1.png");
+				break;
+			case DOLL_DEAD_2:
+				sprite = new Sprite("doll_dead_2.png");
+				break;	
+			case DOLL_DEAD_3:
+				sprite = new Sprite("doll_dead_3.png");
+				break;
+			case DOLL_DEAD_4:
+				sprite = new Sprite("doll_dead_4.png");
+				break;
+			// Minvo sprites
+			case MINVO_LEFT_0:
+				sprite = new Sprite("minvo_left_0.png");
+				break;
+			case MINVO_LEFT_1:
+				sprite = new Sprite("minvo_left_1.png");
+				break;
+			case MINVO_LEFT_2:
+				sprite = new Sprite("minvo_left_2.png");
+				break;
+			case MINVO_LEFT_3:
+				sprite = new Sprite("minvo_left_3.png");
+				break;
+			case MINVO_RIGHT_0:
+				sprite = new Sprite("minvo_right_0.png");
+				break;
+			case MINVO_RIGHT_1:
+				sprite = new Sprite("minvo_right_1.png");
+				break;
+			case MINVO_RIGHT_2:
+				sprite = new Sprite("minvo_right_2.png");
+				break;
+			case MINVO_RIGHT_3:
+				sprite = new Sprite("minvo_right_3.png");
+				break;
+			case MINVO_DEAD_0:
+				sprite = new Sprite("minvo_dead_0.png");
+				break;
+			case MINVO_DEAD_1:
+				sprite = new Sprite("minvo_dead_1.png");
+				break;
+			case MINVO_DEAD_2:
+				sprite = new Sprite("minvo_dead_2.png");
+				break;
+			case MINVO_DEAD_3:
+				sprite = new Sprite("minvo_dead_3.png");
+				break;
+			case MINVO_DEAD_4:
+				sprite = new Sprite("minvo_dead_4.png");
+				break;
+				
+
+			case GHOST_LEFT_0:
+				sprite = new Sprite("ghost_left_0.png");
+				break;
+			case GHOST_LEFT_1:
+				sprite = new Sprite("ghost_left_1.png");
+				break;
+			case GHOST_LEFT_2:
+				sprite = new Sprite("ghost_left_2.png");
+				break;
+			case GHOST_LEFT_3:
+				sprite = new Sprite("ghost_left_3.png");
+				break;
+			case GHOST_RIGHT_0:
+				sprite = new Sprite("ghost_right_0.png");
+				break;
+			case GHOST_RIGHT_1:
+				sprite = new Sprite("ghost_right_1.png");
+				break;
+			case GHOST_RIGHT_2:
+				sprite = new Sprite("ghost_right_2.png");
+				break;
+			case GHOST_RIGHT_3:
+				sprite = new Sprite("ghost_right_3.png");
+				break;
+			case GHOST_DEAD_0:
+				sprite = new Sprite("ghost_dead_0.png");
+				break;
+			case GHOST_DEAD_1:
+				sprite = new Sprite("ghost_dead_1.png");
+				break;
+			case GHOST_DEAD_2:
+				sprite = new Sprite("ghost_dead_2.png");
+				break;
+			case GHOST_DEAD_3:
+				sprite = new Sprite("ghost_dead_3.png");
+				break;
+			case GHOST_DEAD_4:
+				sprite = new Sprite("ghost_dead_4.png");
+				break;
+
+			// Bomb sprites
+			
+			case PLAYER1_BOMB_0:
+				sprite = new Sprite("player1_bomb_0.png");
+				break;
+			case PLAYER1_BOMB_1:
+				sprite = new Sprite("player1_bomb_1.png");
+				break;
+			case PLAYER1_BOMB_2:
+				sprite = new Sprite("player1_bomb_2.png");
+				break;
+			
+			case PLAYER2_BOMB_0:
+				sprite = new Sprite("player2_bomb_0.png");
+				break;
+			case PLAYER2_BOMB_1:
+				sprite = new Sprite("player2_bomb_1.png");
+				break;
+			case PLAYER2_BOMB_2:
+				sprite = new Sprite("player2_bomb_2.png");
+				break;
+			case BOMB_EXPLODED_0:
+				sprite = new Sprite("bomb_exploded_0.png");
+				break;
+			case BOMB_EXPLODED_1:
+				sprite = new Sprite("bomb_exploded_1.png");
+				break;
+			case BOMB_EXPLODED_2:
+				sprite = new Sprite("bomb_exploded_2.png");
+				break;
+				
+			// Explosion sprites
+			
+			case EXPLOSION_VERTICAL_0:
+				sprite = new Sprite("explosion_vertical_0.png");
+				break;
+			case EXPLOSION_VERTICAL_1:
+				sprite = new Sprite("explosion_vertical_1.png");
+				break;
+			case EXPLOSION_VERTICAL_2:
+				sprite = new Sprite("explosion_vertical_2.png");
+				break;
+			
+			case EXPLOSION_HORIZONTAL_0:
+				sprite = new Sprite("explosion_horizontal_0.png");
+				break;
+			case EXPLOSION_HORIZONTAL_1:
+				sprite = new Sprite("explosion_horizontal_1.png");
+				break;
+			case EXPLOSION_HORIZONTAL_2:
+				sprite = new Sprite("explosion_horizontal_2.png");
+				break;	
+			
+			case EXPLOSION_HORIZONTAL_LEFT_LAST_0:
+				sprite = new Sprite("explosion_horizontal_left_last_0.png");
+				break;
+			case EXPLOSION_HORIZONTAL_LEFT_LAST_1:
+				sprite = new Sprite("explosion_horizontal_left_last_1.png");
+				break;
+			case EXPLOSION_HORIZONTAL_LEFT_LAST_2:
+				sprite = new Sprite("explosion_horizontal_left_last_2.png");
+				break;
+			
+			case EXPLOSION_HORIZONTAL_RIGHT_LAST_0:
+				sprite = new Sprite("explosion_horizontal_right_last_0.png");
+				break;
+			case EXPLOSION_HORIZONTAL_RIGHT_LAST_1:
+				sprite = new Sprite("explosion_horizontal_right_last_1.png");
+				break;
+			case EXPLOSION_HORIZONTAL_RIGHT_LAST_2:
+				sprite = new Sprite("explosion_horizontal_right_last_2.png");
+				break;
+		
+			case EXPLOSION_VERTICAL_TOP_LAST_0:
+				sprite = new Sprite("explosion_vertical_top_last_0.png");
+				break;
+			case EXPLOSION_VERTICAL_TOP_LAST_1:
+				sprite = new Sprite("explosion_vertical_top_last_1.png");
+				break;
+			case EXPLOSION_VERTICAL_TOP_LAST_2:
+				sprite = new Sprite("explosion_vertical_top_last_2.png");
+				break;
+			
+			case EXPLOSION_VERTICAL_DOWN_LAST_0:
+				sprite = new Sprite("explosion_vertical_down_last_0.png");
+				break;
+			case EXPLOSION_VERTICAL_DOWN_LAST_1:
+				sprite = new Sprite("explosion_vertical_down_last_1.png");
+				break;
+			case EXPLOSION_VERTICAL_DOWN_LAST_2:
+				sprite = new Sprite("explosion_vertical_down_last_2.png");
+				break;
+			// Brick explosion sprites
+			
+			case BRICK_EXPLODED_0:
+				sprite = new Sprite("brick_exploded_0.png");
+				break;
+			case BRICK_EXPLODED_1:
+				sprite = new Sprite("brick_exploded_1.png");
+				break;
+			case BRICK_EXPLODED_2:
+				sprite = new Sprite("brick_exploded_2.png");
+				break;
+			// Powerup sprites
+			case POWERUP_BOMBS:
+				sprite = new Sprite("powerup_bombs.png");
+				break;
+			case POWERUP_FLAMES:
+				sprite = new Sprite("powerup_flames.png");
+				break;
+			case POWERUP_SPEED:
+				sprite = new Sprite("powerup_speed.png");
+				break;
+			case POWERUP_WALLPASS:
+				sprite = new Sprite("powerup_wallpass.png");
+				break;
+			case POWERUP_HEALTH_UP:
+				sprite = new Sprite("powerup_health_up.png");
+				break;
+			case POWERUP_BOMB_PASS:
+				sprite = new Sprite("powerup_bombpass.png");
+				break;
+			case POWERUP_FLAME_PASS:
+				sprite = new Sprite("powerup_flamepass.png");
+				break;
+			case POWERUP_DETONATOR_PASS:
+				sprite = new Sprite("powerup_detonator.png");
+				break;
+			case POWERUP_SPEED_PASS:
+				sprite = new Sprite("powerup_speed.png");
+				break;
+			case POWERUP_WALL_PASS:
+				sprite = new Sprite("powerup_wallpass.png");
+				break;
+			case ANIMATION_NULL:
+				sprite = new Sprite("animation_null.png");
+				break;
+			default:
+				// Return a default/error sprite or null
+				sprite = new Sprite(0xFFFF0000); // Red square as error indicator
+		}
+
+		if (sprite != null) {
+			spriteCache.put(id, sprite);
+		}
+	}
+
+	public Sprite(String filename) {
+		SIZE = DEFAULT_SIZE;
 		_pixels = new int[SIZE * SIZE];
-		_x = x * SIZE;
-		_y = y * SIZE;
-		_sheet = sheet;
-		_realWidth = rw;
-		_realHeight = rh;
-		load();
+		BufferedImage image = SpriteManager.getImage(filename);
+		if (image != null) {
+			_realWidth = image.getWidth();
+			_realHeight = image.getHeight();
+			// Resize ảnh về kích thước mục tiêu
+			BufferedImage resizedImage = resizeImage(image, SIZE, SIZE);
+			resizedImage.getRGB(0, 0, SIZE, SIZE, _pixels, 0, SIZE);
+		}
 	}
 
-	public Sprite(int size, int color) {
-		SIZE = size;
+	public Sprite(int color) {
+		SIZE = DEFAULT_SIZE;
 		_pixels = new int[SIZE * SIZE];
 		setColor(color);
 	}
@@ -281,34 +734,6 @@ public class Sprite {
 		for (int i = 0; i < _pixels.length; i++) {
 			_pixels[i] = color;
 		}
-	}
-
-	private void load() {
-		for (int y = 0; y < SIZE; y++) {
-			for (int x = 0; x < SIZE; x++) {
-				_pixels[x + y * SIZE] = _sheet._pixels[(x + _x) + (y + _y) * _sheet.SIZE];
-			}
-		}
-	}
-
-	public static Sprite movingSprite(Sprite normal, Sprite x1, Sprite x2, int animate, int time) {
-		int calc = animate % time;
-		int diff = time / 3;
-
-		if (calc < diff) {
-			return normal;
-		}
-
-		if (calc < diff * 2) {
-			return x1;
-		}
-
-		return x2;
-	}
-
-	public static Sprite movingSprite(Sprite x1, Sprite x2, int animate, int time) {
-		int diff = time / 2;
-		return (animate % time > diff) ? x1 : x2;
 	}
 
 	public int getSize() {
@@ -325,42 +750,21 @@ public class Sprite {
 			PixelWriter pw = wr.getPixelWriter();
 			for (int x = 0; x < SIZE; x++) {
 				for (int y = 0; y < SIZE; y++) {
-					if (_pixels[x + y * SIZE] == TRANSPARENT_COLOR) {
-						pw.setArgb(x, y, 0);
-					} else {
-						pw.setArgb(x, y, _pixels[x + y * SIZE]);
-					}
+
+					pw.setArgb(x, y, _pixels[x + y * SIZE]);
+
 				}
 			}
-			Image input = new ImageView(wr).getImage();
-			cachedImage = resample(input, SCALED_SIZE / DEFAULT_SIZE);
+			cachedImage = new ImageView(wr).getImage();
 		}
 		return cachedImage;
 	}
 
-	private Image resample(Image input, int scaleFactor) {
-		final int W = (int) input.getWidth();
-		final int H = (int) input.getHeight();
-		final int S = scaleFactor;
-
-		WritableImage output = new WritableImage(
-				W * S,
-				H * S);
-
-		PixelReader reader = input.getPixelReader();
-		PixelWriter writer = output.getPixelWriter();
-
-		for (int y = 0; y < H; y++) {
-			for (int x = 0; x < W; x++) {
-				final int argb = reader.getArgb(x, y);
-				for (int dy = 0; dy < S; dy++) {
-					for (int dx = 0; dx < S; dx++) {
-						writer.setArgb(x * S + dx, y * S + dy, argb);
-					}
-				}
-			}
-		}
-
-		return output;
+	private BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
+		BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
+		java.awt.Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
+		g.dispose();
+		return resizedImage;
 	}
 }

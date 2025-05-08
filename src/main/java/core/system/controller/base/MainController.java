@@ -7,8 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MainController {
-    public static final int DEFAULT = 0;
-    public static final int CUSTOM = 1;
+   
 
     private Stage stage;
 

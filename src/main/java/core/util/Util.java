@@ -3,18 +3,16 @@ package core.util;
 import core.graphics.Sprite;
 import core.system.setting.Setting;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
-
 import java.util.Random;
 
 public class Util {
 
-   public static int toGrid(double  x) {
-      return (int)((x + Sprite.SCALED_SIZE / 2) / Sprite.SCALED_SIZE);
+   public static int toGrid(float x) {
+      return (int) ((x + Sprite.DEFAULT_SIZE / 2) / Sprite.DEFAULT_SIZE);
    }
 
    public static int randomDirection() {
@@ -25,7 +23,7 @@ public class Util {
 
    public static int uuid() {
       Random random = new Random();
-      int id = random.nextInt(100000);
+      int id = random.nextInt(10000);
       return id;
    }
 
@@ -42,7 +40,6 @@ public class Util {
       return random.nextInt(max - min + 1) + min;
    }
 
-
    /**
     * Generate a random map with custom dimensions
     * 
@@ -54,16 +51,22 @@ public class Util {
       MapGenerator.generateMap(level, height, width, name);
    }
 
-   public static void showNotificationWindow(String message) {
+   /**
+    * Logs a message to the console for developers
+    * 
+    * @param message The message to log
+    */
+   public static void logInfo(String message) {
+      System.out.println("[INFO] " + message);
+   }
 
-      javafx.application.Platform.runLater(() -> {
-         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-         alert.setTitle("Notification");
-         alert.setContentText(message);
-         alert.setHeaderText(null);
-         alert.showAndWait();
-
-      });
+   /**
+    * Logs an error message to the console for developers
+    * 
+    * @param message The error message to log
+    */
+   public static void logError(String message) {
+      System.err.println("[ERROR] " + message);
    }
 
    public static void showImage(String filePath, StackPane stackPane) {
@@ -106,4 +109,6 @@ public class Util {
 
    }
 
+
+   
 }

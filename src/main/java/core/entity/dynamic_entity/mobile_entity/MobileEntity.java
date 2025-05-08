@@ -9,39 +9,57 @@ import core.entity.dynamic_entity.static_entity.Brick;
 import core.graphics.Sprite;
 import core.system.game.GameControl;
 import core.system.setting.Setting;
+import core.sound.Sound;
+import core.util.Util;
 
 public class MobileEntity extends DynamicEntity {
-   protected boolean moving = false;
-   protected boolean bombpass = false;
-   protected int health = 1;
-   protected boolean isInvincible = false;
-   protected int invincibleTime = 180; // 180 frames = 1 giây
 
-   protected int direction = Setting.DOWN_MOVING;
+   protected transient boolean moving = false;
+   protected transient boolean flamePass = false;
+   protected transient boolean bombPass = false;
+   protected transient boolean speedUp = false;
+   protected transient boolean flameUp = false;
+   protected transient boolean bombUp = false;
+   protected transient boolean brickPass = false;
+   protected boolean dying = false;
 
-   protected final int ALIGN_TOLERANCE = 16;
+   protected transient float flamePassTime = 0;
+   protected transient float bombPassTime = 0;
+   protected transient float speedUpTime = 0;
+   protected transient float flameUpTime = 0;
+   protected transient float bombUpTime = 0;
+   protected transient float brickPassTime = 0;
 
-   protected float animationTimer = 0;
-   protected float deadAnimationTimer = 0;
-   protected final float ANIMATION_TIME = 0.05f; // Animation frame time in seconds
-   protected final float DEAD_ANIMATION_TIME = 0.5f; // Dead animation frame time
+   // Số mạng (health)
+   protected transient int health = 1;
+
+   // Còn bao nhiêu giây miễn thương
+   protected transient float invincibleRemaining = 0f;
+   protected transient boolean isInvincible = false;
+
+   // Bộ đếm cho blink animation khi miễn thương
+   protected transient float blinkTimer = 0f;
+   protected transient final float BLINK_INTERVAL = 0.1f; // nháy mỗi 0.1s
+
+   protected transient int direction = Setting.DOWN_MOVING;
+
+   protected transient final int ALIGN_TOLERANCE = 16;
+
+   protected transient float deadAnimationTimer = 0;
+   protected transient final float ANIMATION_TIME = 0.05f;
+   protected transient final float DEAD_ANIMATION_TIME = 0.3f;
 
    public MobileEntity(int x, int y, int imageId) {
       super(x, y, imageId);
    }
 
    @Override
-   public void update(double deltaTime) {
+   public void update(float deltaTime) {
+      updateInvincible(deltaTime);
       updateAnimation(deltaTime);
-      if (isInvincible) {
-         invincibleTime--;
-         if (invincibleTime <= 0) {
-            isInvincible = false;
-         }
-      }
    }
 
-   protected boolean move(int direction, int baseSpeed, double deltaTime) {
+   protected boolean move(int direction, int baseSpeed, float deltaTime) {
       if (health <= 0) {
          return false;
       }
@@ -49,11 +67,8 @@ public class MobileEntity extends DynamicEntity {
       this.direction = direction;
       moving = true;
 
-      // Calculate actual movement distance based on delta time
-      double speed = baseSpeed * deltaTime * 10; // Remove the (int) cast to allow fractional movement
-
-      double deltaX = 0;
-      double deltaY = 0;
+      float speed = baseSpeed * deltaTime * 10;
+      float deltaX = 0, deltaY = 0;
 
       switch (direction) {
          case Setting.RIGHT_MOVING:
@@ -68,28 +83,25 @@ public class MobileEntity extends DynamicEntity {
          case Setting.UP_MOVING:
             deltaY = -speed;
             break;
-         default:
-            break;
       }
 
-      double nextX = x + deltaX;
-      double nextY = y + deltaY;
+      float nextX = x + deltaX, nextY = y + deltaY;
 
       if (moveCollision(nextX, nextY)) {
-         if (Math.abs(deltaX) > 0 && Math.abs(nextY - this.getYTile() * Sprite.SCALED_SIZE) < ALIGN_TOLERANCE) {
-            if (!moveCollision(nextX, this.getYTile() * Sprite.SCALED_SIZE)) {
+         if (Math.abs(deltaX) > 0) {
+            float alignedY = Math.round(y / Sprite.DEFAULT_SIZE) * Sprite.DEFAULT_SIZE;
+            if (!moveCollision(nextX, alignedY)) {
                x = nextX;
-               y = this.getYTile() * Sprite.SCALED_SIZE;
+               y = alignedY;
                return true;
             }
-            return false;
-         } else if (Math.abs(deltaY) > 0 && Math.abs(nextX - this.getXTile() * Sprite.SCALED_SIZE) < ALIGN_TOLERANCE) {
-            if (!moveCollision(this.getXTile() * Sprite.SCALED_SIZE, nextY)) {
-               x = this.getXTile() * Sprite.SCALED_SIZE;
+         } else if (Math.abs(deltaY) > 0) {
+            float alignedX = Math.round(x / Sprite.DEFAULT_SIZE) * Sprite.DEFAULT_SIZE;
+            if (!moveCollision(alignedX, nextY)) {
+               x = alignedX;
                y = nextY;
                return true;
             }
-            return false;
          }
          return false;
       } else {
@@ -99,67 +111,117 @@ public class MobileEntity extends DynamicEntity {
       }
    }
 
-   protected boolean moveCollision(double nextX, double nextY) {
+   protected boolean moveCollision(float nextX, float nextY) {
       for (StaticEntity entity : GameControl.getStaticEntities()) {
          if (entity instanceof Bomb) {
-            if (checkCollision(this.x, this.y, entity.getX(), entity.getY())) {
+            if (checkCollision(this.x, this.y, entity.getX(), entity.getY()))
                continue;
-            }
-
-            if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
-               if (this.bombpass) {
-                  return false;
-               }
+            if (checkCollision(nextX, nextY, entity.getX(), entity.getY()) && !bombPass) {
                return true;
             }
          } else if (entity instanceof Brick) {
-            if (checkCollision(nextX, nextY, entity.getX(), entity.getY())) {
+            if (checkCollision(nextX, nextY, entity.getX(), entity.getY()) && !brickPass) {
                return true;
             }
          }
       }
-
       for (Entity bg : GameControl.getBackgroundEntities()) {
-         if (bg instanceof Grass) {
+         if (bg instanceof Grass)
             continue;
-         }
-         if (checkCollision(nextX, nextY, bg.getX(), bg.getY())) {
+         if (checkCollision(nextX, nextY, bg.getX(), bg.getY()) ) {
             return true;
          }
       }
       return false;
    }
 
-   protected boolean checkCollision(double x1, double y1, double x2, double y2) {
-      int size = Sprite.SCALED_SIZE;
-      return (x1 + size > x2 && x1 < x2 + size
-            && y1 + size > y2 && y1 < y2 + size);
+   protected boolean checkCollision(float x1, float y1, float x2, float y2) {
+      int size = Sprite.DEFAULT_SIZE;
+      return x1 + size > x2 && x1 < x2 + size
+            && y1 + size > y2 && y1 < y2 + size;
+   }
 
+   /** Giảm health, và vào trạng thái miễn thương nếu còn sống */
+   public void decreaseHealth() {
+      if (dying || isInvincible)
+         return;
+
+      health--;
+      if (this instanceof Bomber) {
+         Sound.playEffect("bomber_death");
+      }
+      if (health <= 0) {
+
+         if (this instanceof Bomber) {
+
+            if (GameControl.getBomberEntities().isEmpty()) {
+               Sound.stopMusic();
+               Sound.playEffect("game_over");
+            }
+         }
+         dead();
+
+      } else {
+         isInvincible = true;
+         invincibleRemaining = 3.0f;
+         blinkTimer = 0f;
+         moving = false;
+         animationStep = 0;
+         direction = Setting.ANIMATION_NULL;
+
+      }
+   }
+
+   /** Đếm ngược miễn thương */
+   public void updateInvincible(float deltaTime) {
+      if (!isInvincible)
+         return;
+      invincibleRemaining -= deltaTime;
+      if (invincibleRemaining <= 0f) {
+         isInvincible = false;
+         invincibleRemaining = 0f;
+         blinkTimer = 0f;
+      }
    }
 
    @Override
-   protected void updateAnimation(double deltaTime) {
-      if (health <= 0) {
+   protected void updateAnimation(float deltaTime) {
+      // 1) DEAD animation
+      if (dying) {
          deadAnimationTimer += deltaTime;
          if (deadAnimationTimer >= DEAD_ANIMATION_TIME) {
-            if (animationStep < 2) {
+            int max = imageIds[Setting.DEAD].length - 1;
+            if (animationStep < max) {
                animationStep++;
             } else {
-               this.remove();
+               remove();
                return;
             }
             deadAnimationTimer = 0;
-         } else if (isInvincible) {
-            if (animationDelay >= ANIMATION_TIME) {
-               animationStep = (animationStep + 1) % 3;
-               animationDelay = 0;
-            }
-
          }
-      } else if (moving) {
+         imageId = imageIds[Setting.DEAD][animationStep];
+         return;
+      }
+
+      // 2) INVINCIBLE blink animation
+      if (isInvincible) {
+         blinkTimer += deltaTime;
+         if ((int) (blinkTimer / BLINK_INTERVAL) % 2 == 0) {
+            int frames = imageIds[direction].length;
+            imageId = imageIds[direction][animationStep % frames];
+         } else {
+            int frames = imageIds[Setting.ANIMATION_NULL].length;
+            imageId = imageIds[Setting.ANIMATION_NULL][animationStep % frames];
+         }
+         return;
+      }
+
+      // 3) NORMAL move vs idle
+      int frames = imageIds[direction].length;
+      if (moving) {
          animationTimer += deltaTime;
          if (animationTimer >= ANIMATION_TIME) {
-            animationStep = (animationStep + 1) % 3;
+            animationStep = (animationStep + 1) % frames;
             animationTimer = 0;
          }
       } else {
@@ -169,28 +231,13 @@ public class MobileEntity extends DynamicEntity {
       imageId = imageIds[direction][animationStep];
    }
 
-   public void decreaseHealth() {
-      if (!isInvincible) {
-         if (health > 0){
-
-            this.health--;
-         }
-         if (this.health <= 0) {
-            this.dead();
-         } else {
-            // Kích hoạt thời gian bất tử khi mất mạng
-            isInvincible = true;
-            invincibleTime = 180;
-            direction = Setting.ANIMATION_NULL;
-         }
-
-      }
-   }
-
    public void dead() {
 
+      dying = true;
       direction = Setting.DEAD;
       moving = false;
+      animationStep = 0;
+      deadAnimationTimer = 0;
    }
 
    public boolean isInvincible() {

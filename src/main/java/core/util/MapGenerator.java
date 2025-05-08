@@ -10,27 +10,17 @@ import java.util.Random;
 public class MapGenerator {
    private static final Random random = new Random();
 
-   /**
-    * Generates a random Bomberman map based on level and dimensions
-    * 
-    * @param level       The level number (affects difficulty)
-    * @param height      Map height
-    * @param width       Map width
-    * @param name        Map file name
-    * @param playerCount Number of players (1 or 2)
-    */
    public static void generateMap(int level, int height, int width, String name) {
       // Ensure dimensions are odd
       height = height % 2 == 0 ? height + 1 : height;
       width = width % 2 == 0 ? width + 1 : width;
 
       // Validate player count
-     
 
       // Calculate densities based on level
-      double enemyDensity = Math.min(0.5 + (level * 1), 3.0);
-      double brickDensity = Math.min(0.5 + (level * 0.01), 0.6);
-      double itemDensity = Math.max(0.5 - (level * 0.02), 0.3);
+      float enemyDensity = (float) Math.min(0.5 + (level * 1), 3.0);
+      float brickDensity = (float) Math.min(0.5 + (level * 0.01), 0.6);
+      float itemDensity = (float) Math.max(0.5 - (level * 0.02), 0.3);
 
       char[][] map = new char[height][width];
 
@@ -57,27 +47,44 @@ public class MapGenerator {
             map[y][x] = '#';
          }
       }
-      int playerCount = 2; 
-      // Create potential spawn points for players
-      List<int[]> spawnPoints = generatePlayerSpawnPoints(height, width, playerCount);
+      int playerCount = 2;
 
-      // Place players at spawn points
-      for (int i = 0; i < playerCount && i < spawnPoints.size(); i++) {
-         int[] spawn = spawnPoints.get(i);
-         char playerChar = (i == 0) ? 'p' : 'q'; // 'p' for player 1, 'q' for player 2
-         map[spawn[0]][spawn[1]] = playerChar;
-      }
-
-      // Define safe zones around players (no bricks or enemies)
+      // Define safe zones: 4 corners (each as a 3x3 area)
       boolean[][] safeZone = new boolean[height][width];
-      int safeRadius = 3;
+      int safeRadius = 1; // 3x3 area
 
-      for (int[] spawn : spawnPoints) {
-         for (int y = Math.max(1, spawn[0] - safeRadius); y <= Math.min(height - 2, spawn[0] + safeRadius); y++) {
-            for (int x = Math.max(1, spawn[1] - safeRadius); x <= Math.min(width - 2, spawn[1] + safeRadius); x++) {
+      int[][] corners = {
+            { 1, 1 }, // Top-left
+            { 1, width - 2 }, // Top-right
+            { height - 2, 1 }, // Bottom-left
+            { height - 2, width - 2 } // Bottom-right
+      };
+
+      // Mark 3x3 safe zones at each corner
+      for (int[] corner : corners) {
+         for (int y = Math.max(1, corner[0] - safeRadius); y <= Math.min(height - 2, corner[0] + safeRadius); y++) {
+            for (int x = Math.max(1, corner[1] - safeRadius); x <= Math.min(width - 2, corner[1] + safeRadius); x++) {
                safeZone[y][x] = true;
             }
          }
+      }
+
+      // Collect all possible safe zone positions (excluding walls)
+      List<int[]> safePositions = new ArrayList<>();
+      for (int y = 1; y < height - 1; y++) {
+         for (int x = 1; x < width - 1; x++) {
+            if (safeZone[y][x]) {
+               safePositions.add(new int[] { y, x });
+            }
+         }
+      }
+      java.util.Collections.shuffle(safePositions, random);
+
+      // Place players at random safe zone positions
+      for (int i = 0; i < playerCount && i < safePositions.size(); i++) {
+         int[] spawn = safePositions.get(i);
+         char playerChar = (i == 0) ? 'p' : 'q'; // 'p' for player 1, 'q' for player 2
+         map[spawn[0]][spawn[1]] = playerChar;
       }
 
       // Add bricks
@@ -88,7 +95,7 @@ public class MapGenerator {
                continue;
             }
 
-            if (random.nextDouble() < brickDensity) {
+            if (random.nextFloat() < brickDensity) {
                map[y][x] = '*';
             }
          }
@@ -107,10 +114,13 @@ public class MapGenerator {
       }
 
       // Add items under bricks
-      String[] items = { "b", "f", "s" };
+      String[] items = { "b", "f", "s", "m", "h", "o", "w", "x" };
       int totalBricks = countCharacter(map, '*');
       int itemCount = (int) (totalBricks * itemDensity);
       int itemsPlaced = 0;
+
+      // Tính số lượng mỗi item cần đặt
+      int itemsPerType = itemCount / items.length;
 
       while (itemsPlaced < itemCount) {
          int x = random.nextInt(width - 2) + 1;
@@ -118,8 +128,14 @@ public class MapGenerator {
 
          if (map[y][x] == '*') {
             String item = items[random.nextInt(items.length)];
-            map[y][x] = item.charAt(0);
-            itemsPlaced++;
+
+            // Đảm bảo mỗi item được phân bổ đều
+            int countForItem = 0;
+            while (countForItem < itemsPerType && map[y][x] == '*') {
+               map[y][x] = item.charAt(0);
+               itemsPlaced++;
+               countForItem++;
+            }
          }
       }
 
@@ -133,38 +149,34 @@ public class MapGenerator {
          int y = random.nextInt(height - 2) + 1;
 
          if (map[y][x] == ' ' && !safeZone[y][x]) {
-            // Higher levels get more Oneals (type 2)
-            double onealsRatio = Math.min(0.3 + (level * 0.05), 0.8);
-            char enemyType = random.nextDouble() < onealsRatio ? '2' : '1';
-            map[y][x] = enemyType;
+            // Restrict enemy types by level (max 5 types)
+            int maxEnemyType = Math.min(level, 5);
+            float[] enemyRatios = new float[maxEnemyType];
+            for (int i = 0; i < maxEnemyType; i++) {
+               enemyRatios[i] = 1.0f / maxEnemyType;
+            }
+            float totalRatio = 1.0f;
+
+            // Chọn một quái vật ngẫu nhiên theo tỷ lệ phân phối
+            float randomChoice = random.nextFloat() * totalRatio;
+            char enemyLevel = '1'; // Mặc định là loại 1
+            float cumulativeRatio = 0;
+
+            for (int i = 0; i < enemyRatios.length; i++) {
+               cumulativeRatio += enemyRatios[i];
+               if (randomChoice < cumulativeRatio) {
+                  enemyLevel = (char) ('1' + i); // '1', '2', ..., up to maxEnemyType
+                  break;
+               }
+            }
+
+            map[y][x] = enemyLevel;
             enemiesPlaced++;
          }
       }
 
       // Save the map to file
       saveMap(level, height, width, map, name);
-   }
-
-   /**
-    * Generate spawn points for players
-    */
-   private static List<int[]> generatePlayerSpawnPoints(int height, int width, int playerCount) {
-      List<int[]> spawnPoints = new ArrayList<>();
-
-      int[][] corners = {
-            { 1, 1 }, // Top-left
-            { 1, width - 2 }, // Top-right
-            { height - 2, 1 }, // Bottom-left
-            { height - 2, width - 2 } // Bottom-right
-      };
-
-      //randomly generate spawn points for players
-      for (int i = 0; i < playerCount; i++) {
-         
-
-         spawnPoints.add(corners[i]);
-      }
-      return spawnPoints;
    }
 
    private static int countCharacter(char[][] map, char target) {

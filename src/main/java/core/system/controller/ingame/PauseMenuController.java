@@ -1,6 +1,7 @@
 package core.system.controller.ingame;
 
 import core.system.game.BombermanGame;
+import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -20,16 +21,38 @@ public class PauseMenuController {
    private Button restartButton;
 
    @FXML
+   private Button nextLevelButton;
+
+   @FXML
    private Button menuButton;
 
    @FXML
    private Button exitButton;
 
-   private BombermanGame game;
    private StackPane overlay;
 
-   public void setGame(BombermanGame game) {
-      this.game = game;
+   public void setGame() {
+
+      // Hide restart and next level buttons in client mode
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+         if (restartButton != null) {
+            restartButton.setVisible(false);
+            restartButton.setManaged(false); // Remove from layout
+         }
+
+         if (nextLevelButton != null) {
+            nextLevelButton.setVisible(false);
+            nextLevelButton.setManaged(false); // Remove from layout
+         }
+      }
+
+   
+      if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
+         if (nextLevelButton != null) {
+            nextLevelButton.setVisible(false);
+            nextLevelButton.setManaged(false); 
+         }
+      }
    }
 
    public void setOverlay(StackPane overlay) {
@@ -40,13 +63,12 @@ public class PauseMenuController {
    private void handleResume() {
       if (overlay != null) {
          overlay.getChildren().clear();
-         game.resumeGame();
+         BombermanGame.resumeGame();
       }
    }
 
    @FXML
    private void handleKeyPress(KeyEvent event) {
-
       if (event.getCode() == KeyCode.ESCAPE) {
          handleResume();
          event.consume();
@@ -57,7 +79,7 @@ public class PauseMenuController {
    private void handleNextLevel() {
       if (overlay != null) {
          overlay.getChildren().clear();
-         game.nextLevel();
+         BombermanGame.nextLevel();
       }
    }
 
@@ -65,15 +87,13 @@ public class PauseMenuController {
    private void handleRestart() {
       if (overlay != null) {
          overlay.getChildren().clear();
-         game.restartGame();
+         BombermanGame.restartGame();
       }
    }
 
    @FXML
    private void handleReturnToMenu() {
-      if (game != null) {
-         game.returnToMenu();
-      }
+      BombermanGame.returnToMenu();
    }
 
    @FXML

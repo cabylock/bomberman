@@ -7,26 +7,24 @@ import java.io.Serializable;
 import core.graphics.*;
 import core.system.setting.Setting;
 import core.util.Util;
-import java.io.Serializable;
 
 public abstract class Entity implements Serializable {
    private static final long serialVersionUID = 1L;
    protected int id;
 
-   protected double x;
-   protected double y;
+   protected float x;
+   protected float y;
    protected int imageId;
 
    public Entity(int xUnit, int yUnit, int imageId) {
-      this.x = xUnit * Sprite.SCALED_SIZE;
-      this.y = yUnit * Sprite.SCALED_SIZE;
+      this.x = xUnit * Sprite.DEFAULT_SIZE;
+      this.y = yUnit * Sprite.DEFAULT_SIZE;
       this.imageId = imageId;
       this.id = Setting.ID;
-
    }
 
    public void render(GraphicsContext gc) {
-      gc.drawImage(Sprite.sprites[imageId].getFxImage(), x, y);
+      gc.drawImage(Sprite.getSprite(imageId).getFxImage(), x, y);
    }
 
    public int getId() {
@@ -37,11 +35,11 @@ public abstract class Entity implements Serializable {
       this.id = id;
    }
 
-   public double getX() {
+   public float getX() {
       return x;
    }
 
-   public double getY() {
+   public float getY() {
       return y;
    }
 
@@ -53,8 +51,7 @@ public abstract class Entity implements Serializable {
       return Util.toGrid(y);
    }
 
-   public abstract void update(double deltaTime);
+   public abstract void update(float deltaTime);
 
    public abstract void remove();
-
 }
