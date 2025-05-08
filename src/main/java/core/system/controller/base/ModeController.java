@@ -11,16 +11,11 @@ import javafx.stage.Stage;
 
 public class ModeController {
     private Stage stage;
-    private String mapName; // Add field to store the map name
-
+   
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-    // Add setter for map name
-    public void setMapName(String mapName) {
-        this.mapName = mapName;
-    }
 
     @FXML
     private void selectSinglePlayerMode() {
@@ -33,7 +28,6 @@ public class ModeController {
     private void selectMultiPlayerMode() {
         // Set the game to 2 player mode
         Setting.GAME_MODE = Setting.MULTI_MODE;
-
         startGame();
 
     }
@@ -41,11 +35,11 @@ public class ModeController {
     @FXML
     private void selectOnlineMode() {
         try {
+            Setting.GAME_MODE = Setting.SERVER_MODE;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/NetworkSetup.fxml"));
             Parent root = loader.load();
 
             NetworkSetupController controller = loader.getController();
-
             controller.setStage(stage);
 
             Scene scene = new Scene(root);
@@ -56,14 +50,10 @@ public class ModeController {
     }
 
     private void startGame() {
-        // Load the map before creating the game scene
-        if (mapName != null && !mapName.isEmpty()) {
-            GameControl.loadMap(mapName);
-        } else {
-            System.err.println("Error: No map selected");
-            return;
-        }
+        
 
+
+        GameControl.loadMap(Setting.MAP_NAME);
         BombermanGame.createGameScene(stage);
 
     }

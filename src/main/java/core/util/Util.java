@@ -26,7 +26,7 @@ public class Util {
 
    public static int uuid() {
       Random random = new Random();
-      int id = random.nextInt(100000);
+      int id = random.nextInt(10000);
       return id;
    }
 
@@ -193,4 +193,6 @@ public class Util {
       gameRoot.getChildren().add(overlay);
    }
 
+
+   
 }

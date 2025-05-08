@@ -16,7 +16,8 @@ import core.graphics.Sprite;
 import java.util.*;
 
 public class EnemyEntity extends MobileEntity {
-    protected transient int speed = 20;
+    protected transient int boostedspeed = 30;
+    protected transient int speed = 15;
     protected transient float moveTimer = 0;
     protected transient float directionChangeTimer = 0;
     protected transient float movementFrequencyTime = 0.01f;
@@ -279,10 +280,13 @@ public class EnemyEntity extends MobileEntity {
 
             // If Bomber is within range, update path
             if (closestBomber != null && minDistance <= pathfindingRange && closestBomber.isAlive()) {
+                
                 currentPath = findPath(getXTile(), getYTile(),
                         closestBomber.getXTile(), closestBomber.getYTile());
             } else {
+                
                 currentPath.clear();
+                defaultMove(deltaTime);
             }
         }
 

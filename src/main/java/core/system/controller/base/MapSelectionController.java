@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
+
 import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +13,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
+
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+
 import javafx.stage.Stage;
+
 
 public class MapSelectionController {
     @FXML
@@ -32,6 +36,8 @@ public class MapSelectionController {
     public void loadMaps() {
         defaultMapList.getItems().clear();
         customMapList.getItems().clear();
+
+        
 
         // Load maps from directories
         loadMapsFromDirectory(DEFAULT_MAPS_DIR, defaultMapList);
@@ -179,14 +185,37 @@ public class MapSelectionController {
         }
     }
 
+    @FXML
+    private void joinOnlineGame() {
+        try {
+            // Ensure client mode is set before opening the network setup
+            Setting.GAME_MODE = Setting.CLIENT_MODE;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/NetworkSetup.fxml"));
+            Parent root = loader.load();
+
+            NetworkSetupController controller = loader.getController();
+            controller.setStage(stage);
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void startGameWithMap(String mapName) {
         try {
+            if (mapName != null && !mapName.isEmpty()) {
+            } else {
+                System.err.println("Error: No map selected");
+                return;
+            }
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/Mode.fxml"));
             Parent root = loader.load();
 
             ModeController modeController = loader.getController();
             modeController.setStage(stage);
-            modeController.setMapName(mapName); // Pass the map name to ModeController
+            Setting.MAP_NAME = mapName;
 
             Scene scene = new Scene(root, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
             stage.setScene(scene);

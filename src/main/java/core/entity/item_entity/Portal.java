@@ -37,7 +37,7 @@ public class Portal extends ItemEntity {
                         "Next Level",
                         () -> {
                             Setting.MAP_LEVEl++;
-                            GameControl.resetGame();
+                            GameControl.reset();
                         });
 
                 break; // Dừng sau khi xử lý

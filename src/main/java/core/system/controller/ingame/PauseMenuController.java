@@ -29,7 +29,6 @@ public class PauseMenuController {
    @FXML
    private Button exitButton;
 
-   
    private StackPane overlay;
 
    public void setGame() {
@@ -44,6 +43,14 @@ public class PauseMenuController {
          if (nextLevelButton != null) {
             nextLevelButton.setVisible(false);
             nextLevelButton.setManaged(false); // Remove from layout
+         }
+      }
+
+   
+      if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
+         if (nextLevelButton != null) {
+            nextLevelButton.setVisible(false);
+            nextLevelButton.setManaged(false); 
          }
       }
    }

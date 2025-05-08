@@ -37,18 +37,15 @@ public class Bomber extends MobileEntity {
    private transient int typePlayer;
    private String playerName; // Store player's name
    private transient boolean permanentFreeze = false;
-   
+   private transient String initialName;
 
    private int initialX;
    private int initialY;
 
    protected transient int bombCountMax = 1;
+   protected boolean died = false;
 
-   protected transient static final int ITEM_DURATION = 10; 
-   // public Bomber(int x, int y, int imageId, int typePlayer) {
-   // this(x, y, imageId, typePlayer, "Player " + (typePlayer == Setting.BOMBER2 ?
-   // "2" : "1"));
-   // }
+   protected transient static final int ITEM_DURATION = 10;
 
    public Bomber(int x, int y, int imageId, int typePlayer, String playerName) {
       super(x, y, imageId);
@@ -227,6 +224,9 @@ public class Bomber extends MobileEntity {
       if (flamePass) {
          flamePassTime = ITEM_DURATION;
       }
+      if (flamePass) {
+         flamePassTime = ITEM_DURATION;
+      }
    }
 
    public void setBombPass(boolean bombPass) {
@@ -291,22 +291,31 @@ public class Bomber extends MobileEntity {
       health++;
    }
 
-   public void setName(String name) {
-      this.playerName = name;
+   public void setPlayerName(String playerName) {
+      this.playerName = playerName;
    }
 
    public void resetBomber() {
-      Sound.stopMusic();
-      Sound.playMusic("start_game", true);
       x = initialX;
       y = initialY;
       bombCountMax = 1;
       speed = 25;
       flameSize = 1;
-      // không reset health ở đây!
+      health = 1;
+      dying = false;
+      flamePass = false;
+      bombPass = false;
+      speedUp = false;
+      flameUp = false;
+      bombUp = false;
+      imageId = typePlayer == BOMBER1 ? Sprite.PLAYER1_DOWN_0 : Sprite.PLAYER2_DOWN_0;
+      brickPass = false;
       isInvincible = false;
       invincibleRemaining = 0f;
       blinkTimer = 0f;
+      direction = DOWN_MOVING;
+      died = false;
+      playerName = initialName; // Reset player name to initial value
    }
 
    public boolean isDying() {
@@ -319,8 +328,8 @@ public class Bomber extends MobileEntity {
 
    @Override
    public void remove() {
-      
-      GameControl.removeEntity(this);
+
+      died = true;
    }
 
    public String getPlayerName() {
@@ -328,12 +337,13 @@ public class Bomber extends MobileEntity {
    }
 
    public boolean isAlive() {
-      return health > 0;
+      return !died;
+      
+      
    }
 
-   public void setPlayerName(String playerName) {
-      this.playerName = playerName;
-   }
+   
+
    public static boolean isGameOver() {
       Map<Integer,Bomber> map = GameControl.getBomberEntitiesMap();
       if (map.isEmpty()) return false;

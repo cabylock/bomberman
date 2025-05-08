@@ -201,6 +201,7 @@ public class MobileEntity extends DynamicEntity {
                animationStep++;
             } else {
                remove();
+               remove();
                return;
             }
             deadAnimationTimer = 0;

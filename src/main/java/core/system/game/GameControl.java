@@ -13,21 +13,16 @@ import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.map.MapEntity;
 import core.sound.Sound;
+import core.system.setting.Setting;
 import core.system.network.GameClient;
 import core.system.network.GameServer;
-import core.system.setting.Setting;
 import core.util.Util;
 
 public class GameControl {
 
-   
-  
    private static float deltaTime;
    private static int width;
    private static int height;
-
-   private static GameServer server;
-   private static GameClient client;
 
    private static Map<Integer, Bomber> bomberEntities = new ConcurrentHashMap<>();
    private static List<StaticEntity> staticEntities = new CopyOnWriteArrayList<>();
@@ -38,51 +33,25 @@ public class GameControl {
 
    
 
-   public static boolean InitializeServer() {
-      server = new GameServer();
-      server.startServer(Setting.SERVER_PORT);
-      return server.isRunning;
-   }
+   
 
-   public static boolean InitializeClient() {
-      clear();
-      client = new GameClient(Setting.SERVER_ADDRESS, Setting.SERVER_PORT);
-      return client.connect();
-   }
-
-   public static boolean start() {
-      
-      if (Setting.GAME_MODE == Setting.SERVER_MODE)
-         return InitializeServer();
-      if (Setting.GAME_MODE == Setting.CLIENT_MODE)
-         return InitializeClient();
-      return true;
-   }
+   
 
    public static void stop() {
-      if (Setting.GAME_MODE == Setting.SERVER_MODE && server != null) {
-         server.stopServer();
-         server = null;
-      } else if (Setting.GAME_MODE == Setting.CLIENT_MODE && client != null) {
-         client.disconnect();
-         client = null;
+     
+      if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         GameServer.stopServer();
+      }
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+         GameClient.disconnect();
       }
       Setting.GAME_MODE = Setting.SINGLE_MODE;
-      clear();
+      clearEntities();
       System.gc();
    }
 
-   // Add this setter
-   public static void setServer(GameServer s) {
-      server = s;
-   }
-
-   // Add this setter
-   public static void setClient(GameClient c) {
-      client = c;
-   }
-
    public static void update(float deltaTime) {
+
       GameControl.deltaTime = deltaTime;
       handleInput(deltaTime);
 
@@ -104,48 +73,49 @@ public class GameControl {
          Sound.playEffect("game_over");
          Util.showGameOverOverlay("/textures/game_over.png", BombermanGame.getGameRoot(), () -> {
          Setting.MAP_LEVEl = 1;
-         resetGame();
+         reset();
       });
       deathOverlayShown = true;
    }
       // Fix: Only call broadcastGameState if server is not null
-      if (Setting.GAME_MODE == Setting.SERVER_MODE && server != null) {
-         server.broadcastGameState();
+      
+   }
+
+   
+
+     
+   private static String getCommandFromInput(int bomberType) {
+      if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.UP_MOVING])) {
+         return Bomber.MOVE_UP;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.DOWN_MOVING])) {
+         return Bomber.MOVE_DOWN;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.LEFT_MOVING])) {
+         return Bomber.MOVE_LEFT;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.RIGHT_MOVING])) {
+         return Bomber.MOVE_RIGHT;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.BOMB_PLACE])) {
+         return Bomber.PLACE_BOMB;
       }
+      return "NULL";
    }
 
    public static void handleInput(float deltaTime) {
-      handlePlayerInput(Bomber.BOMBER1, Setting.ID, deltaTime);
-      if (Setting.GAME_MODE == Setting.MULTI_MODE) {
-         handlePlayerInput(Bomber.BOMBER2, Setting.ID + 1, deltaTime);
-      }
-   }
-
-   private static void handlePlayerInput(int playerType, int playerId, float deltaTime) {
-      if (!bomberEntities.containsKey(playerId))
-         return;
-
       String command = "NULL";
+      if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+         command = getCommandFromInput(Bomber.BOMBER1);
+         GameClient.sendControl(Setting.ID, command);
 
-      if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.UP_MOVING])) {
-         command = Bomber.MOVE_UP;
-      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.DOWN_MOVING])) {
-         command = Bomber.MOVE_DOWN;
-      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.LEFT_MOVING])) {
-         command = Bomber.MOVE_LEFT;
-      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.RIGHT_MOVING])) {
-         command = Bomber.MOVE_RIGHT;
-      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[playerType][Bomber.BOMB_PLACE])) {
-         command = Bomber.PLACE_BOMB;
-      }
-
-      if (Setting.GAME_MODE != Setting.CLIENT_MODE) {
-         bomberEntities.get(playerId).control(command, deltaTime);
-      } else {
-         // Fix: Only send command if client is not null
-         if (client != null) {
-            client.sendCommand(command, playerId);
-         }
+      } else if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         command = getCommandFromInput(Bomber.BOMBER1);
+         bomberEntities.get(Setting.ID).control(command, deltaTime);
+      } else if (Setting.GAME_MODE == Setting.SINGLE_MODE) {
+         command = getCommandFromInput(Bomber.BOMBER1);
+         bomberEntities.get(Setting.ID).control(command, deltaTime);
+      } else if (Setting.GAME_MODE == Setting.MULTI_MODE) {
+         command = getCommandFromInput(Bomber.BOMBER1);
+         bomberEntities.get(Setting.ID).control(command, deltaTime);
+         command = getCommandFromInput(Bomber.BOMBER2);
+         bomberEntities.get(Setting.ID + 1).control(command, deltaTime);
       }
    }
 
@@ -153,15 +123,12 @@ public class GameControl {
       return deltaTime;
    }
 
-  
-
    public static void loadMap(String name) {
 
       MapEntity.loadMap(name);
    }
 
    public static void nextLevel() {
-
       if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
          Util.logInfo("Please select another map or move to default map");
          return;
@@ -170,30 +137,45 @@ public class GameControl {
          Util.showOverlayWithButton("/textures/win2.png", BombermanGame.getGameRoot(), "Play Again", () -> {
             Setting.MAP_LEVEl = 1;
             loadMap("Level" + Setting.MAP_LEVEl);
-            resetGame();
+            reset();
          });
          return;
       }
 
       Util.showOverlayWithButton("/textures/level_complete.jpg", BombermanGame.getGameRoot(), "Next Level", () -> {
          Setting.MAP_LEVEl++;
-         resetGame();
+         reset();
 
       });
    }
 
-   public static void resetGame() {
-     
-      clear();
-      BombermanGame.input.clear();
+   public static void reset() {
       Sound.stopMusic();
       Sound.playMusic("start_game", true);
-      loadMap("Level" + Setting.MAP_LEVEl);
-   }
 
-   public static void clear() {
+      if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         resetEntities();
+      } else if (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE) {
+         clearEntities();
+      }
+      loadMap("Level" + Setting.MAP_LEVEl);
+      if (Setting.GAME_MODE == Setting.SERVER_MODE) {
+         GameServer.broadcastMapDimensions();
+
+      }
+      }
+      
+   public static void clearEntities() {
+      bomberEntities.clear();
       deathOverlayShown = false;
-      bomberEntities.forEach((_, b) -> b.resetBomber());
+      staticEntities.clear();
+      enemyEntities.clear();
+      itemEntities.clear();
+      backgroundEntities.clear();
+   }
+   public static void resetEntities(){
+      bomberEntities.forEach(((_,b) -> b.resetBomber()));
+      deathOverlayShown = false;
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
@@ -243,12 +225,16 @@ public class GameControl {
 
    public static void setWidth(int width) {
 
-      GameControl.width = width; 
+      GameControl.width = width;
    }
+
    public static int getHeight() {
+
       return height;
    }
+
    public static int getWidth() {
+
       return width;
    }
 

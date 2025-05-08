@@ -58,6 +58,8 @@
                     onAction="#goBack" />
             <Button text="Delete Selected Map" prefWidth="200" prefHeight="40" 
                     onAction="#deleteSelectedMap" />
+            <Button text="Join Online Game" prefWidth="200" prefHeight="40"
+                    onAction="#joinOnlineGame"/>
         </HBox>
     </bottom>
 </BorderPane>

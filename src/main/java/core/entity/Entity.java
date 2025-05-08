@@ -21,7 +21,6 @@ public abstract class Entity implements Serializable {
       this.y = yUnit * Sprite.DEFAULT_SIZE;
       this.imageId = imageId;
       this.id = Setting.ID;
-
    }
 
    public void render(GraphicsContext gc) {
@@ -55,5 +54,4 @@ public abstract class Entity implements Serializable {
    public abstract void update(float deltaTime);
 
    public abstract void remove();
-
 }

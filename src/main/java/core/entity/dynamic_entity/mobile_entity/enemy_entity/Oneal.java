@@ -3,7 +3,7 @@ import core.util.Util;
 import core.graphics.Sprite;
 
 public class Oneal extends EnemyEntity {
-    private static final int SPEED = 20;
+    private static final int SPEED = 15;
     private static final float MOVEMENT_FREQUENCY_TIME = 0.01f;
     private static final float DIRECTION_CHANGE_TIME = 2.0f;
     private static final float SIGHT_RANGE = 5.0f;
@@ -17,7 +17,7 @@ public class Oneal extends EnemyEntity {
         
         // Configure pathfinding for Oneal
         pathfindingRange = SIGHT_RANGE;
-        pathUpdateFrequency = 0.5f; // Update path more frequently
+        pathUpdateFrequency = 1.0f; // Update path more frequently
         usePathfinding = true;
 
         // Khởi tạo imageIds
