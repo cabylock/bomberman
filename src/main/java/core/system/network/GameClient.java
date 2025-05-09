@@ -36,6 +36,8 @@ public class GameClient {
    public static boolean connect() {
       try {
          socket = new Socket(serverAddress, serverPort);
+         socket.setTcpNoDelay(true); // Enable TCP_NODELAY for lower latency
+         socket.setSoTimeout(5000); // Set socket timeout to 5 seconds
 
          // Initialize streams in correct order
          out = new ObjectOutputStream(socket.getOutputStream());
@@ -61,14 +63,12 @@ public class GameClient {
          GameControl.setWidth(width);
          GameControl.setHeight(height);
 
-
          messageType = in.readUTF();
          if (!messageType.equals(Setting.NETWORK_BACKGROUND_ENTITIES)) {
             throw new IOException("Expected background entities, got: " + messageType);
          }
          List<BackgroundEntity> backgroundEntities = (List<BackgroundEntity>) in.readObject();
          GameControl.setBackgroundEntities(backgroundEntities);
-
 
          isRunning = true;
          clientThread = new Thread(GameClient::run);
@@ -98,7 +98,7 @@ public class GameClient {
                   case Setting.NETWORK_BOMBER_ENTITIES:
                      @SuppressWarnings("unchecked")
                      List<Bomber> bombers = (List<Bomber>) in.readObject();
-                     
+
                      GameControl.setBomberEntities(bombers);
                      break;
                   case Setting.NETWORK_ENEMY_ENTITIES:
@@ -125,7 +125,7 @@ public class GameClient {
                      int height = in.readInt();
                      GameControl.setWidth(width);
                      GameControl.setHeight(height);
-                     
+
                      break;
                   default:
                      Util.logError("Unknown message type: " + messageType);

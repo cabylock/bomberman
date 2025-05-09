@@ -24,12 +24,10 @@ public class RandomMapController {
     @FXML
     private Label heightValueLabel;
 
-    private Stage stage;
     private Stage dialogStage;
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
+    // public void setStage(Stage stage) {
+    // }
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;

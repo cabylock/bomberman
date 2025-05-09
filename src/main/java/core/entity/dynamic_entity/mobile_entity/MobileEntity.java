@@ -27,7 +27,7 @@ public class MobileEntity extends DynamicEntity {
    protected transient boolean flameUp = false;
    protected transient boolean bombUp = false;
    protected transient boolean brickPass = false;
-   protected boolean dying = false;
+   protected transient boolean dying = false;
 
    protected transient float flamePassTime = 0;
    protected transient float bombPassTime = 0;

@@ -4,11 +4,11 @@ import core.entity.Entity;
 
 public abstract class DynamicEntity extends Entity {
 
-   protected int animationStep = 0;
-   protected float animationTimer = 0;
+   protected transient int animationStep = 0;
+   protected transient float animationTimer = 0;
 
    // Image arrays for animation
-   protected int[][] imageIds;
+   protected transient int[][] imageIds;
 
    public DynamicEntity(int x, int y, int imageId) {
       super(x, y, imageId);

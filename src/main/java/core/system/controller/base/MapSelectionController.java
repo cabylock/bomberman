@@ -106,7 +106,7 @@ public class MapSelectionController {
             Parent root = loader.load();
 
             RandomMapController controller = loader.getController();
-            controller.setStage(stage);
+            
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Create Random Map");

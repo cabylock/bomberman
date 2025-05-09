@@ -17,7 +17,6 @@ public class GameServer {
    private static String errorMessage = null;
    private static Thread serverThread;
 
-
    public static boolean createServer(int port) {
       try {
          if (!isPortAvailable(port)) {
@@ -27,6 +26,7 @@ public class GameServer {
          }
 
          serverSocket = new ServerSocket(port);
+         serverSocket.setReuseAddress(true); // Add reuse address option
          isRunning = true;
 
          // Create server's bomber
@@ -58,6 +58,7 @@ public class GameServer {
 
             if (clients.size() < MAX_CLIENTS) {
                Socket clientSocket = serverSocket.accept();
+               clientSocket.setSoTimeout(5000); // Set socket timeout to 5 seconds
                ClientHandler clientHandler = new ClientHandler(clientSocket, Util.uuid());
                clientHandler.start();
                clients.add(clientHandler);
@@ -82,8 +83,6 @@ public class GameServer {
       }
       clients.clear();
 
-      
-
       try {
          if (serverSocket != null && !serverSocket.isClosed()) {
             serverSocket.close();
@@ -106,8 +105,6 @@ public class GameServer {
       }
    }
 
-
-
    public static void broadcastMapDimensions() {
       if (!isRunning)
          return;
@@ -129,9 +126,15 @@ public class GameServer {
       private int clientId;
       private Bomber clientBomber;
 
+      // Add timestamp tracking for rate limiting
+      private long lastGameStateSentTime = 0;
+      private static final long GAME_STATE_SEND_INTERVAL = 50; // Send at most 20 updates per second
+
       public ClientHandler(Socket socket, int id) {
          try {
             clientSocket = socket;
+            clientSocket.setTcpNoDelay(true); // Enable TCP_NODELAY for lower latency
+            clientSocket.setSoTimeout(5000); // Set read timeout to 5 seconds
             clientId = id;
 
             // Create bomber for this client with type BOMBER1
@@ -174,9 +177,17 @@ public class GameServer {
                      String control = in.readUTF();
                      GameControl.getBomberEntitiesMap().get(id).control(control, GameControl.getDeltaTime());
 
-                     sendGameState();
+                     // Only send game state if enough time has passed since last update
+                     long currentTime = System.currentTimeMillis();
+                     if (currentTime - lastGameStateSentTime >= GAME_STATE_SEND_INTERVAL) {
+                        sendGameState();
+                        lastGameStateSentTime = currentTime;
+                     }
                   }
 
+               } catch (SocketTimeoutException e) {
+                  // Socket timeout is normal, just continue the loop
+                  continue;
                } catch (IOException e) {
                   Util.logError("Error reading command: " + e.getMessage());
                   errorCount++;
@@ -219,17 +230,18 @@ public class GameServer {
 
       public void sendGameState() throws IOException {
          if (out != null) {
-           
-           
+
+            // Instead of sending all data at once, prioritize the most important data
+            // Entity positions are most important for gameplay
             sendObject(Setting.NETWORK_BOMBER_ENTITIES, GameControl.getBomberEntities());
-
-            
-
             sendObject(Setting.NETWORK_ENEMY_ENTITIES, GameControl.getEnemyEntities());
 
+            // These change less frequently, so we could send them at longer intervals
+            // But for simplicity, we'll keep them in the same update
             sendObject(Setting.NETWORK_STATIC_ENTITIES, GameControl.getStaticEntities());
-
             sendObject(Setting.NETWORK_ITEM_ENTITIES, GameControl.getItemEntities());
+
+          
          }
       }
 

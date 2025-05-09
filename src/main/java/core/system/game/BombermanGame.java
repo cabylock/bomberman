@@ -103,8 +103,8 @@ public class BombermanGame {
                 if (lastUpdateTime > 0) {
                     deltaTime = (float) ((now - lastUpdateTime) / 1_000_000_000.0);
                     // Cap delta time to prevent huge jumps after lag
-                    if (deltaTime > 0.08f)
-                        deltaTime = 0.08f;
+                    if (deltaTime > 0.05f)
+                        deltaTime = 0.05f;
                     // Frame limiter: skip update if frame is too fast
                     if (deltaTime < Setting.FRAME_TIME_NS) {
                         return;

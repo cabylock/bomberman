@@ -10,8 +10,8 @@ import core.util.Util;
 
 public abstract class Entity implements Serializable {
    private static final long serialVersionUID = 1L;
-   protected int id;
 
+   protected int id;
    protected float x;
    protected float y;
    protected int imageId;
@@ -54,4 +54,9 @@ public abstract class Entity implements Serializable {
    public abstract void update(float deltaTime);
 
    public abstract void remove();
+
+  
+
+
+  
 }

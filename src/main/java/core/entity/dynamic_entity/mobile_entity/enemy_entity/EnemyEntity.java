@@ -28,7 +28,7 @@ public class EnemyEntity extends MobileEntity {
     protected transient float pathUpdateFrequency = 1.0f;
     protected transient float pathUpdateTimer = 0;
     protected transient List<Node> currentPath = new ArrayList<>();
-    protected transient boolean hasPathToBomber = false;
+    protected  boolean hasPathToBomber = false;
 
     public EnemyEntity(int x, int y, int imageId) {
         super(x, y, imageId);
