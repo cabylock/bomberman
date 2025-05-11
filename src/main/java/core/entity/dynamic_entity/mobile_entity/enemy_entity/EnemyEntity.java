@@ -191,7 +191,6 @@ public class EnemyEntity extends MobileEntity {
 
         Node startNode = new Node(startX, startY);
 
-
         startNode.gCost = 0;
         startNode.hCost = calculateHeuristic(startX, startY, targetX, targetY);
         startNode.calculateFCost();
@@ -295,7 +294,7 @@ public class EnemyEntity extends MobileEntity {
             // If Bomber is within range, update path
             if (closestBomber != null && minDistance <= pathfindingRange && closestBomber.isAlive()) {
                 speed = boostedspeed;
-                movementFrequencyTime = 0.01f;
+                
 
                 currentPath = findPath(getXTile(), getYTile(),
                         closestBomber.getXTile(), closestBomber.getYTile());
@@ -303,7 +302,7 @@ public class EnemyEntity extends MobileEntity {
                 if (currentPath.isEmpty()) {
                     // Không tìm được đường → di chuyển ngẫu nhiên
                     speed = 15;
-                    movementFrequencyTime = 0.02f;
+                    
                     hasPathToBomber = false;
                     defaultMove(deltaTime);
                     return;
@@ -313,7 +312,6 @@ public class EnemyEntity extends MobileEntity {
             } else {
                 currentPath.clear();
                 speed = 15;
-                movementFrequencyTime = 0.01f;
                 hasPathToBomber = false;
                 defaultMove(deltaTime);
                 return;
@@ -330,10 +328,11 @@ public class EnemyEntity extends MobileEntity {
 
                 // Kiểm tra xem node tiếp theo có an toàn không
                 if (!isWalkable(nextNode.x, nextNode.y)) {
-                    // Nếu node không an toàn, tìm đường đi mới
+                    // Nếu node không an toàn, tìm đường đi mới và di chuyển ngẫu nhiên
                     currentPath.clear();
                     pathUpdateTimer = pathUpdateFrequency;
-                    defaultMove(deltaTime); // Chuyển sang di chuyển ngẫu nhiên tạm thời
+                    hasPathToBomber = false;
+                    defaultMove(deltaTime);
                     return;
                 }
 
@@ -349,6 +348,8 @@ public class EnemyEntity extends MobileEntity {
                     x = nodeX;
                     y = nodeY;
                     currentPath.remove(0);
+                    // Tìm đường mới ngay lập tức khi đến node
+                    pathUpdateTimer = pathUpdateFrequency;
                     return;
                 }
 
@@ -364,11 +365,15 @@ public class EnemyEntity extends MobileEntity {
                 }
 
                 if (!move(direction, speed, deltaTime)) {
-                    // Nếu không thể di chuyển, tìm đường mới
+                    // Nếu không thể di chuyển, tìm đường mới và di chuyển ngẫu nhiên
                     currentPath.clear();
                     pathUpdateTimer = pathUpdateFrequency;
-                    defaultMove(deltaTime); // Chuyển sang di chuyển ngẫu nhiên tạm thời
+                    hasPathToBomber = false;
+                    defaultMove(deltaTime);
                 }
+            } else if (hasPathToBomber) {
+                // Nếu có dấu !? nhưng không có đường đi, tìm đường mới ngay lập tức
+                pathUpdateTimer = pathUpdateFrequency;
             }
         }
     }

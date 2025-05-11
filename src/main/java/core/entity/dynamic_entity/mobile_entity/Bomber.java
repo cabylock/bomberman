@@ -314,7 +314,7 @@ public class Bomber extends MobileEntity {
       blinkTimer = 0f;
       direction = DOWN_MOVING;
       died = false;
-      playerName = initialName; 
+      playerName = initialName;
    }
 
    public boolean isDying() {
@@ -325,9 +325,12 @@ public class Bomber extends MobileEntity {
       return flamePass;
    }
 
+   public boolean isBrickPass() {
+      return brickPass;
+   }
+
    @Override
    public void remove() {
-
       died = true;
    }
 

@@ -31,7 +31,6 @@ public class Balloom extends EnemyEntity {
     public void update(float deltaTime) {
         defaultMove(deltaTime);
         enemyCollision();
-        enemyCollision();
         updateAnimation(deltaTime);
     }
 }

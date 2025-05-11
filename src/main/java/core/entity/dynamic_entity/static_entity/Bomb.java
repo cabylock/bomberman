@@ -10,7 +10,7 @@ public class Bomb extends StaticEntity {
     private transient float timeAlive = 3.0f; // 3 seconds before explosion
     private transient boolean hasExploded = false; // Thêm biến kiểm soát trạng thái nổ
 
-    private transient final int DEFAULT_IMAGE = 0;
+   
     private transient int flameSize;
     private transient Flame[][] flameSegments;
     private transient int ownerId;
@@ -85,17 +85,6 @@ public class Bomb extends StaticEntity {
         GameControl.removeEntity(this);
     }
 
-    @Override
-    public void updateAnimation(float deltaTime) {
-        animationTimer += deltaTime;
-
-        // Change animation frame approximately every 0.33 seconds
-        if (animationTimer >= 0.33) {
-            animationStep = (animationStep + 1) % 3;
-            animationTimer = 0;
-        }
-
-        imageId = imageIds[DEFAULT_IMAGE][animationStep];
-    }
+    
 
 }

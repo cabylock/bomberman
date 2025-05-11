@@ -3,6 +3,7 @@ package core.entity.item_entity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.system.game.GameControl;
 import core.sound.Sound;
+
 public class BrickPassItem extends ItemEntity {
     public BrickPassItem(int x, int y, int imageId) {
         super(x, y, imageId);
@@ -11,7 +12,7 @@ public class BrickPassItem extends ItemEntity {
     @Override
     public void update(float deltaTime) {
         for (Bomber bomber : GameControl.getBomberEntities()) {
-            if (checkCollision(bomber.getX(), bomber.getY(), getX(), getY())) {
+            if (checkCollision(bomber.getX(), bomber.getY(), getX(), getY()) && !isBrickAtPosition()) {
                 Sound.playEffect("get_item");
                 bomber.setBrickPass(true);
                 remove();
