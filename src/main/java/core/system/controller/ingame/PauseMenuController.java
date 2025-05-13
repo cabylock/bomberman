@@ -2,6 +2,7 @@ package core.system.controller.ingame;
 
 import core.system.game.BombermanGame;
 import core.system.setting.Setting;
+import core.sound.Sound;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -18,6 +19,9 @@ public class PauseMenuController {
    private Button resumeButton;
 
    @FXML
+   private Button muteButton;
+
+   @FXML
    private Button restartButton;
 
    @FXML
@@ -32,6 +36,7 @@ public class PauseMenuController {
    private StackPane overlay;
 
    public void setGame() {
+      updateMuteButtonText();
 
       if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
          if (restartButton != null) {
@@ -45,13 +50,24 @@ public class PauseMenuController {
          }
       }
 
-   
       if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
          if (nextLevelButton != null) {
             nextLevelButton.setVisible(false);
-            nextLevelButton.setManaged(false); 
+            nextLevelButton.setManaged(false);
          }
       }
+   }
+
+   private void updateMuteButtonText() {
+      if (muteButton != null) {
+         muteButton.setText(Sound.isMuted() ? "Unmute Sound" : "Mute Sound");
+      }
+   }
+
+   @FXML
+   private void handleMute() {
+      Sound.toggleMute();
+      updateMuteButtonText();
    }
 
    public void setOverlay(StackPane overlay) {
@@ -86,7 +102,7 @@ public class PauseMenuController {
    private void handleRestart() {
       if (overlay != null) {
          overlay.getChildren().clear();
-         BombermanGame.restartGame();
+         BombermanGame.restartGame(false);
       }
    }
 

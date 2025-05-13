@@ -259,6 +259,7 @@ public class Bomber extends MobileEntity {
    }
 
    public void setPermanentFreeze(boolean freeze) {
+      
       this.permanentFreeze = freeze;
    }
 

@@ -80,7 +80,7 @@ public class BombermanGame {
                 }
             }
             if (e.getCode() == KeyCode.R && e.isControlDown()) {
-                restartGame();
+                restartGame(false);
             }
         });
 
@@ -91,7 +91,7 @@ public class BombermanGame {
         stage.setScene(scene);
         stage.centerOnScreen();
         stage.setTitle("Bomberman Game");
-        stage.getIcons().add(new Image("/textures/icon.jpg"));
+        stage.getIcons().add(new Image("/textures/icon_game.png"));
         stage.setResizable(false);
         stage.show();
 
@@ -109,7 +109,10 @@ public class BombermanGame {
                 }
 
                 render();
+                if (GameControl.gameOver()) {
+                    restartGame(true);
 
+                }
                 GameControl.update(deltaTime);
 
                 lastUpdateTime = now;
@@ -153,33 +156,95 @@ public class BombermanGame {
     }
 
     public static void nextLevel() {
-        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-            Util.logInfo("You don't have permission to change level in online mode");
-            return;
-        }
+        
+        
         isPaused = false;
-
+        Sound.stopMusic();
+        Sound.playEffect("win_game");
+        
+        
         if (gameLoop != null) {
             gameLoop.stop();
+            
         }
 
-        GameControl.nextLevel();
-        gameLoop.start();
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+            return;
+        }
+        
+        if (Setting.MAP_TYPE == Setting.CUSTOM_MAP || Setting.Map_LEVEL == Setting.MAX_LEVEL) {
+            Util.showOverlayWithButton("/textures/game_win.png",
+                    BombermanGame.getGameRoot(), "Play Again", () -> {
+                        GameControl.reset();
+                        gameLoop.start();
+                        Sound.playMusic("start_game", true);
+                    });
+
+        } else {
+
+            Util.showOverlayWithButton("/textures/next_level.png",
+                    BombermanGame.getGameRoot(), "Next Level", () -> {
+                        GameControl.nextLevel();
+                        gameLoop.start();
+                        Sound.playMusic("start_game", true);
+                    });
+        }
+
     }
 
-    public static void restartGame() {
-        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-            Util.logInfo("You can't restart the game in online mode");
-            return;
-        }
+    public static void restartGame(boolean isGameOver) {
+        
         isPaused = false;
-
         if (gameLoop != null) {
             gameLoop.stop();
+            
         }
 
-        GameControl.reset();
-        gameLoop.start();
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+            return;
+        }
+
+        
+        if (isGameOver) {
+            Sound.stopMusic();
+            Sound.playEffect("game_over");
+        }
+
+        if (Setting.MAP_TYPE == Setting.CUSTOM_MAP || Setting.Map_LEVEL == Setting.MAX_LEVEL) {
+            if (isGameOver) {
+                Util.showOverlayWithButton("/textures/game_over.png",
+                        BombermanGame.getGameRoot(), "Play Again", () -> {
+                            GameControl.reset();
+                            
+                            gameLoop.start();
+                            Sound.playMusic("start_game", true);
+                        });
+            } else {
+
+                Util.showOverlayWithButton("/textures/game_win.png",
+                        BombermanGame.getGameRoot(), "Play Again", () -> {
+                            GameControl.reset();
+                            
+                            gameLoop.start();
+                            Sound.playMusic("start_game", true);
+                        });
+            }
+        } else {
+            if (isGameOver) {
+                Util.showOverlayWithButton("/textures/game_over.png",
+                        BombermanGame.getGameRoot(), "Play Again", () -> {
+                            GameControl.reset();
+                            
+                            gameLoop.start();
+                            Sound.playMusic("start_game", true);
+                        });
+            } else {
+               GameControl.reset();
+                gameLoop.start();
+                Sound.playMusic("start_game", true);
+            }
+        }
+
     }
 
     public static void returnToMenu() {
