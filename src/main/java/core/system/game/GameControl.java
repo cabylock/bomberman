@@ -31,14 +31,8 @@ public class GameControl {
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<>();
    private static boolean deathOverlayShown = false;
 
-   
-
-   
-
-   
-
    public static void stop() {
-     
+
       if (Setting.GAME_MODE == Setting.SERVER_MODE) {
          GameServer.stopServer();
       }
@@ -72,17 +66,13 @@ public class GameControl {
          Sound.stopMusic();
          Sound.playEffect("game_over");
          Util.showGameOverOverlay("/textures/game_over.png", BombermanGame.getGameRoot(), () -> {
-         reset();
-      });
-      deathOverlayShown = true;
-   }
-      
-      
+            reset();
+         });
+         deathOverlayShown = true;
+      }
+
    }
 
-   
-
-     
    private static String getCommandFromInput(int bomberType) {
       if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.UP_MOVING])) {
          return Bomber.MOVE_UP;
@@ -129,18 +119,20 @@ public class GameControl {
 
    public static void nextLevel() {
       if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
-         Util.logInfo("Please select another map or move to default map");
+         Util.showOverlayWithButton("/textures/game_win.jpg", BombermanGame.getGameRoot(), "Play Again", () -> {
+            reset();
+         });
          return;
       }
       if (Setting.Map_LEVEL == Setting.MAX_LEVEL) {
-         Util.showOverlayWithButton("/textures/win2.png", BombermanGame.getGameRoot(), "Play Again", () -> {
-           
+         Util.showOverlayWithButton("/textures/game_win.jpg", BombermanGame.getGameRoot(), "Play Again", () -> {
+
             reset();
          });
          return;
       }
       Util.showOverlayWithButton("/textures/level_complete.jpg", BombermanGame.getGameRoot(), "Next Level", () -> {
-         
+
          Setting.Map_LEVEL++;
          Setting.MAP_NAME = "LEVEL" + Setting.Map_LEVEL;
          System.out.println("Next level: " + Setting.Map_LEVEL);
@@ -164,8 +156,8 @@ public class GameControl {
          GameServer.broadcastMapDimensions();
 
       }
-      }
-      
+   }
+
    public static void clearEntities() {
       bomberEntities.clear();
       deathOverlayShown = false;
@@ -174,14 +166,15 @@ public class GameControl {
       itemEntities.clear();
       backgroundEntities.clear();
    }
-   public static void resetEntities(){
-      bomberEntities.forEach(((_,b) -> b.resetBomber()));
+
+   public static void resetEntities() {
+      bomberEntities.forEach(((_, b) -> b.resetBomber()));
       deathOverlayShown = false;
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
       backgroundEntities.clear();
-      
+
    }
 
    public static void addEntity(Entity entity) {

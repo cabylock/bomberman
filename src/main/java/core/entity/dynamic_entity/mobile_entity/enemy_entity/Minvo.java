@@ -54,7 +54,7 @@ public class Minvo extends EnemyEntity {
             } else {
                 speed = MAX_SPEED; // Chọn tốc độ max
             }
-            System.out.println("Speed: " + speed);
+         
             speedChangeTimer = 0; // Reset bộ đếm thời gian
         }
 

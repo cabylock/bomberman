@@ -13,9 +13,7 @@ import core.system.game.GameControl;
 public class Flame extends StaticEntity {
    // Animation constants
 
-  
    private transient float timeAlive = 1.0f; // 1 second lifetime
-   
 
    private transient final int CENTER = 0;
    private transient final int HORIZONTAL = 1;
@@ -106,7 +104,7 @@ public class Flame extends StaticEntity {
       }
       for (EnemyEntity entity : GameControl.getEnemyEntities()) {
          if (entity.getXTile() == this.getXTile() && entity.getYTile() == this.getYTile()) {
-            entity.decreaseHealth();;
+            entity.decreaseHealth();
             return false;
          }
       }
@@ -149,7 +147,6 @@ public class Flame extends StaticEntity {
          animationStep = (animationStep + 1) % 3;
          animationTimer = 0;
       }
-
       imageId = imageIds[flameType][animationStep];
    }
 
