@@ -12,7 +12,6 @@ public class SpriteManager {
     private static final String SPRITE_PATH = "/sprites/";
 
     public static BufferedImage getImage(String filename) {
-        // Kiểm tra xem sprite đã được load chưa
         if (!sprites.containsKey(filename)) {
             loadImage(filename);
         }

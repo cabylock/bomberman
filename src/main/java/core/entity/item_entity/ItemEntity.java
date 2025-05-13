@@ -28,7 +28,8 @@ public class ItemEntity extends Entity {
 
     protected boolean isBrickAtPosition() {
         for (Entity entity : GameControl.getStaticEntities()) {
-            if (entity instanceof Brick && entity.getX() == this.getX() && entity.getY() == this.getY()) {
+            if (entity instanceof Brick && entity.getX() == this.getX()
+                    && entity.getY() == this.getY()) {
                 return true;
             }
         }

@@ -34,7 +34,7 @@ public class Bomber extends MobileEntity {
    private transient int speed = 20;
    private transient int flameSize = 1;
    private transient int typePlayer;
-   private String playerName; // Store player's name
+   private String playerName;
    private transient boolean permanentFreeze = false;
 
    private transient int initialX;
@@ -56,7 +56,7 @@ public class Bomber extends MobileEntity {
       if (typePlayer == BOMBER2) {
          id++;
       }
-      imageIds = new int[6][]; // 0 → UP, 1 → DOWN, 2 → LEFT, 3 → RIGHT, 4 → DEAD, 5 → ANIMATION_NULL
+      imageIds = new int[6][];
 
       if (typePlayer == BOMBER1) {
          imageIds[RIGHT_MOVING] = new int[] {
@@ -96,7 +96,6 @@ public class Bomber extends MobileEntity {
          };
       }
 
-      // ANIMATION_NULL (dùng để "ẩn" khi invincible)
       imageIds[ANIMATION_NULL] = new int[] {
             Sprite.ANIMATION_NULL, Sprite.ANIMATION_NULL, Sprite.ANIMATION_NULL
       };
@@ -112,27 +111,20 @@ public class Bomber extends MobileEntity {
    @Override
    public void render(GraphicsContext gc) {
       super.render(gc);
-      // Render player name above character
       if (playerName != null && !playerName.isEmpty()) {
-         // Save current graphics context state
          gc.save();
-
-         // Set text properties
          gc.setFill(Color.WHITE);
          gc.setStroke(Color.BLACK);
          gc.setLineWidth(1.5);
          gc.setFont(new Font("Varela Round", 14));
          gc.setTextAlign(TextAlignment.CENTER);
-
-         // Position is centered above player
+         
          float textX = x + Sprite.DEFAULT_SIZE / 2;
-         float textY = y - 10; // 10 pixels above player
-
-         // Draw text with outline for better visibility
+         float textY = y - 10;
+         
          gc.strokeText(playerName, textX, textY);
          gc.fillText(playerName, textX, textY);
-
-         // Restore graphics context
+   
          gc.restore();
       }
    }
@@ -168,7 +160,6 @@ public class Bomber extends MobileEntity {
       int bombX = this.getXTile();
       int bombY = this.getYTile();
 
-      // Sử dụng sprite bomb phù hợp với loại player
       int bombSprite = (typePlayer == BOMBER1) ? Sprite.PLAYER1_BOMB_0 : Sprite.PLAYER2_BOMB_0;
       Bomb newBomb = new Bomb(bombX, bombY, bombSprite, flameSize, id);
       GameControl.addEntity(newBomb);

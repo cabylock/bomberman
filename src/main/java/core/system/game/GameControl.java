@@ -11,6 +11,7 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
+import core.entity.item_entity.Portal;
 import core.map.MapEntity;
 import core.sound.Sound;
 import core.system.setting.Setting;
@@ -30,6 +31,7 @@ public class GameControl {
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<>();
    private static boolean deathOverlayShown = false;
+   private static boolean portalOverlayShown = false;
 
    public static void stop() {
 
@@ -61,16 +63,25 @@ public class GameControl {
       for (Bomber entity : bomberEntities.values())
          entity.update(deltaTime);
 
-      // Check if all players are dead, then stop music and play death sound
       if (Bomber.isGameOver() && !deathOverlayShown) {
          Sound.stopMusic();
          Sound.playEffect("game_over");
-         Util.showGameOverOverlay("/textures/game_over.png", BombermanGame.getGameRoot(), () -> {
-            reset();
-         });
+         Util.showGameOverOverlay("/textures/game_over.png",
+               BombermanGame.getGameRoot(), () -> {
+                  reset();
+               });
          deathOverlayShown = true;
       }
 
+      if (!hasPortal() && !portalOverlayShown) {
+         Sound.stopMusic();
+         Sound.playEffect("game_over");
+         Util.showGameOverOverlay("/textures/game_over.png",
+               BombermanGame.getGameRoot(), () -> {
+                  reset();
+               });
+         portalOverlayShown = true;
+      }
    }
 
    private static String getCommandFromInput(int bomberType) {
@@ -119,27 +130,30 @@ public class GameControl {
 
    public static void nextLevel() {
       if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
-         Util.showOverlayWithButton("/textures/game_win.jpg", BombermanGame.getGameRoot(), "Play Again", () -> {
-            reset();
-         });
+         Util.showOverlayWithButton("/textures/game_win.jpg",
+               BombermanGame.getGameRoot(), "Play Again", () -> {
+                  reset();
+               });
          return;
       }
       if (Setting.Map_LEVEL == Setting.MAX_LEVEL) {
-         Util.showOverlayWithButton("/textures/game_win.jpg", BombermanGame.getGameRoot(), "Play Again", () -> {
+         Util.showOverlayWithButton("/textures/game_win.jpg",
+               BombermanGame.getGameRoot(), "Play Again", () -> {
 
-            reset();
-         });
+                  reset();
+               });
          return;
       }
-      Util.showOverlayWithButton("/textures/level_complete.jpg", BombermanGame.getGameRoot(), "Next Level", () -> {
+      Util.showOverlayWithButton("/textures/level_complete.jpg",
+            BombermanGame.getGameRoot(), "Next Level", () -> {
 
-         Setting.Map_LEVEL++;
-         Setting.MAP_NAME = "LEVEL" + Setting.Map_LEVEL;
-         System.out.println("Next level: " + Setting.Map_LEVEL);
-         System.out.println("Loading map: " + Setting.MAP_NAME);
-         reset();
+               Setting.Map_LEVEL++;
+               Setting.MAP_NAME = "LEVEL" + Setting.Map_LEVEL;
+               System.out.println("Next level: " + Setting.Map_LEVEL);
+               System.out.println("Loading map: " + Setting.MAP_NAME);
+               reset();
 
-      });
+            });
    }
 
    public static void reset() {
@@ -161,6 +175,7 @@ public class GameControl {
    public static void clearEntities() {
       bomberEntities.clear();
       deathOverlayShown = false;
+      portalOverlayShown = false;
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
@@ -269,5 +284,14 @@ public class GameControl {
 
    public static List<ItemEntity> getItemEntities() {
       return itemEntities;
+   }
+
+   private static boolean hasPortal() {
+      for (ItemEntity entity : itemEntities) {
+         if (entity instanceof Portal) {
+            return true;
+         }
+      }
+      return false;
    }
 }

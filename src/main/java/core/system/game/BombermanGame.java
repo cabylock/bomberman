@@ -58,7 +58,6 @@ public class BombermanGame {
             Platform.exit();
         });
 
-        // Create Canvas
         canvas = new Canvas(Sprite.DEFAULT_SIZE * GameControl.getWidth(),
                 Sprite.DEFAULT_SIZE * GameControl.getHeight());
 
@@ -75,7 +74,6 @@ public class BombermanGame {
         scene.setOnKeyPressed(e -> {
             input.add(e.getCode());
 
-            // Check for ESC key to show pause menu
             if (e.getCode() == KeyCode.ESCAPE) {
                 if (!isPaused) {
                     showPauseMenu();
@@ -102,10 +100,9 @@ public class BombermanGame {
             public void handle(long now) {
                 if (lastUpdateTime > 0) {
                     deltaTime = (float) ((now - lastUpdateTime) / 1_000_000_000.0);
-                    // Cap delta time to prevent huge jumps after lag
+
                     if (deltaTime > 0.08f)
                         deltaTime = 0.08f;
-                    // Frame limiter: skip update if frame is too fast
                     if (deltaTime < Setting.FRAME_TIME_NS) {
                         return;
                     }
@@ -113,7 +110,6 @@ public class BombermanGame {
 
                 render();
 
-                // Always update with delta time regardless of frame timing
                 GameControl.update(deltaTime);
 
                 lastUpdateTime = now;
@@ -122,119 +118,91 @@ public class BombermanGame {
         gameLoop.start();
     }
 
-    // Add these new methods to BombermanGame class:
     public static StackPane getGameRoot() {
         return gameRoot;
     }
 
-    /**
-     * Show the pause menu overlay
-     */
     private static void showPauseMenu() {
-        // Pause the game
         isPaused = true;
         gameLoop.stop();
 
         try {
-            // Load the pause menu FXML
             FXMLLoader loader = new FXMLLoader(
                     BombermanGame.class.getResource("/core/system/fxml/ingame/PauseMenu.fxml"));
             VBox pauseMenu = loader.load();
 
-            // Get controller and set the game reference
             PauseMenuController controller = loader.getController();
             controller.setGame();
 
-            // Create overlay container
             StackPane overlay = new StackPane();
             overlay.getChildren().add(pauseMenu);
             controller.setOverlay(overlay);
 
-            // Add to game root
             gameRoot.getChildren().add(overlay);
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error loading pause menu: " + e.getMessage());
-            // If pause menu fails, just unpause
             resumeGame();
         }
     }
 
-    /**
-     * Resume the game from pause
-     */
     public static void resumeGame() {
         isPaused = false;
         gameLoop.start();
     }
 
     public static void nextLevel() {
-        // Resume game if paused
         if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
             Util.logInfo("You don't have permission to change level in online mode");
             return;
         }
         isPaused = false;
 
-        // Stop and restart the game loop
         if (gameLoop != null) {
             gameLoop.stop();
         }
 
-        // Load the next level
         GameControl.nextLevel();
         gameLoop.start();
     }
 
-    // Update your restartGame method to support the pause menu
     public static void restartGame() {
-        // Resume game if paused
         if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
             Util.logInfo("You can't restart the game in online mode");
             return;
         }
         isPaused = false;
 
-        // Stop and restart the game loop
         if (gameLoop != null) {
             gameLoop.stop();
         }
 
-        // Reset the game
         GameControl.reset();
         gameLoop.start();
     }
 
-    // Make returnToMenu method public so the controller can access it
     public static void returnToMenu() {
-        // Stop the game loop
         if (gameLoop != null) {
             gameLoop.stop();
             gameLoop = null;
         }
         GameControl.stop();
         GameControl.clearEntities();
-        // Reset the game state if needed
         input.clear();
 
         try {
-            // Load the MapSelection screen instead of Main
             FXMLLoader loader = new FXMLLoader(BombermanGame.class.getResource("/core/system/fxml/base/MainMenu.fxml"));
             Parent root = loader.load();
 
-            // Get the controller and set the stage
             MainMenuController controller = loader.getController();
             controller.setStage(stage);
 
-            // Set the scene
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-
-            // Fallback to main menu if loading map selection fails
             Main main = new Main();
             main.start(stage);
         }

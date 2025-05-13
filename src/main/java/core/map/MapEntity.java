@@ -28,20 +28,13 @@ public class MapEntity {
 
    private static char[][] mapData;
 
- 
-
-  
-
    public static void readMap(String name) {
 
       String filePath = Setting.MAP_TYPE == Setting.DEFAULT_MAP ? "/default_levels/" + name : "/custom_levels/" + name;
-      
 
       try {
-         // Try to load the resource
-         InputStream is = MapEntity.class.getResourceAsStream(filePath+".txt");
+         InputStream is = MapEntity.class.getResourceAsStream(filePath + ".txt");
 
-         // Check if resource was found
          if (is == null) {
             System.err.println("ERROR: Could not find resource at path: " + filePath);
             return;
@@ -49,12 +42,10 @@ public class MapEntity {
 
          BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-         // Read the first line and check if it's not null
          String firstLine = br.readLine();
 
          String[] info = firstLine.split(" ");
 
-         // Now parse the values
          level = Integer.parseInt(info[0]);
          Setting.Map_LEVEL = level;
          height = Integer.parseInt(info[1]);
@@ -63,7 +54,6 @@ public class MapEntity {
          GameControl.setWidth(width);
          mapData = new char[height][width];
 
-         // Rest of your code remains the same
          for (int i = 0; i < height; i++) {
             String line = br.readLine();
 
@@ -80,7 +70,6 @@ public class MapEntity {
 
    public static void loadMap(String name) {
 
-      
       readMap(name);
 
       for (int i = 0; i < height; i++) {
@@ -99,11 +88,14 @@ public class MapEntity {
                GameControl.addEntity(portal);
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
-            } else if (c == 'p' && (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE)) {
-               Bomber player = new Bomber(j, i, Sprite.PLAYER1_RIGHT_0, Bomber.BOMBER1, "Player 1");
+            } else if (c == 'p' && (Setting.GAME_MODE == Setting.SINGLE_MODE
+                  || Setting.GAME_MODE == Setting.MULTI_MODE)) {
+               Bomber player = new Bomber(j, i, Sprite.PLAYER1_RIGHT_0,
+                     Bomber.BOMBER1, "Player 1");
                GameControl.addEntity(player);
             } else if (c == 'q' && Setting.GAME_MODE == Setting.MULTI_MODE) {
-               Bomber player = new Bomber(j, i, Sprite.PLAYER2_RIGHT_0, Bomber.BOMBER2, "Player 2");
+               Bomber player = new Bomber(j, i, Sprite.PLAYER2_RIGHT_0,
+                     Bomber.BOMBER2, "Player 2");
                GameControl.addEntity(player);
             } else if (c == '1') {
                EnemyEntity balloon = new Balloom(j, i, Sprite.BALLOOM_LEFT_0);
@@ -157,16 +149,7 @@ public class MapEntity {
                StaticEntity brick = new Brick(j, i, Sprite.BRICK);
                GameControl.addEntity(brick);
             }
-
-            else {
-               // Grass is already added at the beginning of the loop for every cell
-            }
          }
-
       }
-
    }
-
-   
-
 }

@@ -1,4 +1,5 @@
 package core.sound;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
@@ -15,16 +16,15 @@ public class Sound {
 
     public static void stopMusic() {
         if (bgPlayer != null) {
-            bgPlayer.stop(); // dừng ngay lập tức
-            bgPlayer.dispose(); // giải phóng tài nguyên
+            bgPlayer.stop();
+            bgPlayer.dispose();
             bgPlayer = null;
         }
     }
 
     public static void playEffect(String sound) {
 
-        String url = Sound.class.getResource("/sounds/" + sound + ".mp3").toExternalForm();
-        
+        String url = Sound.class.getResource("/sounds/" + sound + ".mp3").toExternalForm(); 
         MediaPlayer fx = new MediaPlayer(new Media(url));
         fx.setCycleCount(1);
         fx.play();

@@ -6,8 +6,7 @@ public abstract class DynamicEntity extends Entity {
 
    protected int animationStep = 0;
    protected float animationTimer = 0;
-
-   // Image arrays for animation
+   
    protected int[][] imageIds;
 
    public DynamicEntity(int x, int y, int imageId) {
@@ -17,8 +16,6 @@ public abstract class DynamicEntity extends Entity {
    @Override
    public void update(float deltaTime) {
    }
-
-   // Keep the old update method for backward compatibility
 
    protected abstract void updateAnimation(float deltaTime);
 

@@ -16,7 +16,6 @@ public class MobileEntity extends DynamicEntity {
    public static transient final int LEFT_MOVING = 1;
    public static transient final int UP_MOVING = 2;
    public static transient final int DOWN_MOVING = 3;
-
    public static transient final int DEAD = 4;
    public static transient final int ANIMATION_NULL = 5;
 
@@ -36,16 +35,13 @@ public class MobileEntity extends DynamicEntity {
    protected transient float bombUpTime = 0;
    protected transient float brickPassTime = 0;
 
-   // Số mạng (health)
    protected transient int health = 1;
 
-   // Còn bao nhiêu giây miễn thương
    protected transient float invincibleRemaining = 0f;
    protected transient boolean isInvincible = false;
 
-   // Bộ đếm cho blink animation khi miễn thương
    protected transient float blinkTimer = 0f;
-   protected transient final float BLINK_INTERVAL = 0.1f; // nháy mỗi 0.1s
+   protected transient final float BLINK_INTERVAL = 0.1f;
 
    protected transient int direction = DOWN_MOVING;
 
@@ -134,7 +130,7 @@ public class MobileEntity extends DynamicEntity {
       for (Entity bg : GameControl.getBackgroundEntities()) {
          if (bg instanceof Grass)
             continue;
-         if (checkCollision(nextX, nextY, bg.getX(), bg.getY()) ) {
+         if (checkCollision(nextX, nextY, bg.getX(), bg.getY())) {
             return true;
          }
       }
@@ -147,7 +143,6 @@ public class MobileEntity extends DynamicEntity {
             && y1 + size > y2 && y1 < y2 + size;
    }
 
-   /** Giảm health, và vào trạng thái miễn thương nếu còn sống */
    public void decreaseHealth() {
       if (dying || isInvincible)
          return;
@@ -178,7 +173,6 @@ public class MobileEntity extends DynamicEntity {
       }
    }
 
-   /** Đếm ngược miễn thương */
    public void updateInvincible(float deltaTime) {
       if (!isInvincible)
          return;
@@ -192,7 +186,6 @@ public class MobileEntity extends DynamicEntity {
 
    @Override
    protected void updateAnimation(float deltaTime) {
-      // 1) DEAD animation
       if (dying) {
          deadAnimationTimer += deltaTime;
          if (deadAnimationTimer >= DEAD_ANIMATION_TIME) {
@@ -210,7 +203,6 @@ public class MobileEntity extends DynamicEntity {
          return;
       }
 
-      // 2) INVINCIBLE blink animation
       if (isInvincible) {
          blinkTimer += deltaTime;
          if ((int) (blinkTimer / BLINK_INTERVAL) % 2 == 0) {
@@ -223,7 +215,6 @@ public class MobileEntity extends DynamicEntity {
          return;
       }
 
-      // 3) NORMAL move vs idle
       int frames = imageIds[direction].length;
       if (moving) {
          animationTimer += deltaTime;

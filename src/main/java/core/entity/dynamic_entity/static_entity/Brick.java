@@ -4,9 +4,8 @@ import core.graphics.Sprite;
 import core.system.game.GameControl;
 
 public class Brick extends StaticEntity {
-    private transient float timeAlive = 1f; // 0.5 giây trước khi biến mất
+    private transient float timeAlive = 1f;
     private transient boolean isExploding = false;
-   
 
     public Brick(int x, int y, int imageId) {
         super(x, y, imageId);
@@ -26,7 +25,6 @@ public class Brick extends StaticEntity {
             updateAnimation(deltaTime);
         }
     }
-
 
     @Override
     public void remove() {

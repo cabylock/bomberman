@@ -11,22 +11,19 @@ import javafx.stage.Stage;
 
 public class ModeController {
     private Stage stage;
-   
+
     public void setStage(Stage stage) {
         this.stage = stage;
     }
 
-
     @FXML
     private void selectSinglePlayerMode() {
-        // Set the game to 1 player mode
         Setting.GAME_MODE = Setting.SINGLE_MODE;
         startGame();
     }
 
     @FXML
     private void selectMultiPlayerMode() {
-        // Set the game to 2 player mode
         Setting.GAME_MODE = Setting.MULTI_MODE;
         startGame();
 
@@ -50,8 +47,6 @@ public class ModeController {
     }
 
     private void startGame() {
-        
-
 
         GameControl.loadMap(Setting.MAP_NAME);
         BombermanGame.createGameScene(stage);

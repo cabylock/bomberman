@@ -33,16 +33,15 @@ public class PauseMenuController {
 
    public void setGame() {
 
-      // Hide restart and next level buttons in client mode
       if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
          if (restartButton != null) {
             restartButton.setVisible(false);
-            restartButton.setManaged(false); // Remove from layout
+            restartButton.setManaged(false);
          }
 
          if (nextLevelButton != null) {
             nextLevelButton.setVisible(false);
-            nextLevelButton.setManaged(false); // Remove from layout
+            nextLevelButton.setManaged(false);
          }
       }
 

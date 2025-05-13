@@ -12,7 +12,8 @@ public class BrickPassItem extends ItemEntity {
     @Override
     public void update(float deltaTime) {
         for (Bomber bomber : GameControl.getBomberEntities()) {
-            if (checkCollision(bomber.getX(), bomber.getY(), getX(), getY()) && !isBrickAtPosition()) {
+            if (checkCollision(bomber.getX(), bomber.getY(), getX(),
+                    getY()) && !isBrickAtPosition()) {
                 Sound.playEffect("get_item");
                 bomber.setBrickPass(true);
                 remove();

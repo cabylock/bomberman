@@ -2,7 +2,6 @@ package core.system.setting;
 
 import core.util.Util;
 
-
 public class Setting {
 
       public static final int SCREEN_HEIGHT = 600;
@@ -40,7 +39,4 @@ public class Setting {
       public static final float FPS_MAX = 240;
       public static final float FRAME_TIME_NS = 1.0f / FPS_MAX;
 
-      
-
-     
 }

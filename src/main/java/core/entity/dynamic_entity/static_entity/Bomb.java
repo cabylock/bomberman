@@ -7,15 +7,13 @@ import core.system.setting.Setting;
 
 public class Bomb extends StaticEntity {
 
-    private transient float timeAlive = 3.0f; // 3 seconds before explosion
-    private transient boolean hasExploded = false; // Thêm biến kiểm soát trạng thái nổ
+    private transient float timeAlive = 3.0f;
+    private transient boolean hasExploded = false;
 
-   
     private transient int flameSize;
     private transient Flame[][] flameSegments;
     private transient int ownerId;
 
-    // Directional constants
     protected final int[] DX = { 0, -1, 1, 0, 0 };
     protected final int[] DY = { 0, 0, 0, -1, 1 };
 
@@ -26,7 +24,6 @@ public class Bomb extends StaticEntity {
         this.flameSegments = new Flame[5][flameSize + 1];
         imageIds = new int[1][3];
 
-        // Sử dụng sprite bomb phù hợp cho player 1 hoặc player 2
         if (ownerId == Setting.ID) {
             imageIds[DEFAULT_IMAGE][0] = Sprite.PLAYER1_BOMB_0;
             imageIds[DEFAULT_IMAGE][1] = Sprite.PLAYER1_BOMB_1;
@@ -73,18 +70,9 @@ public class Bomb extends StaticEntity {
         if (hasExploded) {
             return;
         }
-
         hasExploded = true;
-
-        // Phát âm thanh nổ bom
-
-        // Tạo các ngọn lửa
         createFlames();
-
-        // Xóa bom khỏi game
         GameControl.removeEntity(this);
     }
-
-    
 
 }

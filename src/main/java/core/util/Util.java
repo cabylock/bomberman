@@ -157,38 +157,32 @@ public class Util {
    public static void showGameOverOverlay(String filePath,
          StackPane gameRoot,
          Runnable onPlayAgain) {
-      // Tránh tạo nhiều overlay trùng
       for (javafx.scene.Node node : gameRoot.getChildren()) {
          if ("gameOverOverlay".equals(node.getId())) {
             return;
          }
       }
 
-      // Tạo ảnh Game Over
       Image image = new Image(Util.class.getResourceAsStream(filePath));
       ImageView imageView = new ImageView(image);
       imageView.setPreserveRatio(true);
       imageView.setFitHeight(gameRoot.getHeight() * 0.5);
 
-      // Nút Play Again
       Button playAgainButton = new Button("Play Again");
       playAgainButton.setStyle("-fx-font-size:18px; -fx-background-color:#e74c3c; -fx-text-fill:white;");
 
-      // Overlay chứa ảnh và nút
       StackPane overlay = new StackPane(imageView, playAgainButton);
       overlay.setId("gameOverOverlay");
       overlay.setStyle("-fx-background-color: rgba(0,0,0,0.7);");
       overlay.setPrefSize(gameRoot.getWidth(), gameRoot.getHeight());
       StackPane.setAlignment(playAgainButton, Pos.BOTTOM_CENTER);
 
-      // Hành động khi click
       playAgainButton.setOnAction(_ -> {
          gameRoot.getChildren().remove(overlay);
          if (onPlayAgain != null)
             onPlayAgain.run();
       });
 
-      // Thêm overlay vào game
       gameRoot.getChildren().add(overlay);
    }
 

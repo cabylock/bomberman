@@ -17,7 +17,6 @@ public class GameServer {
    private static String errorMessage = null;
    private static Thread serverThread;
 
-
    public static boolean createServer(int port) {
       try {
          if (!isPortAvailable(port)) {
@@ -29,7 +28,6 @@ public class GameServer {
          serverSocket = new ServerSocket(port);
          isRunning = true;
 
-         // Create server's bomber
          Bomber serverBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Bomber.BOMBER1, "Server");
          GameControl.addEntity(serverBomber);
 
@@ -82,8 +80,6 @@ public class GameServer {
       }
       clients.clear();
 
-      
-
       try {
          if (serverSocket != null && !serverSocket.isClosed()) {
             serverSocket.close();
@@ -105,8 +101,6 @@ public class GameServer {
          return false;
       }
    }
-
-
 
    public static void broadcastMapDimensions() {
       if (!isRunning)
@@ -134,17 +128,14 @@ public class GameServer {
             clientSocket = socket;
             clientId = id;
 
-            // Create bomber for this client with type BOMBER1
             clientBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Bomber.BOMBER1, "Client" + clientId);
-            clientBomber.setId(clientId); // Set the bomber's ID to match client ID
+            clientBomber.setId(clientId);
             GameControl.addEntity(clientBomber);
 
-            // Initialize streams in correct order
             out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush(); // Flush the header
+            out.flush();
             in = new ObjectInputStream(clientSocket.getInputStream());
 
-            // Send initial data
             sendId(id);
             sendMapDimensions();
             sendObject(Setting.NETWORK_BACKGROUND_ENTITIES, GameControl.getBackgroundEntities());
@@ -219,11 +210,8 @@ public class GameServer {
 
       public void sendGameState() throws IOException {
          if (out != null) {
-           
-           
-            sendObject(Setting.NETWORK_BOMBER_ENTITIES, GameControl.getBomberEntities());
 
-            
+            sendObject(Setting.NETWORK_BOMBER_ENTITIES, GameControl.getBomberEntities());
 
             sendObject(Setting.NETWORK_ENEMY_ENTITIES, GameControl.getEnemyEntities());
 

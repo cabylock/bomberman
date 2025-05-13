@@ -1,7 +1,6 @@
 package core.entity;
 
 import javafx.scene.canvas.GraphicsContext;
-
 import java.io.Serializable;
 
 import core.graphics.*;
