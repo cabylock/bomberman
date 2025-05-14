@@ -3,8 +3,6 @@ package core.system.network;
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.List;
-
 import core.system.setting.Setting;
 import core.util.Util;
 import core.system.game.GameControl;
@@ -19,7 +17,6 @@ public class GameServer {
    private static String errorMessage = null;
    private static Thread serverThread;
 
-
    public static boolean createServer(int port) {
       try {
          if (!isPortAvailable(port)) {
@@ -29,10 +26,10 @@ public class GameServer {
          }
 
          serverSocket = new ServerSocket(port);
+         serverSocket.setReuseAddress(true); 
          isRunning = true;
 
-         // Create server's bomber
-         Bomber serverBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Setting.BOMBER1, "Server");
+         Bomber serverBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Bomber.BOMBER1, "Server");
          GameControl.addEntity(serverBomber);
 
          serverThread = new Thread(GameServer::startServer);
@@ -60,6 +57,7 @@ public class GameServer {
 
             if (clients.size() < MAX_CLIENTS) {
                Socket clientSocket = serverSocket.accept();
+               clientSocket.setSoTimeout(5000); 
                ClientHandler clientHandler = new ClientHandler(clientSocket, Util.uuid());
                clientHandler.start();
                clients.add(clientHandler);
@@ -84,8 +82,6 @@ public class GameServer {
       }
       clients.clear();
 
-      
-
       try {
          if (serverSocket != null && !serverSocket.isClosed()) {
             serverSocket.close();
@@ -108,8 +104,6 @@ public class GameServer {
       }
    }
 
-
-
    public static void broadcastMapDimensions() {
       if (!isRunning)
          return;
@@ -131,22 +125,24 @@ public class GameServer {
       private int clientId;
       private Bomber clientBomber;
 
+      private long lastGameStateSentTime = 0;
+      private static final long GAME_STATE_SEND_INTERVAL = 50; 
+
       public ClientHandler(Socket socket, int id) {
          try {
             clientSocket = socket;
+            clientSocket.setTcpNoDelay(true); 
+            clientSocket.setSoTimeout(5000); 
             clientId = id;
 
-            // Create bomber for this client with type BOMBER1
-            clientBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Setting.BOMBER1, "Client" + clientId);
-            clientBomber.setId(clientId); // Set the bomber's ID to match client ID
+            clientBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Bomber.BOMBER1, "Client" + clientId);
+            clientBomber.setId(clientId);
             GameControl.addEntity(clientBomber);
 
-            // Initialize streams in correct order
             out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.flush(); // Flush the header
+            out.flush();
             in = new ObjectInputStream(clientSocket.getInputStream());
 
-            // Send initial data
             sendId(id);
             sendMapDimensions();
             sendObject(Setting.NETWORK_BACKGROUND_ENTITIES, GameControl.getBackgroundEntities());
@@ -176,9 +172,15 @@ public class GameServer {
                      String control = in.readUTF();
                      GameControl.getBomberEntitiesMap().get(id).control(control, GameControl.getDeltaTime());
 
-                     sendGameState();
+                     long currentTime = System.currentTimeMillis();
+                     if (currentTime - lastGameStateSentTime >= GAME_STATE_SEND_INTERVAL) {
+                        sendGameState();
+                        lastGameStateSentTime = currentTime;
+                     }
                   }
 
+               } catch (SocketTimeoutException e) {
+                  continue;
                } catch (IOException e) {
                   Util.logError("Error reading command: " + e.getMessage());
                   errorCount++;
@@ -221,22 +223,21 @@ public class GameServer {
 
       public void sendGameState() throws IOException {
          if (out != null) {
-           
-           
-            sendObject(Setting.NETWORK_BOMBER_ENTITIES, GameControl.getBomberEntities());
 
-            
+            sendObject(Setting.NETWORK_BOMBER_ENTITIES, GameControl.getBomberEntities());
 
             sendObject(Setting.NETWORK_ENEMY_ENTITIES, GameControl.getEnemyEntities());
 
             sendObject(Setting.NETWORK_STATIC_ENTITIES, GameControl.getStaticEntities());
-
             sendObject(Setting.NETWORK_ITEM_ENTITIES, GameControl.getItemEntities());
+
+          
          }
       }
 
       public void disconnect() {
          isRunning = false;
+
          try {
             if (out != null) {
                out.close();

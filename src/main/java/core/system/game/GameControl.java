@@ -11,12 +11,11 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
+import core.entity.item_entity.Portal;
 import core.map.MapEntity;
-import core.sound.Sound;
 import core.system.setting.Setting;
 import core.system.network.GameClient;
 import core.system.network.GameServer;
-import core.util.Util;
 
 public class GameControl {
 
@@ -29,8 +28,10 @@ public class GameControl {
    private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<>();
+   private static boolean gameOver = false;
 
    public static void stop() {
+
       if (Setting.GAME_MODE == Setting.SERVER_MODE) {
          GameServer.stopServer();
       }
@@ -62,16 +63,16 @@ public class GameControl {
    }
 
    private static String getCommandFromInput(int bomberType) {
-      if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.UP_MOVING])) {
-         return Setting.MOVE_UP;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.DOWN_MOVING])) {
-         return Setting.MOVE_DOWN;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.LEFT_MOVING])) {
-         return Setting.MOVE_LEFT;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.RIGHT_MOVING])) {
-         return Setting.MOVE_RIGHT;
-      } else if (BombermanGame.input.contains(Setting.BOMBER_KEY_CONTROLS[bomberType][Setting.BOMB_PLACE])) {
-         return Setting.PLACE_BOMB;
+      if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.UP_MOVING])) {
+         return Bomber.MOVE_UP;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.DOWN_MOVING])) {
+         return Bomber.MOVE_DOWN;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.LEFT_MOVING])) {
+         return Bomber.MOVE_LEFT;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.RIGHT_MOVING])) {
+         return Bomber.MOVE_RIGHT;
+      } else if (BombermanGame.input.contains(Bomber.BOMBER_KEY_CONTROLS[bomberType][Bomber.BOMB_PLACE])) {
+         return Bomber.PLACE_BOMB;
       }
       return "NULL";
    }
@@ -79,19 +80,19 @@ public class GameControl {
    public static void handleInput(float deltaTime) {
       String command = "NULL";
       if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-         command = getCommandFromInput(Setting.BOMBER1);
+         command = getCommandFromInput(Bomber.BOMBER1);
          GameClient.sendControl(Setting.ID, command);
 
       } else if (Setting.GAME_MODE == Setting.SERVER_MODE) {
-         command = getCommandFromInput(Setting.BOMBER1);
+         command = getCommandFromInput(Bomber.BOMBER1);
          bomberEntities.get(Setting.ID).control(command, deltaTime);
       } else if (Setting.GAME_MODE == Setting.SINGLE_MODE) {
-         command = getCommandFromInput(Setting.BOMBER1);
+         command = getCommandFromInput(Bomber.BOMBER1);
          bomberEntities.get(Setting.ID).control(command, deltaTime);
       } else if (Setting.GAME_MODE == Setting.MULTI_MODE) {
-         command = getCommandFromInput(Setting.BOMBER1);
+         command = getCommandFromInput(Bomber.BOMBER1);
          bomberEntities.get(Setting.ID).control(command, deltaTime);
-         command = getCommandFromInput(Setting.BOMBER2);
+         command = getCommandFromInput(Bomber.BOMBER2);
          bomberEntities.get(Setting.ID + 1).control(command, deltaTime);
       }
    }
@@ -106,40 +107,71 @@ public class GameControl {
    }
 
    public static void nextLevel() {
-      if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
-         Util.logInfo("Please select another map or move to default map");
-         return;
-      }
-      if (Setting.MAP_LEVEl == Setting.MAX_LEVEL) {
-         Util.showImage("/textures/win2.png", BombermanGame.getGameRoot());
-         return;
-      }
-      Setting.MAP_LEVEl++;
+
+      Setting.Map_LEVEL++;
+      Setting.MAP_NAME = "LEVEL" + Setting.Map_LEVEL;
+      System.out.println("Next level: " + Setting.Map_LEVEL);
+      System.out.println("Loading map: " + Setting.MAP_NAME);
       reset();
 
    }
 
-   public static void reset() {
+   public static boolean gameOver() {
+      boolean hasPortal = false;
+      for (ItemEntity entity : itemEntities) {
+         if (entity instanceof Portal) {
+            hasPortal = true;
+            break;
+         }
+      }
 
+      if (!hasPortal) {
+         gameOver = true;
+         return true;
+      }
+
+      boolean anyBomberAlive = false;
+      for (Bomber bomber : bomberEntities.values()) {
+         if (bomber.isAlive()) {
+            anyBomberAlive = true;
+            break;
+         }
+      }
+
+      gameOver = !anyBomberAlive;
+      return gameOver;
+   }
+
+   public static void reset() {
+      gameOver = false;
       if (Setting.GAME_MODE == Setting.SERVER_MODE) {
-         bomberEntities.forEach((_, b) -> b.resetBomber());
-         clearEntities();
+         resetEntities();
       } else if (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE) {
-         bomberEntities.clear();
          clearEntities();
       }
-      loadMap("Level" + Setting.MAP_LEVEl);
+      loadMap(Setting.MAP_NAME);
       if (Setting.GAME_MODE == Setting.SERVER_MODE) {
          GameServer.broadcastMapDimensions();
+
       }
    }
 
    public static void clearEntities() {
+      bomberEntities.clear();
+      staticEntities.clear();
+      enemyEntities.clear();
+      itemEntities.clear();
+      backgroundEntities.clear();
+   }
+
+   public static void resetEntities() {
+      bomberEntities.forEach(((_, b) -> b.resetBomber()));
 
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
       backgroundEntities.clear();
+
    }
 
    public static void addEntity(Entity entity) {
@@ -235,4 +267,5 @@ public class GameControl {
    public static List<ItemEntity> getItemEntities() {
       return itemEntities;
    }
+
 }

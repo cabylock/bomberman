@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 
-import core.system.game.GameControl;
 import core.system.setting.Setting;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +18,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import javafx.stage.Stage;
-
 
 public class MapSelectionController {
     @FXML
@@ -38,11 +36,9 @@ public class MapSelectionController {
         defaultMapList.getItems().clear();
         customMapList.getItems().clear();
 
-        // Load maps from directories
         loadMapsFromDirectory(DEFAULT_MAPS_DIR, defaultMapList);
         loadMapsFromDirectory(CUSTOM_MAPS_DIR, customMapList);
 
-        // Set up selection listeners
         defaultMapList.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> {
             if (newVal != null) {
                 customMapList.getSelectionModel().clearSelection();
@@ -56,18 +52,11 @@ public class MapSelectionController {
         });
     }
 
-    /**
-     * Helper method to load maps from a directory into a ListView
-     * 
-     * @param directoryPath Path to map directory
-     * @param listView      ListView to populate with map names
-     */
     private void loadMapsFromDirectory(String directoryPath, ListView<String> listView) {
         File mapsDir = new File(directoryPath);
         if (mapsDir.exists() && mapsDir.isDirectory()) {
             File[] mapFiles = mapsDir.listFiles((_, name) -> name.endsWith(".txt"));
             if (mapFiles != null) {
-                // Sort the files alphabetically
                 Arrays.sort(mapFiles, Comparator.comparing(File::getName));
 
                 for (File mapFile : mapFiles) {
@@ -105,17 +94,15 @@ public class MapSelectionController {
             Parent root = loader.load();
 
             RandomMapController controller = loader.getController();
-            controller.setStage(stage);
+            
 
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Create Random Map");
             dialogStage.initOwner(stage);
 
-            // Create the scene first with explicit dimensions
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
 
-            // Force minimum size on the stage
             dialogStage.setMinWidth(500);
             dialogStage.setMinHeight(400);
 
@@ -187,7 +174,6 @@ public class MapSelectionController {
     @FXML
     private void joinOnlineGame() {
         try {
-            // Ensure client mode is set before opening the network setup
             Setting.GAME_MODE = Setting.CLIENT_MODE;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/NetworkSetup.fxml"));
             Parent root = loader.load();

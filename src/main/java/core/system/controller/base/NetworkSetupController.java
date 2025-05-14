@@ -16,8 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+
 
 public class NetworkSetupController {
    @FXML
@@ -26,7 +25,6 @@ public class NetworkSetupController {
    @FXML
    private Label myIpAddressField;
 
-   // Add these fields for toggling UI
    @FXML
    private VBox hostBox;
    @FXML
@@ -80,7 +78,6 @@ public class NetworkSetupController {
                }
             }
          }
-         // fallback
          return java.net.InetAddress.getLocalHost().getHostAddress();
       } catch (Exception e) {
          return "127.0.0.1";
@@ -150,7 +147,6 @@ public class NetworkSetupController {
    private void startGame() {
       try {
          if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-            // Set default game dimensions for client
 
             BombermanGame.createGameScene(stage);
          } else {
@@ -183,7 +179,6 @@ public class NetworkSetupController {
          stage.setScene(scene);
       } catch (Exception e) {
          e.printStackTrace();
-         showError("Navigation Error", "Could not return to previous screen");
-      }
-   }
+}
+}
 }

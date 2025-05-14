@@ -3,18 +3,14 @@ package core.system.network;
 import java.io.*;
 import java.net.*;
 import java.util.List;
-import java.util.ArrayList;
 import core.util.Util;
-import javafx.application.Platform;
 import core.system.setting.Setting;
-import core.system.game.BombermanGame;
 import core.system.game.GameControl;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
 import core.entity.background_entity.BackgroundEntity;
-import core.entity.Entity;
 
 public class GameClient {
    private static String serverAddress;
@@ -40,13 +36,13 @@ public class GameClient {
    public static boolean connect() {
       try {
          socket = new Socket(serverAddress, serverPort);
+         socket.setTcpNoDelay(true);
+         socket.setSoTimeout(5000);
 
-         // Initialize streams in correct order
          out = new ObjectOutputStream(socket.getOutputStream());
-         out.flush(); // Flush the header
+         out.flush();
          in = new ObjectInputStream(socket.getInputStream());
 
-         // Wait for initial data
          String messageType = in.readUTF();
          if (!messageType.equals(Setting.NETWORK_ID)) {
             throw new IOException("Expected ID message, got: " + messageType);
@@ -55,7 +51,6 @@ public class GameClient {
          Setting.ID = clientId;
          Util.logInfo("Received client ID: " + clientId);
 
-         // Receive map dimensions
          messageType = in.readUTF();
          if (!messageType.equals(Setting.NETWORK_MAP_DIMENSIONS)) {
             throw new IOException("Expected map dimensions, got: " + messageType);
@@ -65,14 +60,13 @@ public class GameClient {
          GameControl.setWidth(width);
          GameControl.setHeight(height);
 
-
          messageType = in.readUTF();
          if (!messageType.equals(Setting.NETWORK_BACKGROUND_ENTITIES)) {
             throw new IOException("Expected background entities, got: " + messageType);
          }
+         @SuppressWarnings("unchecked")
          List<BackgroundEntity> backgroundEntities = (List<BackgroundEntity>) in.readObject();
          GameControl.setBackgroundEntities(backgroundEntities);
-
 
          isRunning = true;
          clientThread = new Thread(GameClient::run);
@@ -102,25 +96,26 @@ public class GameClient {
                   case Setting.NETWORK_BOMBER_ENTITIES:
                      @SuppressWarnings("unchecked")
                      List<Bomber> bombers = (List<Bomber>) in.readObject();
-                     
+
                      GameControl.setBomberEntities(bombers);
                      break;
                   case Setting.NETWORK_ENEMY_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<EnemyEntity> enemies = (List<EnemyEntity>) in.readObject();
-
                      GameControl.setEnemyEntities(enemies);
                      break;
                   case Setting.NETWORK_STATIC_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<StaticEntity> statics = (List<StaticEntity>) in.readObject();
-
                      GameControl.setStaticEntities(statics);
                      break;
                   case Setting.NETWORK_ITEM_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<ItemEntity> items = (List<ItemEntity>) in.readObject();
-
                      GameControl.setItemEntities(items);
                      break;
                   case Setting.NETWORK_BACKGROUND_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<BackgroundEntity> backgrounds = (List<BackgroundEntity>) in.readObject();
                      GameControl.setBackgroundEntities(backgrounds);
                      break;
@@ -129,7 +124,7 @@ public class GameClient {
                      int height = in.readInt();
                      GameControl.setWidth(width);
                      GameControl.setHeight(height);
-                     
+
                      break;
                   default:
                      Util.logError("Unknown message type: " + messageType);

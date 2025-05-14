@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import core.sound.Sound;
 
 public class MainMenuController {
-  
+
    private Stage stage;
 
    public void setStage(Stage stage) {
@@ -17,7 +17,7 @@ public class MainMenuController {
 
    @FXML
    public void initialize() {
-      Sound.playMusic("start_menu",false);
+      Sound.playMusic(Sound.START_MENU, false);
    }
 
    @FXML
@@ -37,11 +37,8 @@ public class MainMenuController {
       }
    }
 
-  
-
    @FXML
    private void exit() {
-      
       stage.close();
    }
 
