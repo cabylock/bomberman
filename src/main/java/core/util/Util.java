@@ -1,11 +1,8 @@
 package core.util;
 
 import core.graphics.Sprite;
-import core.system.setting.Setting;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 import java.util.Random;
 import javafx.scene.control.Button;
@@ -54,43 +51,8 @@ public class Util {
       System.err.println("[ERROR] " + message);
    }
 
-   public static void showImage(String filePath, StackPane stackPane) {
-
-      Image image = new Image(Util.class.getResourceAsStream(filePath));
-
-      ImageView imageView = new ImageView(image);
-
-      if (stackPane == null) {
-         stackPane = new StackPane();
-         stackPane.getChildren().add(imageView);
-
-         Stage imageStage = new Stage();
-         imageStage.setTitle(null);
-         javafx.application.Platform.runLater(() -> {
-            imageStage.setWidth(Setting.SCREEN_WIDTH);
-            imageStage.setHeight(Setting.SCREEN_HEIGHT);
-         });
-
-         Scene scene = new Scene(stackPane, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
-         imageStage.setScene(scene);
-         imageStage.centerOnScreen();
-
-         imageStage.show();
-
-      } else {
-
-         stackPane.getChildren().clear();
-         stackPane.getChildren().add(imageView);
-      }
-
-      stackPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-
-   }
-
-   public static void showOverlayWithButton(String filePath,
-         StackPane gameRoot,
-         String buttonText,
-         Runnable onClick) {
+   public static void showOverlayWithButton(String filePath, StackPane gameRoot,
+         String buttonText, Runnable onClick) {
       for (javafx.scene.Node node : gameRoot.getChildren()) {
          if ("levelOverlay".equals(node.getId())) {
             return;
@@ -120,9 +82,7 @@ public class Util {
       gameRoot.getChildren().add(overlay);
    }
 
-   public static void showGameOverOverlay(String filePath,
-         StackPane gameRoot,
-         Runnable onPlayAgain) {
+   public static void showGameOverOverlay(String filePath, StackPane gameRoot, Runnable onPlayAgain) {
       for (javafx.scene.Node node : gameRoot.getChildren()) {
          if ("gameOverOverlay".equals(node.getId())) {
             return;

@@ -3,7 +3,6 @@ package core.entity.item_entity;
 import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.system.game.GameControl;
 import core.system.game.BombermanGame;
-import core.sound.Sound;
 import core.graphics.Sprite;
 
 public class Portal extends ItemEntity {

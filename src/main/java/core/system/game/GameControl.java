@@ -16,7 +16,6 @@ import core.map.MapEntity;
 import core.system.setting.Setting;
 import core.system.network.GameClient;
 import core.system.network.GameServer;
-import core.util.Util;
 
 public class GameControl {
 
@@ -127,7 +126,8 @@ public class GameControl {
       }
 
       if (!hasPortal) {
-         return true; 
+         gameOver = true;
+         return true;
       }
 
       boolean anyBomberAlive = false;
@@ -139,7 +139,7 @@ public class GameControl {
       }
 
       gameOver = !anyBomberAlive;
-      return !anyBomberAlive;
+      return gameOver;
    }
 
    public static void reset() {
@@ -268,5 +268,4 @@ public class GameControl {
       return itemEntities;
    }
 
-   
 }

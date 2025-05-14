@@ -198,8 +198,6 @@ public class BombermanGame {
             
         }
 
-        
-        
         if (isGameOver) {
             Sound.stopMusic();
             Sound.playEffect(Sound.GAME_OVER);

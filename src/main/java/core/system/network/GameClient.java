@@ -36,8 +36,8 @@ public class GameClient {
    public static boolean connect() {
       try {
          socket = new Socket(serverAddress, serverPort);
-         socket.setTcpNoDelay(true); // Enable TCP_NODELAY for lower latency
-         socket.setSoTimeout(5000); // Set socket timeout to 5 seconds
+         socket.setTcpNoDelay(true);
+         socket.setSoTimeout(5000);
 
          out = new ObjectOutputStream(socket.getOutputStream());
          out.flush();
@@ -64,6 +64,7 @@ public class GameClient {
          if (!messageType.equals(Setting.NETWORK_BACKGROUND_ENTITIES)) {
             throw new IOException("Expected background entities, got: " + messageType);
          }
+         @SuppressWarnings("unchecked")
          List<BackgroundEntity> backgroundEntities = (List<BackgroundEntity>) in.readObject();
          GameControl.setBackgroundEntities(backgroundEntities);
 
@@ -99,21 +100,22 @@ public class GameClient {
                      GameControl.setBomberEntities(bombers);
                      break;
                   case Setting.NETWORK_ENEMY_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<EnemyEntity> enemies = (List<EnemyEntity>) in.readObject();
-
                      GameControl.setEnemyEntities(enemies);
                      break;
                   case Setting.NETWORK_STATIC_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<StaticEntity> statics = (List<StaticEntity>) in.readObject();
-
                      GameControl.setStaticEntities(statics);
                      break;
                   case Setting.NETWORK_ITEM_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<ItemEntity> items = (List<ItemEntity>) in.readObject();
-
                      GameControl.setItemEntities(items);
                      break;
                   case Setting.NETWORK_BACKGROUND_ENTITIES:
+                     @SuppressWarnings("unchecked")
                      List<BackgroundEntity> backgrounds = (List<BackgroundEntity>) in.readObject();
                      GameControl.setBackgroundEntities(backgrounds);
                      break;

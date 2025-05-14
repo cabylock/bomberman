@@ -26,7 +26,7 @@ public class GameServer {
          }
 
          serverSocket = new ServerSocket(port);
-         serverSocket.setReuseAddress(true); // Add reuse address option
+         serverSocket.setReuseAddress(true); 
          isRunning = true;
 
          Bomber serverBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Bomber.BOMBER1, "Server");
@@ -57,7 +57,7 @@ public class GameServer {
 
             if (clients.size() < MAX_CLIENTS) {
                Socket clientSocket = serverSocket.accept();
-               clientSocket.setSoTimeout(5000); // Set socket timeout to 5 seconds
+               clientSocket.setSoTimeout(5000); 
                ClientHandler clientHandler = new ClientHandler(clientSocket, Util.uuid());
                clientHandler.start();
                clients.add(clientHandler);
@@ -125,15 +125,14 @@ public class GameServer {
       private int clientId;
       private Bomber clientBomber;
 
-      // Add timestamp tracking for rate limiting
       private long lastGameStateSentTime = 0;
-      private static final long GAME_STATE_SEND_INTERVAL = 50; // Send at most 20 updates per second
+      private static final long GAME_STATE_SEND_INTERVAL = 50; 
 
       public ClientHandler(Socket socket, int id) {
          try {
             clientSocket = socket;
-            clientSocket.setTcpNoDelay(true); // Enable TCP_NODELAY for lower latency
-            clientSocket.setSoTimeout(5000); // Set read timeout to 5 seconds
+            clientSocket.setTcpNoDelay(true); 
+            clientSocket.setSoTimeout(5000); 
             clientId = id;
 
             clientBomber = new Bomber(1, 1, Sprite.PLAYER1_RIGHT_0, Bomber.BOMBER1, "Client" + clientId);
@@ -173,7 +172,6 @@ public class GameServer {
                      String control = in.readUTF();
                      GameControl.getBomberEntitiesMap().get(id).control(control, GameControl.getDeltaTime());
 
-                     // Only send game state if enough time has passed since last update
                      long currentTime = System.currentTimeMillis();
                      if (currentTime - lastGameStateSentTime >= GAME_STATE_SEND_INTERVAL) {
                         sendGameState();
@@ -182,7 +180,6 @@ public class GameServer {
                   }
 
                } catch (SocketTimeoutException e) {
-                  // Socket timeout is normal, just continue the loop
                   continue;
                } catch (IOException e) {
                   Util.logError("Error reading command: " + e.getMessage());
@@ -231,8 +228,6 @@ public class GameServer {
 
             sendObject(Setting.NETWORK_ENEMY_ENTITIES, GameControl.getEnemyEntities());
 
-            // These change less frequently, so we could send them at longer intervals
-            // But for simplicity, we'll keep them in the same update
             sendObject(Setting.NETWORK_STATIC_ENTITIES, GameControl.getStaticEntities());
             sendObject(Setting.NETWORK_ITEM_ENTITIES, GameControl.getItemEntities());
 

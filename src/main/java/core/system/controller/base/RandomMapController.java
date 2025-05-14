@@ -26,9 +26,6 @@ public class RandomMapController {
 
     private Stage dialogStage;
 
-    // public void setStage(Stage stage) {
-    // }
-
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
