@@ -150,7 +150,7 @@ public class Bomber extends MobileEntity {
    }
 
    private void placeBomb() {
-      Sound.playEffect("bomb_set");
+      Sound.playEffect(Sound.BOMB_SET);
 
       BombermanGame.input.remove(BOMBER_KEY_CONTROLS[typePlayer][BOMB_PLACE]);
       if (bombCountMax == 0) {
@@ -272,7 +272,7 @@ public class Bomber extends MobileEntity {
    }
 
    public void bombExplode() {
-      Sound.playEffect("bomb_explode");
+      Sound.playEffect(Sound.BOMB_EXPLODE);
       if (bombCountMax < 2) {
          bombCountMax++;
       }

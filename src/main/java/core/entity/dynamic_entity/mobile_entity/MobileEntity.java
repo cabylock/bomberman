@@ -149,7 +149,7 @@ public class MobileEntity extends DynamicEntity {
 
       health--;
       if (this instanceof Bomber) {
-         Sound.playEffect("bomber_death");
+         Sound.playEffect(Sound.BOMBER_DEAD);
       }
       if (health <= 0) {
 
@@ -157,7 +157,7 @@ public class MobileEntity extends DynamicEntity {
 
             if (GameControl.getBomberEntities().isEmpty()) {
                Sound.stopMusic();
-               Sound.playEffect("game_over");
+               Sound.playEffect(Sound.GAME_OVER);
             }
          }
          dead();

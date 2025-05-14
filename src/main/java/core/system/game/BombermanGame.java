@@ -43,7 +43,7 @@ public class BombermanGame {
 
     public static void createGameScene(Stage primaryStage) {
         Sound.stopMusic();
-        Sound.playMusic("start_game", true);
+        Sound.playMusic(Sound.START_GAME, true);
         stage = primaryStage;
 
         stage.setOnCloseRequest(_ -> {
@@ -160,7 +160,7 @@ public class BombermanGame {
         
         isPaused = false;
         Sound.stopMusic();
-        Sound.playEffect("win_game");
+        Sound.playEffect(Sound.GAME_WIN);
         
         
         if (gameLoop != null) {
@@ -177,7 +177,7 @@ public class BombermanGame {
                     BombermanGame.getGameRoot(), "Play Again", () -> {
                         GameControl.reset();
                         gameLoop.start();
-                        Sound.playMusic("start_game", true);
+                        Sound.playMusic(Sound.START_GAME, true);
                     });
 
         } else {
@@ -186,7 +186,7 @@ public class BombermanGame {
                     BombermanGame.getGameRoot(), "Next Level", () -> {
                         GameControl.nextLevel();
                         gameLoop.start();
-                        Sound.playMusic("start_game", true);
+                        Sound.playMusic(Sound.START_GAME, true);
                     });
         }
 
@@ -207,7 +207,7 @@ public class BombermanGame {
         
         if (isGameOver) {
             Sound.stopMusic();
-            Sound.playEffect("game_over");
+            Sound.playEffect(Sound.GAME_OVER);
         }
 
         if (Setting.MAP_TYPE == Setting.CUSTOM_MAP || Setting.Map_LEVEL == Setting.MAX_LEVEL) {
@@ -217,7 +217,7 @@ public class BombermanGame {
                             GameControl.reset();
                             
                             gameLoop.start();
-                            Sound.playMusic("start_game", true);
+                            Sound.playMusic(Sound.START_GAME, true);
                         });
             } else {
 
@@ -226,7 +226,7 @@ public class BombermanGame {
                             GameControl.reset();
                             
                             gameLoop.start();
-                            Sound.playMusic("start_game", true);
+                            Sound.playMusic(Sound.START_GAME, true);
                         });
             }
         } else {
@@ -236,12 +236,12 @@ public class BombermanGame {
                             GameControl.reset();
                             
                             gameLoop.start();
-                            Sound.playMusic("start_game", true);
+                            Sound.playMusic(Sound.START_GAME, true);
                         });
             } else {
                GameControl.reset();
                 gameLoop.start();
-                Sound.playMusic("start_game", true);
+                Sound.playMusic(Sound.START_GAME, true);
             }
         }
 

@@ -8,6 +8,16 @@ public class Sound {
     private static boolean isMuted = false;
     private static String currentMusic = "";
     private static boolean wasLooping = false;
+    
+    public static String BOMB_EXPLODE = "bomb_explode";
+    public static String BOMB_SET = "bomb_set";
+    public static String BOMBER_DEAD = "bomber_dead";
+    public static String ENEMY_DEAD = "enemy_dead";
+    public static String GAME_OVER = "game_over";
+    public static String GET_ITEM = "get_item";
+    public static String GAME_WIN = "game_win";
+    public static String START_GAME = "start_game";
+    public static String START_MENU = "start_menu";
 
     public static void playMusic(String sound, boolean loop) {
         if (isMuted) {
@@ -46,7 +56,7 @@ public class Sound {
         if (isMuted) {
             stopMusic();
         } else {
-            // Resume music if there was music playing before
+            
             if (!currentMusic.isEmpty()) {
                 playMusic(currentMusic, wasLooping);
             }

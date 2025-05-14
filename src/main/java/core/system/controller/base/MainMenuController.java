@@ -17,7 +17,7 @@ public class MainMenuController {
 
    @FXML
    public void initialize() {
-      Sound.playMusic("start_menu", false);
+      Sound.playMusic(Sound.START_MENU, false);
    }
 
    @FXML

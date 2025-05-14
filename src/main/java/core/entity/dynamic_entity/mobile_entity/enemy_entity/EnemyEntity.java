@@ -71,7 +71,7 @@ public class EnemyEntity extends MobileEntity {
 
     @Override
     public void remove() {
-        Sound.playEffect("enemy_death");
+        Sound.playEffect(Sound.ENEMY_DEAD);
         GameControl.removeEntity(this);
     }
 
