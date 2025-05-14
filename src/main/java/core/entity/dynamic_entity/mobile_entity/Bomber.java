@@ -111,6 +111,8 @@ public class Bomber extends MobileEntity {
    @Override
    public void render(GraphicsContext gc) {
       super.render(gc);
+
+      // Draw player name
       if (playerName != null && !playerName.isEmpty()) {
          gc.save();
          gc.setFill(Color.WHITE);
@@ -118,15 +120,51 @@ public class Bomber extends MobileEntity {
          gc.setLineWidth(1.5);
          gc.setFont(new Font("Varela Round", 14));
          gc.setTextAlign(TextAlignment.CENTER);
-         
+
          float textX = x + Sprite.DEFAULT_SIZE / 2;
          float textY = y - 10;
-         
          gc.strokeText(playerName, textX, textY);
          gc.fillText(playerName, textX, textY);
-   
          gc.restore();
       }
+
+      // Draw item symbols with distinct emojis for better visibility
+      gc.setFont(new Font("Segoe UI Emoji", 16)); // Use emoji-friendly font
+      gc.setTextAlign(TextAlignment.LEFT);
+
+      double symbolX = x;
+      double symbolY = y - 30;
+
+      if (flamePass) {
+         gc.setFill(Color.DODGERBLUE); // Protection-related
+         gc.fillText("🛡️", symbolX, symbolY); // Shield
+         symbolX += 18;
+      }
+      if (bombPass) {
+         gc.setFill(Color.DARKORANGE); // Bomb-pass related
+         gc.fillText("🚧", symbolX, symbolY); // Construction barrier
+         symbolX += 18;
+      }
+      if (speedUp) {
+         gc.setFill(Color.LIMEGREEN); // Speed-related
+         gc.fillText("⚡", symbolX, symbolY); // Lightning bolt
+         symbolX += 18;
+      }
+      if (flameUp) {
+         gc.setFill(Color.CRIMSON); // Flame-related
+         gc.fillText("🔥", symbolX, symbolY); // Fire
+         symbolX += 18;
+      }
+      if (bombUp) {
+         gc.setFill(Color.MEDIUMPURPLE); // Extra bomb
+         gc.fillText("💣", symbolX, symbolY); // Bomb
+         symbolX += 18;
+      }
+      if (brickPass) {
+         gc.setFill(Color.SADDLEBROWN); // Brick-pass
+         gc.fillText("🧱", symbolX, symbolY); // Brick
+      }
+
    }
 
    public void control(String command, float deltaTime) {
@@ -259,7 +297,7 @@ public class Bomber extends MobileEntity {
    }
 
    public void setPermanentFreeze(boolean freeze) {
-      
+
       this.permanentFreeze = freeze;
    }
 
@@ -273,7 +311,7 @@ public class Bomber extends MobileEntity {
 
    public void bombExplode() {
       Sound.playEffect(Sound.BOMB_EXPLODE);
-      if (bombCountMax < 2) {
+      if (bombCountMax < (bombUp == true ? 2 : 1)) {
          bombCountMax++;
       }
    }

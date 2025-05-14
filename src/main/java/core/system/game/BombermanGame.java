@@ -79,9 +79,7 @@ public class BombermanGame {
                     showPauseMenu();
                 }
             }
-            if (e.getCode() == KeyCode.R && e.isControlDown()) {
-                restartGame(false);
-            }
+            
         });
 
         scene.setOnKeyReleased(e -> {
