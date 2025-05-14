@@ -25,7 +25,6 @@ public class NetworkSetupController {
    @FXML
    private Label myIpAddressField;
 
-   // Add these fields for toggling UI
    @FXML
    private VBox hostBox;
    @FXML
@@ -79,7 +78,6 @@ public class NetworkSetupController {
                }
             }
          }
-         // fallback
          return java.net.InetAddress.getLocalHost().getHostAddress();
       } catch (Exception e) {
          return "127.0.0.1";
@@ -149,7 +147,6 @@ public class NetworkSetupController {
    private void startGame() {
       try {
          if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-            // Set default game dimensions for client
 
             BombermanGame.createGameScene(stage);
          } else {

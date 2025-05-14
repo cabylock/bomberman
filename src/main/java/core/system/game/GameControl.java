@@ -11,8 +11,8 @@ import core.entity.dynamic_entity.mobile_entity.Bomber;
 import core.entity.dynamic_entity.mobile_entity.enemy_entity.EnemyEntity;
 import core.entity.dynamic_entity.static_entity.StaticEntity;
 import core.entity.item_entity.ItemEntity;
+import core.entity.item_entity.Portal;
 import core.map.MapEntity;
-import core.sound.Sound;
 import core.system.setting.Setting;
 import core.system.network.GameClient;
 import core.system.network.GameServer;
@@ -29,7 +29,7 @@ public class GameControl {
    private static List<EnemyEntity> enemyEntities = new CopyOnWriteArrayList<>();
    private static List<BackgroundEntity> backgroundEntities = new CopyOnWriteArrayList<>();
    private static List<ItemEntity> itemEntities = new CopyOnWriteArrayList<>();
-   private static boolean deathOverlayShown = false;
+   private static boolean gameOver = false;
 
    public static void stop() {
 
@@ -60,16 +60,6 @@ public class GameControl {
          entity.update(deltaTime);
       for (Bomber entity : bomberEntities.values())
          entity.update(deltaTime);
-
-      // Check if all players are dead, then stop music and play death sound
-      if (Bomber.isGameOver() && !deathOverlayShown) {
-         Sound.stopMusic();
-         Sound.playEffect("game_over");
-         Util.showGameOverOverlay("/textures/game_over.png", BombermanGame.getGameRoot(), () -> {
-            reset();
-         });
-         deathOverlayShown = true;
-      }
 
    }
 
@@ -118,34 +108,42 @@ public class GameControl {
    }
 
    public static void nextLevel() {
-      if (Setting.MAP_TYPE == Setting.CUSTOM_MAP) {
-         Util.showOverlayWithButton("/textures/game_win.jpg", BombermanGame.getGameRoot(), "Play Again", () -> {
-            reset();
-         });
-         return;
+
+      Setting.Map_LEVEL++;
+      Setting.MAP_NAME = "LEVEL" + Setting.Map_LEVEL;
+      System.out.println("Next level: " + Setting.Map_LEVEL);
+      System.out.println("Loading map: " + Setting.MAP_NAME);
+      reset();
+
+   }
+
+   public static boolean gameOver() {
+      boolean hasPortal = false;
+      for (ItemEntity entity : itemEntities) {
+         if (entity instanceof Portal) {
+            hasPortal = true;
+            break;
+         }
       }
-      if (Setting.Map_LEVEL == Setting.MAX_LEVEL) {
-         Util.showOverlayWithButton("/textures/game_win.jpg", BombermanGame.getGameRoot(), "Play Again", () -> {
 
-            reset();
-         });
-         return;
+      if (!hasPortal) {
+         return true; 
       }
-      Util.showOverlayWithButton("/textures/level_complete.jpg", BombermanGame.getGameRoot(), "Next Level", () -> {
 
-         Setting.Map_LEVEL++;
-         Setting.MAP_NAME = "LEVEL" + Setting.Map_LEVEL;
-         System.out.println("Next level: " + Setting.Map_LEVEL);
-         System.out.println("Loading map: " + Setting.MAP_NAME);
-         reset();
+      boolean anyBomberAlive = false;
+      for (Bomber bomber : bomberEntities.values()) {
+         if (bomber.isAlive()) {
+            anyBomberAlive = true;
+            break;
+         }
+      }
 
-      });
+      gameOver = !anyBomberAlive;
+      return !anyBomberAlive;
    }
 
    public static void reset() {
-      Sound.stopMusic();
-      Sound.playMusic("start_game", true);
-
+      gameOver = false;
       if (Setting.GAME_MODE == Setting.SERVER_MODE) {
          resetEntities();
       } else if (Setting.GAME_MODE == Setting.SINGLE_MODE || Setting.GAME_MODE == Setting.MULTI_MODE) {
@@ -160,7 +158,6 @@ public class GameControl {
 
    public static void clearEntities() {
       bomberEntities.clear();
-      deathOverlayShown = false;
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
@@ -169,7 +166,7 @@ public class GameControl {
 
    public static void resetEntities() {
       bomberEntities.forEach(((_, b) -> b.resetBomber()));
-      deathOverlayShown = false;
+
       staticEntities.clear();
       enemyEntities.clear();
       itemEntities.clear();
@@ -270,4 +267,6 @@ public class GameControl {
    public static List<ItemEntity> getItemEntities() {
       return itemEntities;
    }
+
+   
 }

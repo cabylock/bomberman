@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MainController {
-   
 
     private Stage stage;
 
@@ -17,17 +16,12 @@ public class MainController {
 
     public void createMenuScene() {
         try {
-            // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/core/system/fxml/base/MainMenu.fxml"));
-            // System.out.println("location: " +
-            // getClass().getResource("/core/system/fxml/base/Main.fxml"));
             Parent root = loader.load();
 
-            // Get the controller
             MainMenuController controller = loader.getController();
             controller.setStage(stage);
 
-            // Set the scene
             Scene scene = new Scene(root, Setting.SCREEN_WIDTH, Setting.SCREEN_HEIGHT);
             stage.setScene(scene);
         } catch (Exception e) {

@@ -7,7 +7,7 @@ public class Wall extends BackgroundEntity {
 
    @Override
    public void update(float deltaTime) {
-      // No specific update logic for Wall
+      
    }
 
 }

@@ -22,8 +22,14 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Button>
+      <Button fx:id="muteButton" mnemonicParsing="false" onAction="#handleMute" prefHeight="40.0" prefWidth="200.0" 
+              text="Mute Sound" textFill="BLACK">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
       <Button fx:id="restartButton" mnemonicParsing="false" onAction="#handleRestart" prefHeight="40.0" prefWidth="200.0" 
-              text="Restart Level" textFill="BLACK">">
+              text="Restart Level" textFill="BLACK">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

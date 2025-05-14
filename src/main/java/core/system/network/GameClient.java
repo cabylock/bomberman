@@ -39,12 +39,10 @@ public class GameClient {
          socket.setTcpNoDelay(true); // Enable TCP_NODELAY for lower latency
          socket.setSoTimeout(5000); // Set socket timeout to 5 seconds
 
-         // Initialize streams in correct order
          out = new ObjectOutputStream(socket.getOutputStream());
-         out.flush(); // Flush the header
+         out.flush();
          in = new ObjectInputStream(socket.getInputStream());
 
-         // Wait for initial data
          String messageType = in.readUTF();
          if (!messageType.equals(Setting.NETWORK_ID)) {
             throw new IOException("Expected ID message, got: " + messageType);
@@ -53,7 +51,6 @@ public class GameClient {
          Setting.ID = clientId;
          Util.logInfo("Received client ID: " + clientId);
 
-         // Receive map dimensions
          messageType = in.readUTF();
          if (!messageType.equals(Setting.NETWORK_MAP_DIMENSIONS)) {
             throw new IOException("Expected map dimensions, got: " + messageType);

@@ -10,15 +10,12 @@ public class BackgroundEntity extends Entity {
 
    @Override
    public void update(float deltaTime) {
-      // Background entities don't need updating
+      
    }
-
-
 
    @Override
    public void remove() {
      
-      
    }
    
 }

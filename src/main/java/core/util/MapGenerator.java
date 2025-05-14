@@ -21,7 +21,6 @@ public class MapGenerator {
       int numberOfItem = (int) (area * 0.2);
       int numberOfPortals = (int) (area * 0.05) + level;
 
-      // border walls
       for (int y = 0; y < height; y++) {
          map[y][0] = '#';
          map[y][width - 1] = '#';
@@ -31,13 +30,11 @@ public class MapGenerator {
          map[0][x] = '#';
          map[height - 1][x] = '#';
       }
-      // safe zone 4 corners points
       safeZone[1][1] = 1;
       safeZone[height - 2][width - 2] = 1;
       safeZone[1][width - 2] = 1;
       safeZone[height - 2][1] = 1;
 
-      // random safezone points for players
       int spawnX1 = random.nextInt(width - 2) + 1;
       int spawnY1 = random.nextInt(height - 2) + 1;
       int spawnX2 = random.nextInt(width - 2) + 1;
@@ -45,7 +42,6 @@ public class MapGenerator {
       map[spawnY1][spawnX1] = 'p';
       map[spawnY2][spawnX2] = 'q';
 
-      // safe zone area
       safeZone = createSafeZoneArea(spawnX2, spawnY2, safeZoneArea, safeZone);
       safeZone = createSafeZoneArea(spawnX1, spawnY1, safeZoneArea, safeZone);
       safeZone = createSafeZoneArea(1, 1, safeZoneArea, safeZone);
@@ -53,7 +49,6 @@ public class MapGenerator {
       safeZone = createSafeZoneArea(1, width - 2, safeZoneArea, safeZone);
       safeZone = createSafeZoneArea(height - 2, 1, safeZoneArea, safeZone);
 
-      // random walls
       for (int i = 0; i < numberOfWalls; i++) {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
@@ -62,7 +57,7 @@ public class MapGenerator {
             map[y][x] = '#';
          }
       }
-      // random bricks
+
       for (int i = 0; i < numberOfBricks; i++) {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
@@ -72,7 +67,6 @@ public class MapGenerator {
          }
       }
 
-      // random portals
       for (int i = 0; i <= numberOfPortals; i++) {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
@@ -82,8 +76,7 @@ public class MapGenerator {
          }
       }
 
-      // Place items under bricks
-      char[] itemTypes = { 'b', 'f', 's', 'm', 'h', 'o', 'w' }; // bomb, flame, speed, etc.
+      char[] itemTypes = { 'b', 'f', 's', 'm', 'h', 'o', 'w' };
       for (int i = 0; i < numberOfItem; i++) {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
@@ -94,14 +87,13 @@ public class MapGenerator {
          }
       }
 
-      // Add enemies to empty spaces
-      int maxEnemyLevel = Math.min(5, level + 1); // Enemy levels from 1 to 5 based on current level
+      int maxEnemyLevel = Math.min(5, level + 1);
       int maxEnemyType[] = new int[5];
-      maxEnemyType[0] = 99; // Balloom
-      maxEnemyType[1] = 5; // Oneal
-      maxEnemyType[2] = 6; // Doll
-      maxEnemyType[3] = 6; // Minvo
-      maxEnemyType[4] = 2; // Ghost
+      maxEnemyType[0] = 99;
+      maxEnemyType[1] = 5;
+      maxEnemyType[2] = 6;
+      maxEnemyType[3] = 6;
+      maxEnemyType[4] = 2;
       for (int i = 0; i < numberOfEnemy; i++) {
          int x = random.nextInt(width - 2) + 1;
          int y = random.nextInt(height - 2) + 1;
@@ -119,7 +111,6 @@ public class MapGenerator {
          }
       }
 
-      // Fill remaining empty spaces with grass (space character)
       for (int y = 0; y < height; y++) {
          for (int x = 0; x < width; x++) {
             if (map[y][x] == '\u0000') {
@@ -132,7 +123,6 @@ public class MapGenerator {
    }
 
    private static int[][] createSafeZoneArea(int x, int y, int safeZoneArea, int[][] safeZone) {
-      // Tạo một vùng an toàn hình vuông xung quanh điểm spawn
       for (int i = -safeZoneArea; i <= safeZoneArea; i++) {
          for (int j = -safeZoneArea; j <= safeZoneArea; j++) {
             int newX = x + i;

@@ -18,8 +18,6 @@ public abstract class DynamicEntity extends Entity {
    public void update(float deltaTime) {
    }
 
-   // Keep the old update method for backward compatibility
-
    protected abstract void updateAnimation(float deltaTime);
 
    @Override
