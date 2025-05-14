@@ -11,7 +11,7 @@ public class Sound {
     
     public static String BOMB_EXPLODE = "bomb_explode";
     public static String BOMB_SET = "bomb_set";
-    public static String BOMBER_DEAD = "bomber_dead";
+    public static String BOMBER_DEAD = "bomber_deadth";
     public static String ENEMY_DEAD = "enemy_dead";
     public static String GAME_OVER = "game_over";
     public static String GET_ITEM = "get_item";

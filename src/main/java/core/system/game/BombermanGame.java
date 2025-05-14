@@ -200,16 +200,16 @@ public class BombermanGame {
             
         }
 
-        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
-            return;
-        }
-
+        
         
         if (isGameOver) {
             Sound.stopMusic();
             Sound.playEffect(Sound.GAME_OVER);
         }
-
+        
+        if (Setting.GAME_MODE == Setting.CLIENT_MODE) {
+            return;
+        }
         if (Setting.MAP_TYPE == Setting.CUSTOM_MAP || Setting.Map_LEVEL == Setting.MAX_LEVEL) {
             if (isGameOver) {
                 Util.showOverlayWithButton("/textures/game_over.png",

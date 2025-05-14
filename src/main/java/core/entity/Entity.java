@@ -1,6 +1,7 @@
 package core.entity;
 
 import javafx.scene.canvas.GraphicsContext;
+
 import java.io.Serializable;
 
 import core.graphics.*;
@@ -8,7 +9,7 @@ import core.system.setting.Setting;
 import core.util.Util;
 
 public abstract class Entity implements Serializable {
-   private static final long serialVersionUID = 1L;
+   
 
    protected int id;
    protected float x;
