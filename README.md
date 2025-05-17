@@ -65,3 +65,6 @@ Xem comment ở starter project
 3. Xử lý hiệu ứng âm thanh (thêm music & sound effects) +1đ
 4. Phát triển hệ thống server-client để nhiều người có thể cùng chơi qua mạng LAN hoặc Internet +1đ
 5. Những ý tưởng khác sẽ được đánh giá và cộng điểm theo mức tương ứng
+
+
+- ![](src/main/resources/sprites/inheritance_tree.png) *cây kế thừa* với method có hình key là protected, chìa khóa đóng là private chìa khóa mở là public. Class có chữ c xong hình tròn nét đứt bao quanh là abstract còn nét liền là class. Method có chữ m có hình tròn nét đứt bao quanh là @Override còn nét liền thì không phải. 
